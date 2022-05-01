@@ -1,0 +1,13 @@
+.header {
+  padding: 20px 0;
+  background-color: aquamarine;
+}
+
+.link {
+  padding: 10px;
+  margin-left: 10px;
+}
+
+.link:last-child {
+  margin-left: 0;
+}

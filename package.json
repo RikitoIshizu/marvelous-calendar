@@ -9,12 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "12.1.4",
-    "react": "18.0.0",
-    "react-dom": "18.0.0"
+    "next": "^12.1.4",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "eslint": "8.12.0",
-    "eslint-config-next": "12.1.4"
+    "eslint": "^8.12.0",
+    "eslint-config-next": "12.1.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.4.0",
+    "prettier": "^2.6.2"
   }
 }
