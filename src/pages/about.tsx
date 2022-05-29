@@ -12,6 +12,5 @@ export default function About(props) {
         "パタヤビーチとは笑う犬の冒険でネタとして話題になったあの場所です。",
     },
   };
-  console.log(props);
   return <Main meta={pageData.meta} content={pageData.content} />;
 }

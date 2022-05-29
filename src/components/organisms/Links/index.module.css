@@ -41,3 +41,12 @@
     flex-direction: column;
   }
 }
+
+.linkSetting {
+  text-align: center;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+}
