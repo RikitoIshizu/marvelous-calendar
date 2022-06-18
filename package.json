@@ -8,10 +8,12 @@
     "twbuld": "cross-env NODE_ENV=production tailwindcss build src/styles/styles.css -o src/styles/styles_dev.css",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "tsc": "tsc"
   },
   "dependencies": {
     "cross-env": "^7.0.3",
+    "dayjs": "^1.11.3",
     "next": "^12.1.4",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
@@ -20,7 +22,7 @@
   },
   "devDependencies": {
     "@types/node": "^17.0.36",
-    "@types/react": "^18.0.9",
+    "@types/react": "18.0.1",
     "@types/react-dom": "^18.0.5",
     "autoprefixer": "^10.4.7",
     "eslint": "^8.12.0",
