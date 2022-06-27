@@ -1,11 +1,54 @@
-.title {
-  margin-left: 20px;
+.arrowButon {
+  height: 40px;
 }
 
-.movieArea {
-  margin-top: 20px;
+.table {
+  height: calc(100vh - 40px - 1.25rem - 2.5rem);
+  @apply w-full border-solid border-4 border-black table-fixed;
 }
 
-.smovieAreaTitle {
-  margin-left: 30px;
+.today {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: red;
+  text-align: center;
+  line-height: 35px;
+  @apply text-white;
+}
+
+.btnArea {
+  width: 450px;
+  @apply flex;
+}
+
+.carendarChangeBtn,
+.setCalendarBtn {
+  color: #000;
+  width: 150px;
+  background-color: #fff100;
+  border-bottom: 5px solid rgb(3 105 161);
+  border-radius: 5px;
+  @apply bg-sky-400;
+}
+
+.resetBtn {
+  color: #000;
+  width: 150px;
+  background-color: #fff100;
+  border-bottom: 5px solid #ccc100;
+  border-radius: 5px;
+  @apply ml-2;
+}
+
+.resetBtn:hover,
+.carendarChangeBtn:hover,
+.setCalendarBtn:hover {
+  margin-top: 3px;
+  color: #000;
+  border-bottom: 0px;
+}
+
+.selectBox {
+  @apply border-2 rounded-lg border-slate-900;
 }
