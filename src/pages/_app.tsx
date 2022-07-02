@@ -21,7 +21,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           referrerpolicy="no-referrer"
         />
       </Head>
-      <Component />;
+      <Component />
     </>
   );
 }
