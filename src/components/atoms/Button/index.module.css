@@ -1,0 +1,8 @@
+.setCalendarBtn {
+  border-radius: 5px;
+}
+
+.setCalendarBtn:hover {
+  margin-top: 3px;
+  border-bottom: 0px !important;
+}

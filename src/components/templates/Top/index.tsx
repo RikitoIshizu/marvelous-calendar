@@ -3,13 +3,14 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import dayjs from "dayjs";
 import Modal from "react-modal";
+import { Button } from "../../atoms/Button";
 
 import {
   holiday,
   holidayAndSpecialDayException,
   specialDays,
 } from "../../../lib/common";
-import type { HolidayAndSpecialDayException } from "../../../lib/common";
+import { HolidayAndSpecialDayException } from "../../../lib/types";
 
 type Calendar = {
   keyOfdayOfWeek: number;
@@ -242,8 +243,8 @@ export function Top() {
       } else if (day === nowCalendar.length) {
         // 月末の場合、次月の足りない日数を追加する
         if (date.keyOfdayOfWeek !== 6) {
-          for (var i = 1; i <= 6 - date.keyOfdayOfWeek; i++) {
-            const addPrevMonthDate = d.add(i, "day");
+          for (var n = 1; n <= 6 - date.keyOfdayOfWeek; n++) {
+            const addPrevMonthDate = d.add(n, "day");
             nextMonthDate = [
               ...nextMonthDate,
               {
@@ -385,27 +386,29 @@ export function Top() {
             {dayjs(yearAndMonth).format("YYYY年MM月")}
           </h1>
           <div className={styles.btnArea}>
-            <button
-              className={styles.carendarChangeBtn}
-              onClick={() => {
+            <Button
+              text="年月を選択"
+              buttonColor="rgb(34 211 238)"
+              underBarColor="rgb(21 94 117)"
+              textColor="#fff"
+              onEventCallBack={() => {
                 openModal(yearAndMonth);
               }}
-            >
-              年月を選択
-            </button>
+            />
             {isNowMonth(yearAndMonth) ? (
               ""
             ) : (
-              <button
-                className={styles.resetBtn}
-                onClick={() => {
+              <Button
+                text="月をリセット"
+                buttonColor="rgb(253 164 175)"
+                underBarColor="rgb(244 63 94)"
+                textColor="#fff"
+                onEventCallBack={() => {
                   changeMonth(0);
                   setNowYearAndMonth();
                   setCalendar();
                 }}
-              >
-                {isNowMonth(yearAndMonth) ? "" : "月をリセット"}
-              </button>
+              />
             )}
           </div>
           <button
@@ -449,7 +452,7 @@ export function Top() {
             </tr>
           </thead>
           <tbody>
-            {days.map((el, week) => {
+            {days.map((el) => {
               return (
                 <tr
                   key={`${yearAndMonth}-${el.week}`}
@@ -553,14 +556,14 @@ export function Top() {
               <span className="ml-1">月</span>
             </div>
             <div className="text-center mt-4">
-              <button
-                className="setCalendarBtn"
-                onClick={() => {
+              <Button
+                text="変更"
+                buttonColor="rgb(56 189 248)"
+                textColor="#fff"
+                onEventCallBack={() => {
                   onChangeCalendar(`${selectYear}-${selectMonth}`);
                 }}
-              >
-                変更
-              </button>
+              />
             </div>
           </div>
         </Modal>

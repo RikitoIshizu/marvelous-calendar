@@ -1,11 +1,13 @@
 module.exports = {
   env: {
     browser: true,
-    es2021: true,
+    es2022: true,
     node: true,
   },
   parserOptions: {
     sourceType: "module",
+    parser: "babel-eslint",
+    ecmaVersion: 13,
   },
   plugins: [],
   extends: [
@@ -13,13 +15,18 @@ module.exports = {
     "plugin:react-hooks/recommended",
     "plugin:jsx-a11y/recommended",
     "prettier",
+    "eslint:recommended",
+    "plugin:react/recommended",
   ],
   rules: {
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
     "react/jsx-props-no-spreading": "off",
     "no-undef": "error",
+    "react-hooks/exhaustive-deps": "off",
+    "jsx-a11y/anchor-is-valid": "off",
   },
+  parser: "@typescript-eslint/parser",
   settings: {
     react: {
       version: "detect",

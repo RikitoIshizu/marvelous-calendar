@@ -1,3 +1,5 @@
+import { HolidayAndSpecialDayException } from "./types";
+
 export const holiday: Record<string, string> = {
   "0101": "元日",
   "0211": "建国記念日",
@@ -11,13 +13,6 @@ export const holiday: Record<string, string> = {
   "0923": "秋分の日",
   "1103": "文化の日",
   "1123": "勤労感謝の日",
-};
-
-export type HolidayAndSpecialDayException = {
-  week: number;
-  dayOfWeek: number;
-  month: number;
-  name: string;
 };
 
 export const holidayAndSpecialDayException: HolidayAndSpecialDayException[] = [
