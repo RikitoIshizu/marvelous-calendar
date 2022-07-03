@@ -381,7 +381,7 @@ export function Top() {
                 (el) => {
                   return (
                     <option key={el} value={el}>
-                      {el}
+                      {Number(el)}
                     </option>
                   );
                 }
