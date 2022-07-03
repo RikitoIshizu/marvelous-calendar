@@ -4,10 +4,7 @@ import Head from "next/head";
 import { AppProps } from "next/app";
 import Script from "next/script";
 
-function MyApp({
-  Component,
-}: // pageProps
-AppProps) {
+function MyApp({ Component }: AppProps) {
   return (
     <>
       <Head>

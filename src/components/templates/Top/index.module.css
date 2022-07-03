@@ -22,33 +22,13 @@
   @apply flex;
 }
 
-.carendarChangeBtn,
-.setCalendarBtn {
-  color: #000;
-  width: 150px;
-  background-color: #fff100;
-  border-bottom: 5px solid rgb(3 105 161);
-  border-radius: 5px;
-  @apply bg-sky-400;
-}
-
-.resetBtn {
-  color: #000;
-  width: 150px;
-  background-color: #fff100;
-  border-bottom: 5px solid #ccc100;
-  border-radius: 5px;
-  @apply ml-2;
-}
-
-.resetBtn:hover,
-.carendarChangeBtn:hover,
-.setCalendarBtn:hover {
-  margin-top: 3px;
-  color: #000;
-  border-bottom: 0px;
-}
-
 .selectBox {
-  @apply border-2 rounded-lg border-slate-900;
+  width: 150px;
+  height: 100%;
+  @apply border-2 rounded-lg border-slate-900 text-2xl;
+}
+
+.nowYearAndMonth {
+  width: 300px;
+  @apply flex items-center;
 }

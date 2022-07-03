@@ -2,7 +2,6 @@ import styles from "./index.module.css";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import dayjs from "dayjs";
-import Modal from "react-modal";
 import { Button } from "../../atoms/Button";
 
 import {
@@ -23,15 +22,8 @@ type WeeklyDay = {
   week: number;
 };
 
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
+const dayTextCommmon = (format: string, date?: string | undefined): string => {
+  return date ? dayjs(date).format(format) : dayjs().format(format);
 };
 
 const holidayAndSpecialDayTextClass = (
@@ -39,7 +31,7 @@ const holidayAndSpecialDayTextClass = (
   date: string,
   order: number
 ): string => {
-  const checkDate: string = dayjs(date).format("MMDD");
+  const checkDate = dayTextCommmon("MMDD", date);
 
   if (specialDays[`${checkDate}`]) return "text-cyan-500";
   if (holiday[`${checkDate}`]) return "text-green-600";
@@ -73,7 +65,7 @@ const holidayAndSpecialDayText = (
   date: string,
   order: number
 ): string => {
-  const checkDate: string = dayjs(date).format("MMDD");
+  const checkDate = dayTextCommmon("MMDD", date);
 
   if (checkDate === "0229") return "閏年";
 
@@ -132,62 +124,39 @@ const YearAndMonthList = (
 
 export function Top() {
   const [count, changeCount] = useState<number>(0);
-  const [yearAndMonth, changeYearAndMonth] = useState<string>(
-    dayjs().format("YYYY-MM")
-  );
   const [days, setDays] = useState<WeeklyDay[]>([]);
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const [selectYear, changeYear] = useState<string>(dayjs().format("YYYY"));
-  const [selectMonth, chnageMonth] = useState<string>(dayjs().format("MM"));
+  const [selectYear, changeYear] = useState<string>(dayTextCommmon("YYYY"));
+  const [selectMonth, chnageMonth] = useState<string>(dayTextCommmon("MM"));
 
-  const openModal = (yearAndMonth: string): void => {
-    changeYear(dayjs(yearAndMonth).format("YYYY"));
-    chnageMonth(dayjs(yearAndMonth).format("MM"));
-    setIsOpen(true);
-  };
-
-  const closeModal = (): void => {
-    setIsOpen(false);
-  };
-
-  const onChangeYear = (val: string): void => {
-    changeYear(val);
-  };
-
-  const onChangeMonth = (val: string): void => {
-    chnageMonth(val);
-  };
-
-  const onChangeCalendar = (selectYearAndMonth: string): void => {
-    const sltYandM = dayjs(selectYearAndMonth);
-    const nowYandM = dayjs();
-
+  const onChangeYearAndMonth = (year: string, month: string): void => {
+    const now = dayTextCommmon("YYYY-MM");
+    const nowYandM = dayjs(now);
+    const sltYandM = dayjs(`${year}-${month}`);
     const setCount = sltYandM.diff(nowYandM, "month");
 
     changeCount(setCount);
     setNowYearAndMonth(setCount);
-    closeModal();
+    setCalendar(setCount);
   };
 
   // 年と月を取得する
   const setNowYearAndMonth = (val?: number) => {
-    const setYear: string =
-      val === 0 || val === undefined
-        ? dayjs().format("YYYY")
-        : dayjs().add(val, "month").format("YYYY");
-    const setMonth: string =
-      val === 0 || val === undefined
-        ? dayjs().format("MM")
-        : dayjs().add(val, "month").format("MM");
+    const setYear: string = val
+      ? dayjs().add(val, "month").format("YYYY")
+      : dayTextCommmon("YYYY");
+    const setMonth: string = val
+      ? dayjs().add(val, "month").format("MM")
+      : dayTextCommmon("MM");
 
-    changeYearAndMonth(`${setYear}-${setMonth}`);
+    changeYear(setYear);
+    chnageMonth(setMonth);
   };
 
   // カレンダーの日付を取得
   const setCalendar = useCallback((val?: number) => {
     const setYandM =
       val === 0 || val === undefined
-        ? dayjs().format("YYYY-MM")
+        ? dayTextCommmon("YYYY-MM")
         : dayjs().add(val, "month").format("YYYY-MM");
 
     //   // カレンダーを取得する
@@ -205,8 +174,8 @@ export function Top() {
     // まずは現在見ている月のカレンダーの日付を取得する
     for (var i = 1; i <= amountOfDay; i++) {
       const day: string = i.toString().padStart(2, "0");
-      const yearAndMonth: string = dayjs(setYandM).format("YYYY-MM");
-      const date: string = dayjs(`${yearAndMonth}-${day}`).format("YYYY-MM-DD");
+      const yearAndMonth = dayTextCommmon("YYYY-MM", setYandM);
+      const date = dayTextCommmon("YYYY-MM-DD", `${yearAndMonth}-${day}`);
       const keyOfdayOfWeek: number = dayjs(date).day();
       const order =
         nowCalendar.filter(
@@ -302,11 +271,11 @@ export function Top() {
     order: number
   ): string => {
     let commonClass: string = "align-text-top text-2xl ml-1";
-    const nowMonth = dayjs(yearAndMonth).month();
+    const nowMonth = dayjs(`${selectYear}-${selectMonth}`).month();
     const checkMonth = dayjs(date).month();
 
-    const today = dayjs().format("YYYYMMDD");
-    const checkDay = dayjs(date).format("YYYYMMDD");
+    const today = dayTextCommmon("YYYYMMDD");
+    const checkDay = dayTextCommmon("YYYYMMDD", date);
 
     if (checkDay === today) {
       commonClass += ` ${styles.today}`;
@@ -322,7 +291,7 @@ export function Top() {
       commonClass += " text-amber-600";
     }
 
-    const checkDate: string = dayjs(date).format("MMDD");
+    const checkDate = dayTextCommmon("MMDD", date);
 
     if (specialDays[`${checkDate}`]) commonClass += " text-cyan-500";
     if (holiday[`${checkDate}`]) commonClass += " text-green-600";
@@ -356,11 +325,11 @@ export function Top() {
   };
 
   const dayText = (date: string): string => {
-    const nowMonth = dayjs(yearAndMonth).month();
+    const nowMonth = dayjs(`${selectYear}-${selectMonth}`).month();
     const checkMonth = dayjs(date).month();
 
     return nowMonth !== checkMonth
-      ? dayjs(date).format("M/D")
+      ? dayTextCommmon("M/D", date)
       : dayjs(date).date().toString();
   };
 
@@ -382,20 +351,46 @@ export function Top() {
               className={styles.arrowButon}
             />
           </button>
-          <h1 className="text-center text-4xl font-bold">
-            {dayjs(yearAndMonth).format("YYYY年MM月")}
-          </h1>
+          <div className={styles.nowYearAndMonth}>
+            <select
+              name="year"
+              value={selectYear}
+              className={styles.selectBox}
+              onChange={(e) =>
+                onChangeYearAndMonth(e.target.value, selectMonth)
+              }
+            >
+              {YearAndMonthList(`${selectYear}-${selectMonth}`).yearList.map(
+                (el) => {
+                  return (
+                    <option key={el} value={el}>
+                      {el}
+                    </option>
+                  );
+                }
+              )}
+            </select>
+            <span className="mx-1">年</span>
+            <select
+              name="month"
+              value={selectMonth}
+              className={styles.selectBox}
+              onChange={(e) => onChangeYearAndMonth(selectYear, e.target.value)}
+            >
+              {YearAndMonthList(`${selectYear}-${selectMonth}`).monthList.map(
+                (el) => {
+                  return (
+                    <option key={el} value={el}>
+                      {el}
+                    </option>
+                  );
+                }
+              )}
+            </select>
+            <span className="ml-1">月</span>
+          </div>
           <div className={styles.btnArea}>
-            <Button
-              text="年月を選択"
-              buttonColor="rgb(34 211 238)"
-              underBarColor="rgb(21 94 117)"
-              textColor="#fff"
-              onEventCallBack={() => {
-                openModal(yearAndMonth);
-              }}
-            />
-            {isNowMonth(yearAndMonth) ? (
+            {isNowMonth(`${selectYear}-${selectMonth}`) ? (
               ""
             ) : (
               <Button
@@ -455,7 +450,7 @@ export function Top() {
             {days.map((el) => {
               return (
                 <tr
-                  key={`${yearAndMonth}-${el.week}`}
+                  key={`${`${selectYear}-${selectMonth}`}-${el.week}`}
                   className="border-b-2 border-black"
                 >
                   {el.days.map((el) => {
@@ -514,59 +509,6 @@ export function Top() {
             })}
           </tbody>
         </table>
-        <Modal
-          isOpen={modalIsOpen}
-          ariaHideApp={false}
-          onRequestClose={closeModal}
-          style={customStyles}
-          contentLabel="Example Modal"
-        >
-          <div>
-            <p>見たい年月を選んでください。</p>
-            <div className="mt-3">
-              <select
-                name="year"
-                value={selectYear}
-                className={styles.selectBox}
-                onChange={(e) => onChangeYear(e.target.value)}
-              >
-                {YearAndMonthList(yearAndMonth).yearList.map((el) => {
-                  return (
-                    <option key={el} value={el}>
-                      {el}
-                    </option>
-                  );
-                })}
-              </select>
-              <span className="mx-1">年</span>
-              <select
-                name="month"
-                value={selectMonth}
-                className={styles.selectBox}
-                onChange={(e) => onChangeMonth(e.target.value)}
-              >
-                {YearAndMonthList(yearAndMonth).monthList.map((el) => {
-                  return (
-                    <option key={el} value={el}>
-                      {el}
-                    </option>
-                  );
-                })}
-              </select>
-              <span className="ml-1">月</span>
-            </div>
-            <div className="text-center mt-4">
-              <Button
-                text="変更"
-                buttonColor="rgb(56 189 248)"
-                textColor="#fff"
-                onEventCallBack={() => {
-                  onChangeCalendar(`${selectYear}-${selectMonth}`);
-                }}
-              />
-            </div>
-          </div>
-        </Modal>
       </main>
     </div>
   );
