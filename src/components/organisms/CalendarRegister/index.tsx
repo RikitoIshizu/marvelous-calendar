@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { useCallback, useEffect, useState } from "react";
 import { amountOfDay, dayTextCommmon } from "../../../lib/calendar";
+import { Select } from "../../atoms/Select";
 
 dayjs.extend(isLeapYear);
 
@@ -114,47 +115,32 @@ export function CalendarRegister(props: Prop) {
     <form>
       <div>
         <label htmlFor="date">日付:</label>
-        <select
+        <Select
           name="year"
           value={selectYear}
-          onChange={(e) => onChangeYear(e.target.value, selectMonth, selectDay)}
-        >
-          {nowYearList?.map((el) => {
-            return (
-              <option key={el} value={el}>
-                {Number(el)}
-              </option>
-            );
-          })}
-        </select>
+          selectList={nowYearList}
+          onEventCallBack={(year: string) => {
+            onChangeYear(year, selectMonth, selectDay);
+          }}
+        />
         年
-        <select
+        <Select
           name="month"
           value={selectMonth}
-          onChange={(e) => onChangeMonth(selectYear, e.target.value, selectDay)}
-        >
-          {monthList.map((el) => {
-            return (
-              <option key={el} value={el}>
-                {Number(el)}
-              </option>
-            );
-          })}
-        </select>
+          selectList={monthList}
+          onEventCallBack={(month: string) => {
+            onChangeMonth(selectYear, month, selectDay);
+          }}
+        />
         月
-        <select
+        <Select
           name="day"
           value={selectDay}
-          onChange={(e) => onChangeDay(e.target.value)}
-        >
-          {nowDayList?.map((el) => {
-            return (
-              <option key={el} value={el}>
-                {Number(el)}
-              </option>
-            );
-          })}
-        </select>
+          selectList={nowDayList}
+          onEventCallBack={(day: string) => {
+            onChangeDay(day);
+          }}
+        />
         日
       </div>
     </form>

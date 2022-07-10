@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 // import isLeapYear from 'dayjs/plugin/isLeapYear'
 import Modal from "react-modal";
 import { Button } from "../../atoms/Button";
+import { Select } from "../../atoms/Select";
 import { CalendarRegister } from "../../organisms/CalendarRegister";
 
 import {
@@ -350,41 +351,28 @@ export function Top() {
             />
           </button>
           <div className={styles.nowYearAndMonth}>
-            <select
+            <Select
               name="year"
               value={selectYear}
-              className={styles.selectBox}
-              onChange={(e) =>
-                onChangeYearAndMonth(e.target.value, selectMonth)
+              selectList={
+                YearAndMonthAndDateList(`${selectYear}-${selectMonth}`).yearList
               }
-            >
-              {YearAndMonthAndDateList(
-                `${selectYear}-${selectMonth}`
-              ).yearList.map((el) => {
-                return (
-                  <option key={el} value={el}>
-                    {el}
-                  </option>
-                );
-              })}
-            </select>
+              onEventCallBack={(year: string) => {
+                onChangeYearAndMonth(year, selectMonth);
+              }}
+            />
             <span className="mx-1">年</span>
-            <select
+            <Select
               name="month"
               value={selectMonth}
-              className={styles.selectBox}
-              onChange={(e) => onChangeYearAndMonth(selectYear, e.target.value)}
-            >
-              {YearAndMonthAndDateList(
-                `${selectYear}-${selectMonth}`
-              ).monthList.map((el) => {
-                return (
-                  <option key={el} value={el}>
-                    {Number(el)}
-                  </option>
-                );
-              })}
-            </select>
+              selectList={
+                YearAndMonthAndDateList(`${selectYear}-${selectMonth}`)
+                  .monthList
+              }
+              onEventCallBack={(month: string) => {
+                onChangeYearAndMonth(selectYear, month);
+              }}
+            />
             <span className="ml-1">月</span>
           </div>
           <div className={styles.btnArea}>
