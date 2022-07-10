@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { HolidayAndSpecialDayException } from "./types";
 
 export const holiday: Record<string, string> = {
@@ -77,4 +78,47 @@ export const specialDays: Record<string, string> = {
   "1115": "七五三",
   "1225": "クリスマス",
   "1231": "大晦日",
+};
+
+export const dayTextCommmon = (
+  format: string,
+  date?: string | undefined
+): string => {
+  return date ? dayjs(date).format(format) : dayjs().format(format);
+};
+
+export const YearAndMonthAndDateList = (
+  yearAndMonth: string,
+  isNeedDay?: boolean
+): { yearList: string[]; monthList: string[]; dayList?: string[] } => {
+  let yearList: string[] = [];
+  let monthList: string[] = [];
+  let dayList: string[] = [];
+
+  for (let i = -5; i < 6; i++) {
+    const addYear: string = dayjs(yearAndMonth).add(i, "year").format("YYYY");
+    yearList = [...yearList, addYear];
+  }
+
+  for (let i = 1; i <= 12; i++) {
+    const addMonth = i.toString().padStart(2, "0");
+    monthList = [...monthList, addMonth];
+  }
+
+  if (isNeedDay) {
+    return { yearList, monthList, dayList };
+  }
+
+  return { yearList, monthList };
+};
+
+export const amountOfDay = (yearAndMonth: string) => {
+  const startMonth: string = dayjs(yearAndMonth)
+    .startOf("month")
+    .format("YYYY-MM-DD");
+  const endMonth: string = dayjs(yearAndMonth)
+    .endOf("month")
+    .format("YYYY-MM-DD");
+
+  return dayjs(endMonth).diff(startMonth, "day") + 1;
 };
