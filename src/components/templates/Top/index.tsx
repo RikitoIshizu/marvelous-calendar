@@ -16,9 +16,10 @@ import {
   YearAndMonthAndDateList,
   amountOfDay,
 } from "../../../lib/calendar";
-import { HolidayAndSpecialDayException } from "../../../lib/types";
-
-// dayjs.extend(isLeapYear)
+import {
+  HolidayAndSpecialDayException,
+  SchduleRegisterInput,
+} from "../../../lib/types";
 
 type Calendar = {
   keyOfdayOfWeek: number;
@@ -30,6 +31,14 @@ type WeeklyDay = {
   days: Calendar[];
   week: number;
 };
+
+// type SchduleRegisterInput = {
+//   selectYear: string;
+//   selectMonth: string;
+//   selectDay: string;
+//   type: string;
+//   memo: string;
+// };
 
 const customStyles = {
   content: {
@@ -323,13 +332,18 @@ export function Top() {
     return commonClass;
   };
 
-  const dayText = (date: string): string => {
+  const dayText = (date: string) => {
     const nowMonth = dayjs(`${selectYear}-${selectMonth}`).month();
     const checkMonth = dayjs(date).month();
 
     return nowMonth !== checkMonth
       ? dayTextCommmon("M/D", date)
       : dayjs(date).date().toString();
+  };
+
+  const onRegisterSchedule = (registerData: SchduleRegisterInput) => {
+    alert("I Can Re:do id!");
+    console.log(registerData);
   };
 
   return (
@@ -511,7 +525,13 @@ export function Top() {
           contentLabel="Example Modal"
         >
           <div className="">予定を登録</div>
-          <CalendarRegister year={selectYear} month={selectMonth} />
+          <CalendarRegister
+            year={selectYear}
+            month={selectMonth}
+            onEventCallBack={(registerData: SchduleRegisterInput) =>
+              onRegisterSchedule(registerData)
+            }
+          />
         </Modal>
       </main>
     </div>

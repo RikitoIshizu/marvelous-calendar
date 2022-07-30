@@ -13,3 +13,11 @@ export type HolidayAndSpecialDayException = {
   month: number;
   name: string;
 };
+
+export type SchduleRegisterInput = {
+  selectYear: string;
+  selectMonth: string;
+  selectDay: string;
+  type: string;
+  memo: string;
+};
