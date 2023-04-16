@@ -1,23 +1,18 @@
 import styles from "./index.module.css";
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
 import dayjs from "dayjs";
-// import isLeapYear from 'dayjs/plugin/isLeapYear'
 import Modal from "react-modal";
 import { Button } from "../../atoms/Button";
 import { Select } from "../../atoms/Select";
+import { Day } from "../../atoms/Day";
 import { CalendarRegister } from "../../organisms/CalendarRegister";
 
 import {
-  holiday,
-  holidayAndSpecialDayException,
-  specialDays,
   dayTextCommmon,
   YearAndMonthAndDateList,
   amountOfDay,
 } from "../../../lib/calendar";
 import {
-  HolidayAndSpecialDayException,
   SchduleRegisterInput,
 } from "../../../lib/types";
 
@@ -50,79 +45,6 @@ const customStyles = {
     transform: "translate(-50%, -50%)",
     width: "62.5rem",
   },
-};
-
-const holidayAndSpecialDayTextClass = (
-  dayOfWeek: number,
-  date: string,
-  order: number
-): string => {
-  const checkDate = dayTextCommmon("MMDD", date);
-
-  if (specialDays[`${checkDate}`]) return "text-cyan-500";
-  if (holiday[`${checkDate}`]) return "text-green-600";
-
-  const month = dayjs(date).month() + 1;
-
-  const isHolidayAndSpecialDayException = holidayAndSpecialDayException.filter(
-    (el: HolidayAndSpecialDayException) => {
-      return (
-        el.week === order && dayOfWeek === el.dayOfWeek && el.month === month
-      );
-    }
-  );
-
-  if (isHolidayAndSpecialDayException.length) return "text-green-600";
-
-  const yesterday: string = dayjs(date).add(-1, "day").format("YYYYMMDD");
-  const yesterdayOnlyYearAndMonth: string = dayjs(date)
-    .add(-1, "day")
-    .format("MMDD");
-  const dOfW = dayjs(yesterday).day();
-
-  if (holiday[`${yesterdayOnlyYearAndMonth}`] && dOfW === 0)
-    return "text-green-600";
-
-  return "";
-};
-
-const holidayAndSpecialDayText = (
-  dayOfWeek: number,
-  date: string,
-  order: number
-): string => {
-  const checkDate = dayTextCommmon("MMDD", date);
-
-  if (checkDate === "0229") return "閏年";
-
-  if (holiday[`${checkDate}`]) return holiday[`${checkDate}`];
-
-  if (specialDays[`${checkDate}`]) return specialDays[`${checkDate}`];
-
-  const month = dayjs(date).month() + 1;
-
-  const isHolidayAndSpecialDayException = holidayAndSpecialDayException.filter(
-    (el: HolidayAndSpecialDayException) => {
-      return (
-        el.week === order && dayOfWeek === el.dayOfWeek && el.month === month
-      );
-    }
-  );
-
-  if (isHolidayAndSpecialDayException.length)
-    return isHolidayAndSpecialDayException[0].name;
-
-  const yesterday: string = dayjs(date).add(-1, "day").format("YYYYMMDD");
-  const yesterdayOnlyYearAndMonth: string = dayjs(date)
-    .add(-1, "day")
-    .format("MMDD");
-  const dOfW = dayjs(yesterday).day();
-
-  if (holiday[`${yesterdayOnlyYearAndMonth}`] && dOfW === 0) {
-    return "国民の休日";
-  }
-
-  return "";
 };
 
 const isNowMonth = (yearAndMonth: string): boolean => {
@@ -273,74 +195,6 @@ export function Top() {
     [changeCount]
   );
 
-  const dayClass = (
-    keyOfdayOfWeek: number,
-    date: string,
-    order: number
-  ): string => {
-    let commonClass: string = "align-text-top text-2xl ml-1";
-    const nowMonth = dayjs(`${selectYear}-${selectMonth}`).month();
-    const checkMonth = dayjs(date).month();
-
-    const today = dayTextCommmon("YYYYMMDD");
-    const checkDay = dayTextCommmon("YYYYMMDD", date);
-
-    if (checkDay === today) {
-      commonClass += ` ${styles.today}`;
-    } else if (nowMonth !== checkMonth) {
-      if (checkDay === today) {
-        commonClass += "text-lime-400";
-      } else {
-        commonClass += " text-gray-300";
-      }
-    } else if (keyOfdayOfWeek === 0) {
-      commonClass += " text-sky-600";
-    } else if (keyOfdayOfWeek === 6) {
-      commonClass += " text-amber-600";
-    }
-
-    const checkDate = dayTextCommmon("MMDD", date);
-
-    if (specialDays[`${checkDate}`]) commonClass += " text-cyan-500";
-    if (holiday[`${checkDate}`]) commonClass += " text-green-600";
-
-    const month = dayjs(date).month() + 1;
-
-    const isHolidayAndSpecialDayException =
-      holidayAndSpecialDayException.filter(
-        (el: HolidayAndSpecialDayException) => {
-          return (
-            el.week === order &&
-            keyOfdayOfWeek === el.dayOfWeek &&
-            el.month === month
-          );
-        }
-      );
-
-    if (isHolidayAndSpecialDayException.length)
-      commonClass += " text-green-600";
-
-    const yesterday: string = dayjs(date).add(-1, "day").format("YYYYMMDD");
-    const yesterdayOnlyYearAndMonth: string = dayjs(date)
-      .add(-1, "day")
-      .format("MMDD");
-    const dOfW = dayjs(yesterday).day();
-
-    if (holiday[`${yesterdayOnlyYearAndMonth}`] && dOfW === 0)
-      commonClass += " text-green-600";
-
-    return commonClass;
-  };
-
-  const dayText = (date: string) => {
-    const nowMonth = dayjs(`${selectYear}-${selectMonth}`).month();
-    const checkMonth = dayjs(date).month();
-
-    return nowMonth !== checkMonth
-      ? dayTextCommmon("M/D", date)
-      : dayjs(date).date().toString();
-  };
-
   const onRegisterSchedule = (registerData: SchduleRegisterInput) => {
     alert("I Can Re:do id!");
     console.log(registerData);
@@ -463,53 +317,14 @@ export function Top() {
                 >
                   {el.days.map((el) => {
                     return (
-                      <td
+                      <Day
                         key={el.date}
-                        className={`align-text-top cursor-pointer ${
-                          el.keyOfdayOfWeek !== 6
-                            ? "border-r-2 border-black"
-                            : ""
-                        }`}
-                      >
-                        <Link
-                          href={`/date/${dayjs(el.date).format("YYYYMMDD")}`}
-                        >
-                          <a className="block h-full">
-                            <div className="flex items-center">
-                              <div
-                                className={dayClass(
-                                  el.keyOfdayOfWeek,
-                                  el.date,
-                                  el.order
-                                )}
-                              >
-                                {dayText(el.date)}
-                              </div>
-                              {holidayAndSpecialDayText(
-                                el.keyOfdayOfWeek,
-                                el.date,
-                                el.order
-                              ) ? (
-                                <div
-                                  className={`ml-2 ${holidayAndSpecialDayTextClass(
-                                    el.keyOfdayOfWeek,
-                                    el.date,
-                                    el.order
-                                  )}`}
-                                >
-                                  {holidayAndSpecialDayText(
-                                    el.keyOfdayOfWeek,
-                                    el.date,
-                                    el.order
-                                  )}
-                                </div>
-                              ) : (
-                                ""
-                              )}
-                            </div>
-                          </a>
-                        </Link>
-                      </td>
+                        date={el.date}
+                        order={el.order}
+                        keyOfdayOfWeek={el.keyOfdayOfWeek}
+                        selectMonth={selectMonth}
+                        selectYear={selectYear}
+                      />
                     );
                   })}
                 </tr>

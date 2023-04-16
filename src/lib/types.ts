@@ -21,3 +21,17 @@ export type SchduleRegisterInput = {
   type: string;
   memo: string;
 };
+
+export type ButtonStyleInput = {
+  width?: string;
+  buttonColor?: string;
+  textColor?: string;
+  underBarColor?: string;
+};
+
+export type ButtonStyle = {
+  width?: string;
+  backgroundColor?: string;
+  color?: string;
+  borderBottom?: string;
+};

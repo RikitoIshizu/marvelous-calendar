@@ -18,7 +18,7 @@ export function Radio(props: RadioType) {
         id={props.id}
         checked={props.selectedId === props.id}
         name={props.inputName}
-        onClick={() => clickEvent(props.id)}
+        onChange={() => clickEvent(props.id)}
       />
       <label htmlFor={props.id}>{props.name}</label>
     </>
