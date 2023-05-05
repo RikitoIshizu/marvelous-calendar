@@ -12,9 +12,7 @@ import {
   YearAndMonthAndDateList,
   amountOfDay,
 } from "../../../lib/calendar";
-import {
-  SchduleRegisterInput,
-} from "../../../lib/types";
+import { SchduleRegisterInput } from "../../../lib/types";
 
 type Calendar = {
   keyOfdayOfWeek: number;
@@ -201,154 +199,161 @@ export function Top() {
   };
 
   return (
-    <div>
-      <main className="p-5">
-        <section className="mb-5 flex justify-between items-content w-full">
-          <button
-            onClick={() => {
-              changeMonth(count - 1);
-              setNowYearAndMonth(count - 1);
-              setCalendar(count - 1);
-            }}
-            className=""
-          >
-            <img
-              src="./arrowLeft.svg"
-              alt="前の月"
-              className={styles.arrowButon}
-            />
-          </button>
-          <div className={styles.nowYearAndMonth}>
-            <Select
-              name="year"
-              value={selectYear}
-              selectList={
-                YearAndMonthAndDateList(`${selectYear}-${selectMonth}`).yearList
-              }
-              onEventCallBack={(year: string) => {
-                onChangeYearAndMonth(year, selectMonth);
-              }}
-            />
-            <span className="mx-1">年</span>
-            <Select
-              name="month"
-              value={selectMonth}
-              selectList={
-                YearAndMonthAndDateList(`${selectYear}-${selectMonth}`)
-                  .monthList
-              }
-              onEventCallBack={(month: string) => {
-                onChangeYearAndMonth(selectYear, month);
-              }}
-            />
-            <span className="ml-1">月</span>
-          </div>
-          <div className={styles.btnArea}>
-            <Button
-              text="予定を登録"
-              buttonColor="#a7f3d0"
-              underBarColor="#059669"
-              onEventCallBack={() => {
-                openModal();
-              }}
-            />
-            {isNowMonth(`${selectYear}-${selectMonth}`) ? (
-              ""
-            ) : (
-              <Button
-                text="月をリセット"
-                buttonColor="rgb(253 164 175)"
-                underBarColor="rgb(244 63 94)"
-                textColor="#fff"
-                onEventCallBack={() => {
-                  changeMonth(0);
-                  setNowYearAndMonth();
-                  setCalendar();
-                }}
-              />
-            )}
-          </div>
-          <button
-            onClick={() => {
-              changeMonth(count + 1);
-              setNowYearAndMonth(count + 1);
-              setCalendar(count + 1);
-            }}
-          >
-            <img
-              src="./arrowRight.svg"
-              alt="次の月"
-              className={styles.arrowButon}
-            />
-          </button>
-        </section>
-        <table className={styles.table}>
-          <thead className="border-b-2 border-black">
-            <tr>
-              <td className="text-center p-2 font-bold text-xl border-r-2 border-black text-sky-600">
-                日
-              </td>
-              <td className="text-center p-2 font-bold text-xl border-r-2 border-black">
-                月
-              </td>
-              <td className="text-center p-2 font-bold text-xl border-r-2 border-black">
-                火
-              </td>
-              <td className="text-center p-2 font-bold text-xl border-r-2 border-black">
-                水
-              </td>
-              <td className="text-center p-2 font-bold text-xl border-r-2 border-black">
-                木
-              </td>
-              <td className="text-center p-2 font-bold text-xl border-r-2 border-black">
-                金
-              </td>
-              <td className="text-center p-2 font-bold text-xl text-amber-600">
-                土
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            {days.map((el) => {
-              return (
-                <tr
-                  key={`${`${selectYear}-${selectMonth}`}-${el.week}`}
-                  className="border-b-2 border-black"
-                >
-                  {el.days.map((el) => {
-                    return (
-                      <Day
-                        key={el.date}
-                        date={el.date}
-                        order={el.order}
-                        keyOfdayOfWeek={el.keyOfdayOfWeek}
-                        selectMonth={selectMonth}
-                        selectYear={selectYear}
-                      />
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        <Modal
-          isOpen={modalIsOpen}
-          ariaHideApp={false}
-          onRequestClose={closeModal}
-          style={customStyles}
-          contentLabel="Example Modal"
+    <main className="w-full relative">
+      <section
+        id="calender-head"
+        className="p-3 flex justify-between items-content w-full bg-white z-10"
+      >
+        <button
+          onClick={() => {
+            changeMonth(count - 1);
+            setNowYearAndMonth(count - 1);
+            setCalendar(count - 1);
+          }}
+          className=""
         >
-          <div className="">予定を登録</div>
-          <CalendarRegister
-            year={selectYear}
-            month={selectMonth}
-            onEventCallBack={(registerData: SchduleRegisterInput) =>
-              onRegisterSchedule(registerData)
-            }
+          <img
+            src="./arrowLeft.svg"
+            alt="前の月"
+            className={styles.arrowButon}
           />
-        </Modal>
-      </main>
-    </div>
+        </button>
+        <div className={styles.nowYearAndMonth}>
+          <Select
+            name="year"
+            value={selectYear}
+            selectList={
+              YearAndMonthAndDateList(`${selectYear}-${selectMonth}`).yearList
+            }
+            onEventCallBack={(year: string) => {
+              onChangeYearAndMonth(year, selectMonth);
+            }}
+          />
+          <span className="mx-1">年</span>
+          <Select
+            name="month"
+            value={selectMonth}
+            selectList={
+              YearAndMonthAndDateList(`${selectYear}-${selectMonth}`).monthList
+            }
+            onEventCallBack={(month: string) => {
+              onChangeYearAndMonth(selectYear, month);
+            }}
+          />
+          <span className="ml-1">月</span>
+        </div>
+        <div className={styles.btnArea}>
+          <Button
+            text="予定を登録"
+            buttonColor="#a7f3d0"
+            underBarColor="#059669"
+            onEventCallBack={() => {
+              openModal();
+            }}
+          />
+          {isNowMonth(`${selectYear}-${selectMonth}`) ? (
+            ""
+          ) : (
+            <Button
+              text="月をリセット"
+              buttonColor="rgb(253 164 175)"
+              underBarColor="rgb(244 63 94)"
+              textColor="#fff"
+              onEventCallBack={() => {
+                changeMonth(0);
+                setNowYearAndMonth();
+                setCalendar();
+              }}
+            />
+          )}
+        </div>
+        <button
+          onClick={() => {
+            changeMonth(count + 1);
+            setNowYearAndMonth(count + 1);
+            setCalendar(count + 1);
+          }}
+        >
+          <img
+            src="./arrowRight.svg"
+            alt="次の月"
+            className={styles.arrowButon}
+          />
+        </button>
+      </section>
+      <table id="calender-main-area" className={styles.table}>
+        <thead className="border-b-2 border-black">
+          <tr>
+            <td className="text-center p-2 font-bold text-xl border-r-2 border-black text-sky-600">
+              日<br />
+              Sunday
+            </td>
+            <td className="text-center p-2 font-bold text-xl border-r-2 border-black">
+              月<br />
+              Monday
+            </td>
+            <td className="text-center p-2 font-bold text-xl border-r-2 border-black">
+              火<br />
+              Tuesday
+            </td>
+            <td className="text-center p-2 font-bold text-xl border-r-2 border-black">
+              水<br />
+              Wednesday
+            </td>
+            <td className="text-center p-2 font-bold text-xl border-r-2 border-black">
+              木<br />
+              Thursday
+            </td>
+            <td className="text-center p-2 font-bold text-xl border-r-2 border-black">
+              金<br />
+              Friday
+            </td>
+            <td className="text-center p-2 font-bold text-xl text-amber-600">
+              土<br />
+              Saturday
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          {days.map((el) => {
+            return (
+              <tr
+                key={`${`${selectYear}-${selectMonth}`}-${el.week}`}
+                className="border-b-2 border-black"
+              >
+                {el.days.map((el) => {
+                  return (
+                    <Day
+                      key={el.date}
+                      date={el.date}
+                      order={el.order}
+                      keyOfdayOfWeek={el.keyOfdayOfWeek}
+                      selectMonth={selectMonth}
+                      selectYear={selectYear}
+                    />
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <Modal
+        isOpen={modalIsOpen}
+        ariaHideApp={false}
+        onRequestClose={closeModal}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >
+        <div className="">予定を登録</div>
+        <CalendarRegister
+          year={selectYear}
+          month={selectMonth}
+          onEventCallBack={(registerData: SchduleRegisterInput) =>
+            onRegisterSchedule(registerData)
+          }
+        />
+      </Modal>
+    </main>
   );
 }

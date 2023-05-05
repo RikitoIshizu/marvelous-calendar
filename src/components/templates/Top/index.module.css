@@ -3,20 +3,10 @@
 }
 
 .table {
-  height: calc(100vh - 40px - 1.25rem - 2.5rem);
+  height: calc(100vh - 64px);
+  top: 64px;
   @apply w-full border-solid border-4 border-black table-fixed;
 }
-
-.today {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  background: red;
-  text-align: center;
-  line-height: 35px;
-  @apply text-white;
-}
-
 .btnArea {
   width: 450px;
   @apply flex;

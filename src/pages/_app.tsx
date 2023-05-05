@@ -9,7 +9,7 @@ function MyApp({ Component }: AppProps) {
     <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
-        <title>すごいかれんだあ</title>
+        <title>おもいでをおもいだせるカレンダー</title>
         <meta
           name="description"
           content="ぼくがかんがえた すごい カレンダー だよ。"
@@ -17,8 +17,8 @@ function MyApp({ Component }: AppProps) {
         <Script
           src="https://cdnjs.cloudflare.com/ajax/libs/react-modal/3.14.3/react-modal.min.js"
           integrity="sha512-MY2jfK3DBnVzdS2V8MXo5lRtr0mNRroUI9hoLVv2/yL3vrJTam3VzASuKQ96fLEpyYIT4a8o7YgtUs5lPjiLVQ=="
-          crossorigin="anonymous"
-          referrerpolicy="no-referrer"
+          crossOrigin="anonymous"
+          referrerPolicy="no-referrer"
         />
       </Head>
       <Component />
