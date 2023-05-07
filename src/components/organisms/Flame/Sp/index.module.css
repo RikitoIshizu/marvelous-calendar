@@ -1,0 +1,57 @@
+.arrowButon {
+  height: 30px;
+}
+
+/* .table {
+  height: calc(100vh - 64px);
+  top: 64px;
+  @apply w-full border-solid border-4 border-black table-fixed;
+}
+
+
+.selectBox {
+  width: 150px;
+  height: 100%;
+  @apply border-2 rounded-lg border-slate-900 text-2xl;
+} */
+
+.btnArea {
+  height: 30px;
+  @apply my-2 mr-2 flex justify-end;
+}
+
+.nowYearAndMonth {
+  width: 150px;
+  @apply flex items-center;
+}
+
+.table {
+  table-layout: fixed;
+  @apply w-full;
+}
+
+.dayBlockHead {
+  width: calc(100% / 7);
+  min-width: calc(100% / 7);
+  @apply text-center p-2 font-bold text-xl;
+}
+
+.dayBlock {
+  width: calc(100% / 7);
+  min-width: calc(100% / 7);
+  @apply text-center p-3;
+}
+
+.detailTitle {
+  margin-top: 5px;
+  @apply text-center text-xl;
+}
+
+.today {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: red;
+  text-align: center;
+  @apply text-white;
+}

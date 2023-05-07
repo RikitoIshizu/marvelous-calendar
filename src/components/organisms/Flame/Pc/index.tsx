@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
-import dayjs from "dayjs";
+import { useState } from "react";
 import Modal from "react-modal";
 
 import styles from "./index.module.css";
@@ -7,11 +6,7 @@ import { Button } from "../../../atoms/Button";
 import { CalendarRegister } from "../../CalendarRegister";
 import { Day } from "../../../atoms/Day";
 import { Select } from "../../../atoms/Select";
-import {
-  amountOfDay,
-  dayTextCommmon,
-  YearAndMonthAndDateList,
-} from "../../../../lib/calendar";
+import { YearAndMonthAndDateList } from "../../../../lib/calendar";
 import { SchduleRegisterInput } from "../../../../lib/types";
 
 type Calendar = {
@@ -23,10 +18,6 @@ type Calendar = {
 type WeeklyDay = {
   days: Calendar[];
   week: number;
-};
-
-const isNowMonth = (yearAndMonth: string): boolean => {
-  return yearAndMonth === dayjs().format("YYYY-MM");
 };
 
 const customStyles = {
@@ -41,11 +32,17 @@ const customStyles = {
   },
 };
 
-export function FlamePc() {
-  const [count, changeCount] = useState<number>(0);
-  const [days, setDays] = useState<WeeklyDay[]>([]);
-  const [selectYear, changeYear] = useState<string>(dayTextCommmon("YYYY"));
-  const [selectMonth, chnageMonth] = useState<string>(dayTextCommmon("MM"));
+type Props = {
+  count: number;
+  days: WeeklyDay[];
+  selectYear: string;
+  selectMonth: string;
+  isNowMonth: boolean;
+  onEventCallBack: Function;
+  onChangeYearAndMonth: Function;
+};
+
+export function FlamePc(props: Props) {
   const [modalIsOpen, setIsOpen] = useState(false);
 
   const openModal = (): void => {
@@ -56,153 +53,29 @@ export function FlamePc() {
     setIsOpen(false);
   };
 
-  const onChangeYearAndMonth = (year: string, month: string): void => {
-    const now = dayTextCommmon("YYYY-MM");
-    const nowYandM = dayjs(now);
-    const sltYandM = dayjs(`${year}-${month}`);
-    const setCount = sltYandM.diff(nowYandM, "month");
-
-    changeCount(setCount);
-    setNowYearAndMonth(setCount);
-    setCalendar(setCount);
-  };
-
-  const changeMonth = useCallback(
-    (val: number) => {
-      changeCount(val);
-    },
-    [changeCount]
-  );
-
   const onRegisterSchedule = (registerData: SchduleRegisterInput) => {
     alert("I Can Re:do id!");
     console.log(registerData);
   };
 
-  // 年と月を取得する
-  const setNowYearAndMonth = (val?: number) => {
-    const setYear: string = val
-      ? dayjs().add(val, "month").format("YYYY")
-      : dayTextCommmon("YYYY");
-    const setMonth: string = val
-      ? dayjs().add(val, "month").format("MM")
-      : dayTextCommmon("MM");
-
-    changeYear(setYear);
-    chnageMonth(setMonth);
+  const onClickBtn = (c: number) => {
+    return props.onEventCallBack(c);
   };
 
-  // カレンダーの日付を取得
-  const setCalendar = useCallback((val?: number) => {
-    const setYandM =
-      val === 0 || val === undefined
-        ? dayTextCommmon("YYYY-MM")
-        : dayjs().add(val, "month").format("YYYY-MM");
-
-    // カレンダーを取得する
-    // その月の全日付を取得
-    let nowCalendar: Calendar[] = [];
-
-    // まずは現在見ている月のカレンダーの日付を取得する
-    for (var i = 1; i <= amountOfDay(setYandM); i++) {
-      const day = i.toString().padStart(2, "0");
-      const yearAndMonth = dayTextCommmon("YYYY-MM", setYandM);
-      const date = dayTextCommmon("YYYY-MM-DD", `${yearAndMonth}-${day}`);
-      const keyOfdayOfWeek = dayjs(date).day();
-      const order =
-        nowCalendar.filter(
-          (el: Calendar) => el.keyOfdayOfWeek === keyOfdayOfWeek
-        ).length + 1;
-
-      const setData: Calendar = { date, keyOfdayOfWeek, order };
-      nowCalendar = [...nowCalendar, setData];
-    }
-
-    // 足りない前後の月の日付を取得する。
-    let prevMonthDate: Calendar[] = [];
-    let nextMonthDate: Calendar[] = [];
-
-    nowCalendar.forEach((date: Calendar) => {
-      const d = dayjs(date.date);
-      const day: number = d.date();
-
-      if (day === 1) {
-        // 月初の場合、前月の足りない日数を追加する
-        if (date.keyOfdayOfWeek) {
-          for (var i = date.keyOfdayOfWeek; i > 0; i--) {
-            const addPrevMonthDate = d.add(-i, "day");
-            prevMonthDate = [
-              ...prevMonthDate,
-              {
-                date: addPrevMonthDate.format("YYYY-MM-DD"),
-                keyOfdayOfWeek: addPrevMonthDate.day(),
-                order: 1,
-              },
-            ];
-          }
-        }
-      } else if (day === nowCalendar.length) {
-        // 月末の場合、次月の足りない日数を追加する
-        if (date.keyOfdayOfWeek !== 6) {
-          for (var n = 1; n <= 6 - date.keyOfdayOfWeek; n++) {
-            const addPrevMonthDate = d.add(n, "day");
-            nextMonthDate = [
-              ...nextMonthDate,
-              {
-                date: addPrevMonthDate.format("YYYY-MM-DD"),
-                keyOfdayOfWeek: addPrevMonthDate.day(),
-                order: 6,
-              },
-            ];
-          }
-        }
-      }
-    });
-
-    const displayCalendar = [
-      ...prevMonthDate,
-      ...nowCalendar,
-      ...nextMonthDate,
-    ];
-
-    let datePerWeek: WeeklyDay[] = [];
-    let oneWeek: Calendar[] = [];
-    let week = 1;
-
-    // 週ごとに分ける
-    displayCalendar.forEach((date: Calendar) => {
-      oneWeek = [...oneWeek, date];
-
-      if (date.keyOfdayOfWeek === 6) {
-        const addData: WeeklyDay[] = [{ week, days: oneWeek }];
-
-        datePerWeek = [...datePerWeek, ...addData];
-        oneWeek = [];
-        week++;
-      }
-    });
-
-    setDays(datePerWeek);
-  }, []);
-
-  useEffect(() => {
-    setNowYearAndMonth();
-    setCalendar();
-  }, []);
+  const onChangeYearAndMonth = (y: string, m: string) => {
+    return props.onChangeYearAndMonth(y, m);
+  };
 
   return (
     <main className="w-full relative">
-      <section
+      <div
         id="calender-head"
         className="p-3 flex justify-between items-content w-full bg-white z-10"
       >
         <button
           onClick={() => {
-            changeMonth(count - 1);
-            setNowYearAndMonth(count - 1);
-            setCalendar(count - 1);
+            onClickBtn(props.count - 1);
           }}
-          className=""
         >
           <img
             src="./arrowLeft.svg"
@@ -213,23 +86,27 @@ export function FlamePc() {
         <div className={styles.nowYearAndMonth}>
           <Select
             name="year"
-            value={selectYear}
+            value={props.selectYear}
             selectList={
-              YearAndMonthAndDateList(`${selectYear}-${selectMonth}`).yearList
+              YearAndMonthAndDateList(
+                `${props.selectYear}-${props.selectMonth}`
+              ).yearList
             }
             onEventCallBack={(year: string) => {
-              onChangeYearAndMonth(year, selectMonth);
+              onChangeYearAndMonth(year, props.selectMonth);
             }}
           />
           <span className="mx-1">年</span>
           <Select
             name="month"
-            value={selectMonth}
+            value={props.selectMonth}
             selectList={
-              YearAndMonthAndDateList(`${selectYear}-${selectMonth}`).monthList
+              YearAndMonthAndDateList(
+                `${props.selectYear}-${props.selectMonth}`
+              ).monthList
             }
             onEventCallBack={(month: string) => {
-              onChangeYearAndMonth(selectYear, month);
+              onChangeYearAndMonth(props.selectYear, month);
             }}
           />
           <span className="ml-1">月</span>
@@ -243,7 +120,7 @@ export function FlamePc() {
               openModal();
             }}
           />
-          {isNowMonth(`${selectYear}-${selectMonth}`) ? (
+          {props.isNowMonth ? (
             ""
           ) : (
             <Button
@@ -252,18 +129,14 @@ export function FlamePc() {
               underBarColor="rgb(244 63 94)"
               textColor="#fff"
               onEventCallBack={() => {
-                changeMonth(0);
-                setNowYearAndMonth();
-                setCalendar();
+                onClickBtn(0);
               }}
             />
           )}
         </div>
         <button
           onClick={() => {
-            changeMonth(count + 1);
-            setNowYearAndMonth(count + 1);
-            setCalendar(count + 1);
+            onClickBtn(props.count + 1);
           }}
         >
           <img
@@ -272,7 +145,7 @@ export function FlamePc() {
             className={styles.arrowButon}
           />
         </button>
-      </section>
+      </div>
       <table id="calender-main-area" className={styles.table}>
         <thead className="border-b-2 border-black">
           <tr>
@@ -307,10 +180,10 @@ export function FlamePc() {
           </tr>
         </thead>
         <tbody>
-          {days.map((el) => {
+          {props.days.map((el) => {
             return (
               <tr
-                key={`${`${selectYear}-${selectMonth}`}-${el.week}`}
+                key={`${`${props.selectYear}-${props.selectMonth}`}-${el.week}`}
                 className="border-b-2 border-black"
               >
                 {el.days.map((el) => {
@@ -320,8 +193,8 @@ export function FlamePc() {
                       date={el.date}
                       order={el.order}
                       keyOfdayOfWeek={el.keyOfdayOfWeek}
-                      selectMonth={selectMonth}
-                      selectYear={selectYear}
+                      selectMonth={props.selectMonth}
+                      selectYear={props.selectYear}
                     />
                   );
                 })}
@@ -339,8 +212,8 @@ export function FlamePc() {
       >
         <div className="">予定を登録</div>
         <CalendarRegister
-          year={selectYear}
-          month={selectMonth}
+          year={props.selectYear}
+          month={props.selectMonth}
           onEventCallBack={(registerData: SchduleRegisterInput) =>
             onRegisterSchedule(registerData)
           }

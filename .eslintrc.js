@@ -25,6 +25,7 @@ module.exports = {
     "no-undef": "error",
     "react-hooks/exhaustive-deps": "off",
     "jsx-a11y/anchor-is-valid": "off",
+    // "jsx-a11y/no-noninteractive-element-interactions": "off",
   },
   parser: "@typescript-eslint/parser",
   settings: {
