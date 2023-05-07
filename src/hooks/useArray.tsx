@@ -12,16 +12,16 @@ export const useArray = () => {
     }
   }, []);
 
-  const addArrayData = useCallback(() => {
-    if (!text) {
-      alert(
-        "テキストと入力してからボタン押さないと木星に代わってヤキ入れるよ？"
-      );
-    } else {
-      setArray((prevArray) => [...prevArray, text]);
-      setText("");
-    }
-  }, [text]);
+  // const addArrayData = useCallback(() => {
+  //   if (!text) {
+  //     alert(
+  //       "テキストと入力してからボタン押さないと木星に代わってヤキ入れるよ？"
+  //     );
+  //   } else {
+  //     setArray((prevArray) => [...prevArray, text]);
+  //     setText("");
+  //   }
+  // }, [text]);
 
   const reduceArrayData = useCallback(() => {
     setArray((prevArray) => {
@@ -40,7 +40,7 @@ export const useArray = () => {
     text,
     array,
     changeText,
-    addArrayData,
+    // addArrayData,
     reduceArrayData,
     resetArrayData,
   };
