@@ -1,16 +1,16 @@
 import { useCallback, useState } from "react";
 
 export const useArray = () => {
-  const [text, setText] = useState("");
+  // const [text, setText] = useState("");
   const [array, setArray] = useState([]);
-  const changeText = useCallback((e) => {
-    const { value } = e.target;
-    if (value.length >= 6) {
-      alert("5文字以内で入力しないと月に代わってお仕置きよ！");
-    } else {
-      setText(value.trim());
-    }
-  }, []);
+  // const changeText = useCallback((e) => {
+  //   const { value } = e.target;
+  //   if (value.length >= 6) {
+  //     alert("5文字以内で入力しないと月に代わってお仕置きよ！");
+  //   } else {
+  //     setText(value.trim());
+  //   }
+  // }, []);
 
   // const addArrayData = useCallback(() => {
   //   if (!text) {
@@ -37,9 +37,9 @@ export const useArray = () => {
   }, []);
 
   return {
-    text,
+    // text,
     array,
-    changeText,
+    // changeText,
     // addArrayData,
     reduceArrayData,
     resetArrayData,
