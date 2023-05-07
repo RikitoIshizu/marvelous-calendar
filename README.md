@@ -6,7 +6,7 @@
 ◯react-modal ver 3.15.1  
 ◯dayjs 　 ver 1.11.3  
 ◯tailwindcss ver 3.0.24  
-◯prettier ver 2.6.2
+◯prettier ver 2.6.2  
 ◯react-device-detect ver 2.2.3
 
 ## ページ
