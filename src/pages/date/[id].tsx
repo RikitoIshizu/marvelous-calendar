@@ -50,9 +50,7 @@ export default function Date() {
           ) : null}
         </div>
         <div className="mt-6">
-          <Link href="/">
-            <a>戻る</a>
-          </Link>
+          <Link href="/">戻る</Link>
         </div>
       </section>
     </>

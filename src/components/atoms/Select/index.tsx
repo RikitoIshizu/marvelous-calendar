@@ -7,7 +7,7 @@ type Props = {
   onEventCallBack: Function;
 };
 
-export function Select(props: Props) {
+const Select = (props: Props) => {
   return (
     <select
       name={props.name}
@@ -24,4 +24,6 @@ export function Select(props: Props) {
       })}
     </select>
   );
-}
+};
+
+export default Select;

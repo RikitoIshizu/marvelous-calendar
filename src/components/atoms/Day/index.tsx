@@ -174,38 +174,32 @@ export function Day(props: Props) {
     >
       <div className="items-center">
         <Link href={`/date/${dayjs(props.date).format("YYYYMMDD")}`}>
-          <a>
+          <div
+            className={dayClass(props.keyOfdayOfWeek, props.date, props.order)}
+          >
+            {dayText(props.date)}
+          </div>
+          {holidayAndSpecialDayText(
+            props.keyOfdayOfWeek,
+            props.date,
+            props.order
+          ) ? (
             <div
-              className={dayClass(
+              className={holidayAndSpecialDayTextClass(
                 props.keyOfdayOfWeek,
                 props.date,
                 props.order
               )}
             >
-              {dayText(props.date)}
+              {holidayAndSpecialDayText(
+                props.keyOfdayOfWeek,
+                props.date,
+                props.order
+              )}
             </div>
-            {holidayAndSpecialDayText(
-              props.keyOfdayOfWeek,
-              props.date,
-              props.order
-            ) ? (
-              <div
-                className={holidayAndSpecialDayTextClass(
-                  props.keyOfdayOfWeek,
-                  props.date,
-                  props.order
-                )}
-              >
-                {holidayAndSpecialDayText(
-                  props.keyOfdayOfWeek,
-                  props.date,
-                  props.order
-                )}
-              </div>
-            ) : (
-              ""
-            )}
-          </a>
+          ) : (
+            ""
+          )}
         </Link>
       </div>
     </td>
