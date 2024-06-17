@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 import { useEffect, useRef, useState, LegacyRef } from "react";
 
-import styles from "./index.module.css";
 import Button from "@/components/atoms/Button";
 import Select from "@/components/atoms/Select";
 import {
@@ -65,7 +64,7 @@ export function FlameSp(props: Props) {
   };
 
   const dayClass = (date: string) => {
-    let classes = styles.dayBlock;
+    let classes = "w-[calc(100%/7)] min-w-[calc(100%/7)] text-center p-3";
     const nowM = dayjs(`${props.selectYear}-${props.selectMonth}`).month();
     const d = dayjs(date).month();
 
@@ -142,7 +141,7 @@ export function FlameSp(props: Props) {
         >
           <img src="./arrowLeft.svg" alt="前の月" className="h-[30px]" />
         </button>
-        <div className={styles.nowYearAndMonth}>
+        <div className="w-[150px] flex items-center">
           <Select
             name="year"
             value={props.selectYear}
@@ -175,14 +174,10 @@ export function FlameSp(props: Props) {
             onClickBtn(props.count + 1);
           }}
         >
-          <img
-            src="./arrowRight.svg"
-            alt="次の月"
-            className={styles.arrowButon}
-          />
+          <img src="./arrowRight.svg" alt="次の月" className="h-[30px]" />
         </button>
       </div>
-      <div ref={btnArea} className={styles.btnArea}>
+      <div ref={btnArea} className="h-[30px] my-2 mr-2 flex justify-end">
         {!props.isNowMonth ? (
           <Button
             text="月をリセット"
@@ -197,12 +192,15 @@ export function FlameSp(props: Props) {
       </div>
       <table
         ref={calendarArea as LegacyRef<HTMLTableElement>}
-        className={styles.table}
+        className="table-fixed w-full"
       >
         <thead>
           <tr>
             {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((el) => (
-              <td key={el} className={styles.dayBlockHead}>
+              <td
+                key={el}
+                className="w-[calc(100%/7)] min-w-[calc(100%/7)] text-center p-2 font-bold text-xl"
+              >
                 {el}
               </td>
             ))}
@@ -224,7 +222,11 @@ export function FlameSp(props: Props) {
                           }
                           onChangeDetailTitle(el.date);
                         }}
-                        className={isToday(el.date) ? styles.today : ""}
+                        className={
+                          isToday(el.date)
+                            ? "w-[30px] h-[30px] rounded-full bg-[red] text-center text-white"
+                            : ""
+                        }
                       >
                         {dayjs(el.date).date()}
                       </button>
@@ -238,7 +240,7 @@ export function FlameSp(props: Props) {
       </table>
       {isShowDetail ? (
         <>
-          <h1 className={styles.detailTitle}>{displayText()}</h1>
+          <h1 className="mt-2 text-center text-xl">{displayText()}</h1>
           <div
             className="overflow-y-scroll p-2"
             style={{ height: calendarDetailHeight + "px" }}

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
-// import { useCallback, useEffect, useState } from "react";
 import { MetaData } from "../../components/atoms/MetaData";
 
 function titleText(date: string): string {
