@@ -32,9 +32,9 @@ type Props = {
 };
 
 export function FlameSp(props: Props) {
-  const [isShowDetail, openDetail] = useState(false);
-  const [displayDate, changeTitle] = useState("");
-  const [calendarDetailHeight, setCalendarHeight] = useState(0);
+  const [isShowDetail, openDetail] = useState<boolean>(false);
+  const [displayDate, changeTitle] = useState<string>("");
+  const [calendarDetailHeight, setCalendarHeight] = useState<number>(0);
 
   // useStateの関数群
   const onChangeDisplayDate = () => {
