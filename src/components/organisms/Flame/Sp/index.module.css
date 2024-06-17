@@ -2,19 +2,6 @@
   height: 30px;
 }
 
-/* .table {
-  height: calc(100vh - 64px);
-  top: 64px;
-  @apply w-full border-solid border-4 border-black table-fixed;
-}
-
-
-.selectBox {
-  width: 150px;
-  height: 100%;
-  @apply border-2 rounded-lg border-slate-900 text-2xl;
-} */
-
 .btnArea {
   height: 30px;
   @apply my-2 mr-2 flex justify-end;

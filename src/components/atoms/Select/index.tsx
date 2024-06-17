@@ -1,5 +1,3 @@
-import styles from "./index.module.css";
-
 type Props = {
   name: string;
   value: string;
@@ -12,7 +10,7 @@ const Select = (props: Props) => {
     <select
       name={props.name}
       value={props.value}
-      className={styles.selectBox}
+      className="w-[150px] h-full border-2 rounded-lg border-slate-900 text-2xl text-center"
       onChange={(e) => props.onEventCallBack(e.target.value)}
     >
       {props.selectList?.map((el) => {

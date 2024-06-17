@@ -1,4 +1,3 @@
-import styles from "./index.module.css";
 import { Button as Btn } from "@/lib/types";
 
 type ButtonStyles = {
@@ -32,7 +31,7 @@ const Button = (props: Btn) => {
   return (
     <button
       style={buttonStyles(props)}
-      className={styles.setCalendarBtn}
+      className="rounded-md hover:mt-1 !hover:border-b-0"
       onClick={() => clickEvent()}
     >
       {props.text}

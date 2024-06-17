@@ -1,4 +1,3 @@
-import styles from "./index.module.css";
 import Link from "next/link";
 import dayjs from "dayjs";
 
@@ -7,8 +6,8 @@ import {
   holidayAndSpecialDayException,
   specialDays,
   dayTextCommmon,
-} from "../../../lib/calendar";
-import { HolidayAndSpecialDayException } from "../../../lib/types";
+} from "@/lib/calendar";
+import { HolidayAndSpecialDayException } from "@/lib/types";
 
 type Props = {
   date: string;
@@ -20,9 +19,9 @@ type Props = {
 
 export function Day(props: Props) {
   const dayClass = (
-    keyOfdayOfWeek: number,
-    date: string,
-    order: number
+    keyOfdayOfWeek: Props["keyOfdayOfWeek"],
+    date: Props["date"],
+    order: Props["order"]
   ): string => {
     let commonClass: string = "align-text-top text-2xl ml-1";
     const nowMonth = dayjs(`${props.selectYear}-${props.selectMonth}`).month();
@@ -32,7 +31,8 @@ export function Day(props: Props) {
     const checkDay = dayTextCommmon("YYYYMMDD", date);
 
     if (checkDay === today) {
-      commonClass += ` ${styles.today}`;
+      commonClass +=
+        " w-[35px] h-[35px] rounded-full bg-[red] text-center leading-9 text-white";
     } else if (nowMonth !== checkMonth) {
       if (checkDay === today) {
         commonClass += "text-lime-400";
@@ -136,7 +136,8 @@ export function Day(props: Props) {
   ): string => {
     const checkDate = dayTextCommmon("MMDD", date);
 
-    if (specialDays[`${checkDate}`]) return `${styles.cellInner} text-cyan-500`;
+    if (specialDays[`${checkDate}`])
+      return "h-[calc(((100vh-64px-75px)/7)-32px)] overflow-y-scroll p-1 text-cyan-500";
 
     const isHolidayAndSpecialDayException =
       holidayAndSpecialDayException.filter(
@@ -160,7 +161,7 @@ export function Day(props: Props) {
       isHolidayAndSpecialDayException.length ||
       (holiday[`${yesterdayOnlyYearAndMonth}`] && dOfW === 0)
     ) {
-      return `${styles.cellInner} text-green-600`;
+      return "h-[calc(((100vh-64px-75px)/7)-32px)] overflow-y-scroll p-1 text-green-600";
     }
 
     return "";
@@ -168,7 +169,7 @@ export function Day(props: Props) {
 
   return (
     <td
-      className={`${styles.cell} ${
+      className={`h-[calc((100vh-64px-75px)/7)] align-text-top cursor-pointer ${
         props.keyOfdayOfWeek !== 6 ? "border-r-2 border-black" : ""
       }`}
     >

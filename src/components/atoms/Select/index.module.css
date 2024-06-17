@@ -1,5 +1,0 @@
-.selectBox {
-  width: 150px;
-  height: 100%;
-  @apply border-2 rounded-lg border-slate-900 text-2xl text-center;
-}

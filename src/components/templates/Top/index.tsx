@@ -2,10 +2,10 @@ import dayjs from "dayjs";
 import { isMobile } from "react-device-detect";
 import { useCallback, useEffect, useState } from "react";
 
-import { dayTextCommmon } from "../../../lib/calendar";
-import { amountOfDay } from "../../../lib/calendar";
-import { FlamePc } from "../../organisms/Flame/Pc";
-import { FlameSp } from "../../organisms/Flame/Sp";
+import { dayTextCommmon } from "@/lib/calendar";
+import { amountOfDay } from "@/lib/calendar";
+import { FlamePc } from "@/components/organisms/Flame/Pc";
+import { FlameSp } from "@/components/organisms/Flame/Sp";
 
 type Calendar = {
   keyOfdayOfWeek: number;

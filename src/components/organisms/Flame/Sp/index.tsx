@@ -2,14 +2,14 @@ import dayjs from "dayjs";
 import { useEffect, useRef, useState, LegacyRef } from "react";
 
 import styles from "./index.module.css";
-import { Button } from "../../../atoms/Button";
-import { Select } from "../../../atoms/Select";
+import Button from "@/components/atoms/Button";
+import Select from "@/components/atoms/Select";
 import {
   dayTextCommmon,
   YearAndMonthAndDateList,
   specialDayList,
   holiday as holidays,
-} from "../../../../lib/calendar";
+} from "@/lib/calendar";
 
 type Calendar = {
   keyOfdayOfWeek: number;
@@ -140,11 +140,7 @@ export function FlameSp(props: Props) {
             onClickBtn(props.count - 1);
           }}
         >
-          <img
-            src="./arrowLeft.svg"
-            alt="前の月"
-            className={styles.arrowButon}
-          />
+          <img src="./arrowLeft.svg" alt="前の月" className="h-[30px]" />
         </button>
         <div className={styles.nowYearAndMonth}>
           <Select

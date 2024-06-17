@@ -1,11 +1,11 @@
 import dayjs from "dayjs";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { useCallback, useEffect, useState } from "react";
-import { amountOfDay, dayTextCommmon } from "../../../lib/calendar";
-import { Select } from "../../atoms/Select";
-import { Radio } from "../../atoms/Radio";
-import { Button } from "../../atoms/Button";
-import { SchduleRegisterInput } from "../../../lib/types";
+import Select from "@/components/atoms/Select";
+import Radio from "@/components/atoms/Radio";
+import Button from "@/components/atoms/Button";
+import { amountOfDay, dayTextCommmon } from "@/lib/calendar";
+import { SchduleRegisterInput } from "@/lib/types";
 
 dayjs.extend(isLeapYear);
 

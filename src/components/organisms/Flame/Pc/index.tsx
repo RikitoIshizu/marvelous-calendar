@@ -1,12 +1,11 @@
 // import { useState } from "react";
 // import Modal from "react-modal";
 
-import styles from "./index.module.css";
-import Button from "../../../atoms/Button";
+import Button from "@/components/atoms/Button";
 // import { CalendarRegister } from "../../CalendarRegister";
-import { Day } from "../../../atoms/Day";
-import Select from "../../../atoms/Select";
-import { YearAndMonthAndDateList } from "../../../../lib/calendar";
+import { Day } from "@/components/atoms/Day";
+import Select from "@/components/atoms/Select";
+import { YearAndMonthAndDateList } from "@/lib/calendar";
 // import { SchduleRegisterInput } from "../../../../lib/types";
 
 type Calendar = {
@@ -77,13 +76,9 @@ export function FlamePc(props: Props) {
             onClickBtn(props.count - 1);
           }}
         >
-          <img
-            src="./arrowLeft.svg"
-            alt="前の月"
-            className={styles.arrowButon}
-          />
+          <img src="./arrowLeft.svg" alt="前の月" className="h-[40px]" />
         </button>
-        <div className={styles.nowYearAndMonth}>
+        <div className="w-[300px] flex items-center">
           <Select
             name="year"
             value={props.selectYear}
@@ -111,7 +106,7 @@ export function FlamePc(props: Props) {
           />
           <span className="ml-1">月</span>
         </div>
-        <div className={styles.btnArea}>
+        <div className="w-[450px] flex">
           {/* <Button
             text="予定を登録"
             buttonColor="#a7f3d0"
@@ -139,14 +134,13 @@ export function FlamePc(props: Props) {
             onClickBtn(props.count + 1);
           }}
         >
-          <img
-            src="./arrowRight.svg"
-            alt="次の月"
-            className={styles.arrowButon}
-          />
+          <img src="./arrowRight.svg" alt="次の月" className="h-[40px]" />
         </button>
       </div>
-      <table id="calender-main-area" className={styles.table}>
+      <table
+        id="calender-main-area"
+        className="h-[calc(100vh-64px)] top-[64px] w-full border-solid border-4 border-black table-fixed"
+      >
         <thead className="border-b-2 border-black">
           <tr>
             <td className="text-center p-2 font-bold text-xl border-r-2 border-black text-sky-600">
