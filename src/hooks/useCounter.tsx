@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
 
 export const useCounter = () => {
-  const [count, setCount] = useState(0);
-  const [isShow, changeShow] = useState(true);
+  const [count, setCount] = useState<number>(0);
+  const [isShow, changeShow] = useState<boolean>(true);
 
   const doubleCount = useMemo(() => {
     return count * 2;

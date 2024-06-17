@@ -20,7 +20,7 @@ type WeeklyDay = {
 
 export function Top() {
   // 共通の処理はこのコンポーネントでまとめる
-  const [isClient, setIsClient] = useState(false);
+  const [isClient, setIsClient] = useState<boolean>(false);
   const [count, changeCount] = useState<number>(0);
   const [days, setDays] = useState<WeeklyDay[]>([]);
   const [selectYear, changeYear] = useState<string>(dayTextCommmon("YYYY"));
