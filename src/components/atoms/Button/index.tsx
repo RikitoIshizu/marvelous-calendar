@@ -1,12 +1,12 @@
 import styles from "./index.module.css";
-import { Button as Btn } from "../../../lib/types";
+import { Button as Btn } from "@/lib/types";
 
 type ButtonStyles = {
-  width: string
-  backgroundColor: string
-  borderBottom: string
-  color?: string
-}
+  width: string;
+  backgroundColor: string;
+  borderBottom: string;
+  color?: string;
+};
 
 export function buttonStyles(props: Btn) {
   const params: ButtonStyles = {
@@ -18,13 +18,13 @@ export function buttonStyles(props: Btn) {
   };
 
   if (props.textColor) {
-    params.color = props.textColor
+    params.color = props.textColor;
   }
 
-  return params
+  return params;
 }
 
-export function Button(props: Btn) {
+const Button = (props: Btn) => {
   function clickEvent(): void {
     props.onEventCallBack();
   }
@@ -38,4 +38,6 @@ export function Button(props: Btn) {
       {props.text}
     </button>
   );
-}
+};
+
+export default Button;
