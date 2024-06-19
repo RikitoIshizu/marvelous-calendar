@@ -1,11 +1,15 @@
 # カレンダー仕様等
+React開発の学習のために作ったカレンダーアプリ。
+
+## URL
+https://famc.vercel.app/
 
 ## 仕様ライブラリ
 
 ◯TypeScript ver 4.7.2  
 ◯react-modal ver 3.15.1  
 ◯dayjs 　 ver 1.11.3  
-◯tailwindcss ver 3.0.24  
+◯tailwindcss ver 3.3.2
 ◯prettier ver 2.6.2  
 ◯react-device-detect ver 2.2.3
 
@@ -19,8 +23,6 @@
 ◯ 当月じゃない場合、カレンダーをリセットできる。(当月の場合はこのボタンを表示しない)  
 ◯ 数ヶ月以上とばしてカレンダーを見たい場合のために、select タグで年月を選択できる。年は前後 10 年、月は 12 ヶ月を選択することが可能。  
 ◯ 日付をクリックすると、その日の予定が見れる。
-
-#### こだわったところ
 
 ##### 祝日を表示
 
