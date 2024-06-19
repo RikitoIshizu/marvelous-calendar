@@ -115,9 +115,7 @@ export function FlamePc(props: Props) {
               openModal();
             }}
           /> */}
-          {props.isNowMonth ? (
-            ""
-          ) : (
+          {!props.isNowMonth && (
             <Button
               text="月をリセット"
               buttonColor="rgb(253 164 175)"

@@ -27,6 +27,7 @@
       "@/lib/*": ["lib/*"],
       "@/img/*": ["img/*"],
       "@/public/*": ["./public/*"],
+      "@/styles/*": ["styles/*"],
       "react": ["./node_modules/@types/react"]
     }
   },

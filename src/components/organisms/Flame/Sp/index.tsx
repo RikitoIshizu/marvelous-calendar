@@ -178,7 +178,7 @@ export function FlameSp(props: Props) {
         </button>
       </div>
       <div ref={btnArea} className="h-[30px] my-2 mr-2 flex justify-end">
-        {!props.isNowMonth ? (
+        {!props.isNowMonth && (
           <Button
             text="月をリセット"
             buttonColor="rgb(253 164 175)"
@@ -188,7 +188,7 @@ export function FlameSp(props: Props) {
               onClickBtn(0);
             }}
           />
-        ) : null}
+        )}
       </div>
       <table
         ref={calendarArea as LegacyRef<HTMLTableElement>}

@@ -76,7 +76,7 @@ export function Top() {
     let prevMonthDate: Calendar[] = [];
     let nextMonthDate: Calendar[] = [];
 
-    nowCalendar.forEach((date: Calendar) => {
+    nowCalendar.forEach((date) => {
       const d = dayjs(date.date);
       const day: number = d.date();
 
@@ -193,6 +193,7 @@ export function Top() {
     );
   };
 
+  // 読み込み時に作動させたい処理を追加する
   useEffect(() => {
     setIsClient(true);
     setNowYearAndMonth();
