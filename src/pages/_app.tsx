@@ -3,8 +3,9 @@ import "tailwindcss/tailwind.css";
 import Head from "next/head";
 import { AppProps } from "next/app";
 import Script from "next/script";
+import React from "react";
 
-function MyApp({ Component }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps): React.ReactElement {
   return (
     <>
       <Head>
@@ -21,7 +22,7 @@ function MyApp({ Component }: AppProps) {
           referrerPolicy="no-referrer"
         />
       </Head>
-      <Component />
+      <Component {...pageProps} />
     </>
   );
 }
