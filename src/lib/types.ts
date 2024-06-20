@@ -4,7 +4,8 @@ export type Button = {
   width?: string;
   underBarColor?: string;
   textColor?: string;
-  onEventCallBack: Function;
+  onEventCallBack?: Function;
+  type?: "submit" | "reset" | "button";
 };
 
 export type HolidayAndSpecialDayException = {
@@ -18,8 +19,9 @@ export type SchduleRegisterInput = {
   selectYear: string;
   selectMonth: string;
   selectDay: string;
-  type: string;
-  memo: string;
+  type: number;
+  description: string;
+  title: string;
 };
 
 export type ButtonStyleInput = {
@@ -34,4 +36,15 @@ export type ButtonStyle = {
   backgroundColor?: string;
   color?: string;
   borderBottom?: string;
+};
+
+export type Schedule = {
+  id: number;
+  created_at?: string;
+  year: number;
+  month: number;
+  day: number;
+  scheduleTypes: number;
+  title: string;
+  description: string;
 };

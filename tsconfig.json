@@ -28,6 +28,7 @@
       "@/img/*": ["img/*"],
       "@/public/*": ["./public/*"],
       "@/styles/*": ["styles/*"],
+      "@utils/*": ["utils/*"],
       "react": ["./node_modules/@types/react"]
     }
   },

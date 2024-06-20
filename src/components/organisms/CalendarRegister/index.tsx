@@ -1,11 +1,11 @@
 import dayjs from "dayjs";
 import isLeapYear from "dayjs/plugin/isLeapYear";
-import { useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import Select from "@/components/atoms/Select";
 import Radio from "@/components/atoms/Radio";
 import Button from "@/components/atoms/Button";
 import { amountOfDay, dayTextCommmon } from "@/lib/calendar";
-import { SchduleRegisterInput } from "@/lib/types";
+import { registerScheduleDetail } from "@/lib/supabase";
 
 dayjs.extend(isLeapYear);
 
@@ -26,20 +26,25 @@ type Prop = {
 
 export function CalendarRegister(props: Prop) {
   // 入力項目
-  const [selectYear, changeYear] = useState<string>(
+  const [year, changeYear] = useState<string>(
     props.year ? props.year : dayTextCommmon("YYYY")
   );
-  const [selectMonth, changeMonth] = useState<string>(
+  const [month, changeMonth] = useState<string>(
     props.month ? props.month : dayTextCommmon("MM")
   );
-  const [selectDay, changeDay] = useState<string>("");
-  const [memo, changeMemo] = useState<string>("");
-  const [type, changeType] = useState<string>("1");
+  const [day, changeDay] = useState<string>("");
+  const [title, changeTitle] = useState<string>("");
+  const [description, changeDescription] = useState<string>("");
+  const [type, changeType] = useState<number>(1);
 
   // カレンダーの年月日のリスト
   const [nowYearList, setYearList] = useState<string[]>([]);
   const [nowMonthList, setMonthList] = useState<string[]>([]);
   const [nowDayList, setDayList] = useState<string[]>([]);
+
+  // バリデーション
+  const [titleError, setTitleError] = useState<string>("");
+  const [descriptionError, setDescriptionError] = useState<string>("");
 
   // カレンダーを読み込んだ時に選択できる年月日を設定する
   const firstSetCalendar = useCallback(() => {
@@ -69,9 +74,7 @@ export function CalendarRegister(props: Prop) {
       const checkData = dayjs(`${nowYearAndMonth}-${day}`);
       const dateCheck = checkData.isAfter(dayjs());
 
-      if (dateCheck) {
-        dayList = [...dayList, day];
-      }
+      dateCheck && (dayList = [...dayList, day]);
     }
 
     // 日リストの最初の値を選択している日にセットする
@@ -80,10 +83,6 @@ export function CalendarRegister(props: Prop) {
     setYearList(yearList);
     setMonthList(monthList);
     setDayList(dayList);
-  }, []);
-
-  useEffect(() => {
-    firstSetCalendar();
   }, []);
 
   const onChangeYear = (
@@ -177,74 +176,92 @@ export function CalendarRegister(props: Prop) {
 
       const nowSelectedDay = Number(selectedDay).toString().padStart(2, "0");
 
-      if (!dayList.includes(nowSelectedDay)) {
-        changeDay(nowSelectedDay);
-      }
+      !dayList.includes(nowSelectedDay) && changeDay(nowSelectedDay);
     } else {
       for (var n = 1; n <= amountOfMonth; n++) {
         dayList = [...dayList, n.toString().padStart(2, "0")];
       }
 
-      if (Number(selectedDay) > amountOfMonth) {
+      Number(selectedDay) > amountOfMonth &&
         changeDay(amountOfMonth.toString());
-      }
     }
 
     setDayList(dayList);
   };
 
-  const onChangeDay = (selectedDay: string) => {
-    changeDay(selectedDay);
+  const registerSchedule = async (e: FormEvent<Element>) => {
+    e.preventDefault();
+
+    setTitleError(
+      !title ? "タイトルを入力しろ、ボケ、普通入力するだろ、アホかお前。" : ""
+    );
+    setDescriptionError(
+      !description
+        ? "スケジュールの詳細書かないバカはいないだろ、書け馬鹿野郎"
+        : ""
+    );
+
+    if (title && description) {
+      const response = await registerScheduleDetail({
+        year: Number(year),
+        month: Number(month),
+        day: Number(day),
+        title,
+        description,
+        scheduleTypes: type,
+      });
+
+      if (response) {
+        alert("スケジュール登録完了！");
+        setTitleError("");
+        setDescriptionError("");
+        return props.onEventCallBack();
+      }
+    }
   };
 
-  const onChangeMemo = (memo: string) => {
-    changeMemo(memo);
-  };
-
-  const onChangeType = (id: string) => {
-    changeType(id);
-  };
-
-  const onClickAction = (registerData: SchduleRegisterInput) => {
-    return props.onEventCallBack(registerData);
-  };
+  useEffect(() => {
+    return () => {
+      firstSetCalendar();
+    };
+  }, []);
 
   return (
-    <div>
+    <form onSubmit={(e: FormEvent<Element>) => registerSchedule(e)}>
       <div className="mt-3 flex items-center">
         <label htmlFor="date" className="mr-2">
           日付:
         </label>
         <Select
           name="year"
-          value={selectYear}
+          value={year}
           selectList={nowYearList}
           onEventCallBack={(year: string) => {
-            onChangeYear(year, selectMonth, selectDay);
+            onChangeYear(year, month, day);
           }}
         />
         <span className="mx-2">年</span>
         <Select
           name="month"
-          value={selectMonth}
+          value={month}
           selectList={nowMonthList}
           onEventCallBack={(month: string) => {
-            onChangeMonth(selectYear, month, selectDay);
+            onChangeMonth(year, month, day);
           }}
         />
         <span className="mx-2">月</span>
         <Select
           name="day"
-          value={selectDay}
+          value={day}
           selectList={nowDayList}
           onEventCallBack={(day: string) => {
-            onChangeDay(day);
+            changeDay(day);
           }}
         />
         <span className="ml-2">日</span>
       </div>
       <div className="mt-3 flex">
-        <label htmlFor="memo" className="mr-2">
+        <label htmlFor="description" className="mr-2">
           スケジュールの種類:
         </label>
         {scheduleTypes.map((el) => {
@@ -253,38 +270,58 @@ export function CalendarRegister(props: Prop) {
               <Radio
                 name={el.name}
                 id={el.id}
-                selectedId={type}
+                selectedId={`${type}`}
                 inputName="scheduleType"
-                onEventCallBack={(e: string) => onChangeType(e)}
+                onEventCallBack={(e: number) => changeType(e)}
               />
             </span>
           );
         })}
       </div>
-      <div className="mt-3 flex">
-        <label htmlFor="memo" className="mr-2">
-          メモ:
-        </label>
-        <textarea
-          name="memo"
-          value={memo}
-          className="resize-none border-2 rounded-lg border-slate-900 w-2/3"
-          placeholder="何かメモがあれば入力してください。"
-          onChange={(e) => {
-            onChangeMemo(e.target.value);
-          }}
-        />
+      <div className="mt-3">
+        <div className="flex">
+          <label htmlFor="title" className="mr-2">
+            タイトル:
+          </label>
+          <input
+            name="title"
+            value={title}
+            className="resize-none border-2 rounded-lg border-slate-900 w-[300px]"
+            placeholder="スケジュールのタイトルを入力"
+            onChange={(e) => {
+              changeTitle(e.target.value);
+            }}
+          />
+        </div>
+        {titleError && <p className="text-xs text-[red]">{titleError}</p>}
+      </div>
+      <div className="mt-3">
+        <div className="flex">
+          <label htmlFor="description" className="mr-2">
+            メモ:
+          </label>
+          <textarea
+            name="description"
+            value={description}
+            className="resize-none border-2 rounded-lg border-slate-900 w-2/3"
+            placeholder="何かメモがあれば入力してください。"
+            onChange={(e) => {
+              changeDescription(e.target.value);
+            }}
+          />
+        </div>
+        {descriptionError && (
+          <p className="text-xs text-[red]">{descriptionError}</p>
+        )}
       </div>
       <div className="text-center mt-5">
         <Button
+          type="submit"
           text="登録"
           buttonColor="#a7f3d0"
           underBarColor="#059669"
-          onEventCallBack={() => {
-            onClickAction({ selectYear, selectMonth, selectDay, type, memo });
-          }}
         />
       </div>
-    </div>
+    </form>
   );
 }

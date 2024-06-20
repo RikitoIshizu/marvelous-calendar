@@ -7,6 +7,7 @@ type ButtonStyles = {
   color?: string;
 };
 
+// TODO: tailwindで書く
 export function buttonStyles(props: Btn) {
   const params: ButtonStyles = {
     width: props.width ? `${props.width}px` : "150px",
@@ -24,15 +25,12 @@ export function buttonStyles(props: Btn) {
 }
 
 const Button = (props: Btn) => {
-  function clickEvent(): void {
-    props.onEventCallBack();
-  }
-
   return (
     <button
+      type={props.type ? "submit" : "button"}
       style={buttonStyles(props)}
       className="rounded-md hover:mt-1 !hover:border-b-0"
-      onClick={() => clickEvent()}
+      onClick={() => props.onEventCallBack && props.onEventCallBack()}
     >
       {props.text}
     </button>

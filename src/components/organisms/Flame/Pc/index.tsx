@@ -1,12 +1,11 @@
-// import { useState } from "react";
-// import Modal from "react-modal";
+import { useState } from "react";
+import Modal from "react-modal";
 
 import Button from "@/components/atoms/Button";
-// import { CalendarRegister } from "../../CalendarRegister";
+import { CalendarRegister } from "@/components/organisms/CalendarRegister";
 import { Day } from "@/components/atoms/Day";
 import Select from "@/components/atoms/Select";
 import { YearAndMonthAndDateList } from "@/lib/calendar";
-// import { SchduleRegisterInput } from "../../../../lib/types";
 
 type Calendar = {
   keyOfdayOfWeek: number;
@@ -19,17 +18,17 @@ type WeeklyDay = {
   week: number;
 };
 
-// const customStyles = {
-//   content: {
-//     top: "50%",
-//     left: "50%",
-//     right: "auto",
-//     bottom: "auto",
-//     marginRight: "-50%",
-//     transform: "translate(-50%, -50%)",
-//     width: "62.5rem",
-//   },
-// };
+const customStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    width: "62.5rem",
+  },
+};
 
 type Props = {
   count: number;
@@ -42,20 +41,7 @@ type Props = {
 };
 
 export function FlamePc(props: Props) {
-  // const [modalIsOpen, setIsOpen] = useState(false);
-
-  // const openModal = (): void => {
-  //   setIsOpen(true);
-  // };
-
-  // const closeModal = (): void => {
-  //   setIsOpen(false);
-  // };
-
-  // const onRegisterSchedule = (registerData: SchduleRegisterInput) => {
-  //   alert("I Can Re:do id!");
-  //   console.log(registerData);
-  // };
+  const [modalIsOpen, setIsOpen] = useState(false);
 
   const onClickBtn = (c: number) => {
     return props.onEventCallBack(c);
@@ -107,14 +93,14 @@ export function FlamePc(props: Props) {
           <span className="ml-1">月</span>
         </div>
         <div className="w-[450px] flex">
-          {/* <Button
+          <Button
             text="予定を登録"
             buttonColor="#a7f3d0"
             underBarColor="#059669"
             onEventCallBack={() => {
-              openModal();
+              setIsOpen(true);
             }}
-          /> */}
+          />
           {!props.isNowMonth && (
             <Button
               text="月をリセット"
@@ -195,10 +181,10 @@ export function FlamePc(props: Props) {
           })}
         </tbody>
       </table>
-      {/* <Modal
+      <Modal
         isOpen={modalIsOpen}
         ariaHideApp={false}
-        onRequestClose={closeModal}
+        onRequestClose={() => setIsOpen(false)}
         style={customStyles}
         contentLabel="Example Modal"
       >
@@ -206,11 +192,9 @@ export function FlamePc(props: Props) {
         <CalendarRegister
           year={props.selectYear}
           month={props.selectMonth}
-          onEventCallBack={(registerData: SchduleRegisterInput) =>
-            onRegisterSchedule(registerData)
-          }
+          onEventCallBack={() => setIsOpen(false)}
         />
-      </Modal> */}
+      </Modal>
     </main>
   );
 }

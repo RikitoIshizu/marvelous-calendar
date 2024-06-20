@@ -25,6 +25,12 @@ export function Top() {
   const [days, setDays] = useState<WeeklyDay[]>([]);
   const [selectYear, changeYear] = useState<string>(dayTextCommmon("YYYY"));
   const [selectMonth, chnageMonth] = useState<string>(dayTextCommmon("MM"));
+  // const [schdule, setSchedule] = useState<Schedule[]>([]);
+
+  // const getSchedules = async (): Promise<void> => {
+  //   const schedules = await getSchedule();
+  //   setSchedule(schedules);
+  // };
 
   // countを変える
   const onChangeCount = (c: number) => {
@@ -157,6 +163,15 @@ export function Top() {
     return yearAndMonth === dayjs().format("YYYY-MM");
   };
 
+  useEffect(() => {
+    return () => {
+      setIsClient(true);
+      // getSchedules();
+      setNowYearAndMonth();
+      setCalendar();
+    };
+  }, []);
+
   const calandarComponent = () => {
     if (!isClient) {
       return <>読み込み中...</>;
@@ -192,13 +207,6 @@ export function Top() {
       />
     );
   };
-
-  // 読み込み時に作動させたい処理を追加する
-  useEffect(() => {
-    setIsClient(true);
-    setNowYearAndMonth();
-    setCalendar();
-  }, []);
 
   return <>{calandarComponent()}</>;
 }
