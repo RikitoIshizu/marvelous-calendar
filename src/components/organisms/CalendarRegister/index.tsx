@@ -211,7 +211,7 @@ export function CalendarRegister(props: Prop) {
         scheduleTypes: type,
       });
 
-      if (response) {
+      if (!response) {
         alert("スケジュール登録完了！");
         setTitleError("");
         setDescriptionError("");
