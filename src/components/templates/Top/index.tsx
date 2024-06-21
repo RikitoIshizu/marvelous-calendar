@@ -20,17 +20,10 @@ type WeeklyDay = {
 
 export function Top() {
   // 共通の処理はこのコンポーネントでまとめる
-  const [isClient, setIsClient] = useState<boolean>(false);
   const [count, changeCount] = useState<number>(0);
   const [days, setDays] = useState<WeeklyDay[]>([]);
   const [selectYear, changeYear] = useState<string>(dayTextCommmon("YYYY"));
   const [selectMonth, chnageMonth] = useState<string>(dayTextCommmon("MM"));
-  // const [schdule, setSchedule] = useState<Schedule[]>([]);
-
-  // const getSchedules = async (): Promise<void> => {
-  //   const schedules = await getSchedule();
-  //   setSchedule(schedules);
-  // };
 
   // countを変える
   const onChangeCount = (c: number) => {
@@ -165,48 +158,38 @@ export function Top() {
 
   useEffect(() => {
     return () => {
-      setIsClient(true);
-      // getSchedules();
       setNowYearAndMonth();
       setCalendar();
     };
   }, []);
 
-  const calandarComponent = () => {
-    if (!isClient) {
-      return <>読み込み中...</>;
-    }
-
-    return isMobile ? (
-      <FlameSp
-        count={count}
-        days={days}
-        selectYear={selectYear}
-        selectMonth={selectMonth}
-        isNowMonth={isNowMonth()}
-        onEventCallBack={(c: number) => {
-          onChangeCount(c);
-        }}
-        onChangeYearAndMonth={(y: string, m: string) => {
-          onChangeYearAndMonth(y, m);
-        }}
-      />
-    ) : (
-      <FlamePc
-        count={count}
-        days={days}
-        selectYear={selectYear}
-        selectMonth={selectMonth}
-        isNowMonth={isNowMonth()}
-        onEventCallBack={(c: number) => {
-          onChangeCount(c);
-        }}
-        onChangeYearAndMonth={(y: string, m: string) => {
-          onChangeYearAndMonth(y, m);
-        }}
-      />
-    );
-  };
-
-  return <>{calandarComponent()}</>;
+  return isMobile ? (
+    <FlameSp
+      count={count}
+      days={days}
+      selectYear={selectYear}
+      selectMonth={selectMonth}
+      isNowMonth={isNowMonth()}
+      onEventCallBack={(c: number) => {
+        onChangeCount(c);
+      }}
+      onChangeYearAndMonth={(y: string, m: string) => {
+        onChangeYearAndMonth(y, m);
+      }}
+    />
+  ) : (
+    <FlamePc
+      count={count}
+      days={days}
+      selectYear={selectYear}
+      selectMonth={selectMonth}
+      isNowMonth={isNowMonth()}
+      onEventCallBack={(c: number) => {
+        onChangeCount(c);
+      }}
+      onChangeYearAndMonth={(y: string, m: string) => {
+        onChangeYearAndMonth(y, m);
+      }}
+    />
+  );
 }
