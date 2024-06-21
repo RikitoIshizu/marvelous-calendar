@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { isMobile } from "react-device-detect";
-import { useCallback, useEffect, useState } from "react";
+import { useRef, useCallback, useEffect, useState } from "react";
 
 import { dayTextCommmon } from "@/lib/calendar";
 import { amountOfDay } from "@/lib/calendar";
@@ -20,6 +20,7 @@ type WeeklyDay = {
 
 export function Top() {
   // 共通の処理はこのコンポーネントでまとめる
+  const isDisplay = useRef(false);
   const [count, changeCount] = useState<number>(0);
   const [days, setDays] = useState<WeeklyDay[]>([]);
   const [selectYear, changeYear] = useState<string>(dayTextCommmon("YYYY"));
@@ -157,10 +158,11 @@ export function Top() {
   };
 
   useEffect(() => {
-    return () => {
+    if (!isDisplay.current) {
+      isDisplay.current = true;
       setNowYearAndMonth();
       setCalendar();
-    };
+    }
   }, []);
 
   return isMobile ? (
