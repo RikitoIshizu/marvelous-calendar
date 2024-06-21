@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import isLeapYear from "dayjs/plugin/isLeapYear";
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState, useRef } from "react";
 import Select from "@/components/atoms/Select";
 import Radio from "@/components/atoms/Radio";
 import Button from "@/components/atoms/Button";
@@ -25,6 +25,7 @@ type Prop = {
 };
 
 export function CalendarRegister(props: Prop) {
+  const isDisplay = useRef<boolean>(false);
   // 入力項目
   const [year, changeYear] = useState<string>(
     props.year ? props.year : dayTextCommmon("YYYY")
@@ -221,9 +222,10 @@ export function CalendarRegister(props: Prop) {
   };
 
   useEffect(() => {
-    return () => {
+    if (!isDisplay.current) {
+      isDisplay.current = true;
       firstSetCalendar();
-    };
+    }
   }, []);
 
   return (
