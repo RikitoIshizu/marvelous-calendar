@@ -1,11 +1,14 @@
-import { useState } from "react";
+import dayjs from "dayjs";
+import { useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
 
-import Button from "@/components/atoms/Button";
+import { Button } from "@/components/atoms/Button";
 import { CalendarRegister } from "@/components/organisms/CalendarRegister";
 import { Day } from "@/components/atoms/Day";
 import Select from "@/components/atoms/Select";
 import { YearAndMonthAndDateList } from "@/lib/calendar";
+import { getSchedule } from "@/lib/supabase";
+import type { Schedule } from "@/lib/types";
 
 type Calendar = {
   keyOfdayOfWeek: number;
@@ -41,7 +44,9 @@ type Props = {
 };
 
 export function FlamePc(props: Props) {
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const isAct = useRef<boolean>(false);
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
+  const [schedules, setSchedules] = useState<Schedule[] | undefined>(undefined);
 
   const onClickBtn = (c: number) => {
     return props.onEventCallBack(c);
@@ -50,6 +55,40 @@ export function FlamePc(props: Props) {
   const onChangeYearAndMonth = (y: string, m: string) => {
     return props.onChangeYearAndMonth(y, m);
   };
+
+  const onGetSchedules = async (): Promise<void> => {
+    const schedule = await getSchedule(
+      Number(props.selectYear),
+      Number(props.selectMonth)
+    );
+    setSchedules(schedule);
+  };
+
+  const getScheduleOnTheDate = (
+    day: string
+  ): Pick<Schedule, "id" | "title" | "scheduleTypes">[] | undefined => {
+    const checkDay = dayjs(day).get("D");
+
+    return schedules
+      ?.filter((el) => Number(el.day) === checkDay)
+      .map((el) => {
+        const { id, title, scheduleTypes } = el;
+        return { id, title, scheduleTypes };
+      });
+  };
+
+  useEffect(() => {
+    if (!isAct.current) {
+      isAct.current = true;
+      onGetSchedules();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (schedules) {
+      onGetSchedules();
+    }
+  }, [props.count]);
 
   return (
     <main className="w-full relative">
@@ -164,15 +203,16 @@ export function FlamePc(props: Props) {
                 key={`${`${props.selectYear}-${props.selectMonth}`}-${el.week}`}
                 className="border-b-2 border-black"
               >
-                {el.days.map((el) => {
+                {el.days.map((elem) => {
                   return (
                     <Day
-                      key={el.date}
-                      date={el.date}
-                      order={el.order}
-                      keyOfdayOfWeek={el.keyOfdayOfWeek}
+                      key={elem.date}
+                      date={elem.date}
+                      order={elem.order}
+                      keyOfdayOfWeek={elem.keyOfdayOfWeek}
                       selectMonth={props.selectMonth}
                       selectYear={props.selectYear}
+                      schedules={getScheduleOnTheDate(elem.date)}
                     />
                   );
                 })}

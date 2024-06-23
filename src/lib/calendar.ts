@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { HolidayAndSpecialDayException } from "./types";
+import type { Schedule } from "./types";
 
 export const holiday: Record<string, string> = {
   "0101": "元日",
@@ -197,3 +198,20 @@ export const monthList = [
   "11",
   "12",
 ];
+
+export const scheduleTextColor = (id: Schedule["id"]): string => {
+  switch (id) {
+    case 1:
+      return "text-red-500";
+    case 2:
+      return "text-sky-500";
+    case 3:
+      return "text-emerald-500";
+    case 4:
+      return "text-lime-800";
+    case 5:
+      return "text-yellow-600";
+    default:
+      return "text-gray-500";
+  }
+};

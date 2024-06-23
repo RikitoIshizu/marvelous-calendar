@@ -1,3 +1,5 @@
+import React from "react";
+
 type RadioType = {
   name: string;
   id: string;
@@ -6,7 +8,7 @@ type RadioType = {
   selectedId: string;
 };
 
-const Radio = (props: RadioType) => {
+const Radio = (props: RadioType): React.ReactElement => {
   function clickEvent(id: RadioType["id"]): void {
     props.onEventCallBack(id);
   }

@@ -8,10 +8,17 @@ const supabase = createClient(supabaseUrl!, supabaseAnonKey!);
 
 const GET_COLUMN = "id, year, month, day, scheduleTypes, title, description";
 
-export async function getSchedule(): Promise<Schedule[]> {
-  const { data, error, status } = await supabase
-    .from("schedule")
-    .select(GET_COLUMN);
+export async function getSchedule(
+  year?: Schedule["year"],
+  month?: Schedule["month"]
+): Promise<Schedule[]> {
+  const { data, error, status } =
+    year && month
+      ? await supabase
+          .from("schedule")
+          .select(GET_COLUMN)
+          .match({ year, month })
+      : await supabase.from("schedule").select(GET_COLUMN);
 
   if (error && status !== 406) {
     throw error;
@@ -55,7 +62,7 @@ export async function registerScheduleDetail(
   return null;
 }
 
-export async function updateScheduleDetail(id: Schedule["id"]): Promise<null> {
+export async function deleteSchedule(id: Schedule["id"]): Promise<null> {
   const { error, status } = await supabase
     .from("schedule")
     .delete()
@@ -64,5 +71,21 @@ export async function updateScheduleDetail(id: Schedule["id"]): Promise<null> {
   if (error && status !== 406) {
     throw error;
   }
+  return null;
+}
+
+export async function updateSchedule(
+  params: Pick<Schedule, "id" | "title" | "description" | "scheduleTypes">
+): Promise<null> {
+  const { id, title, description, scheduleTypes } = params;
+  const { error } = await supabase
+    .from("schedule")
+    .update({ title, description, scheduleTypes })
+    .eq("id", id);
+
+  if (error) {
+    throw error;
+  }
+
   return null;
 }

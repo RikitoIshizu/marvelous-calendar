@@ -1,12 +1,34 @@
-import Link from "next/link";
 import dayjs from "dayjs";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import { FormEvent, useEffect, useState } from "react";
+import Modal from "react-modal";
 
+import { Button } from "@/components/atoms/Button";
 import { MetaData } from "@/components/atoms/MetaData";
-import { getScheduleDetail, updateScheduleDetail } from "@/lib/supabase";
+import { InputTitle } from "@/components/molecules/InputTitle";
+import { InputDescription } from "@/components/molecules/InputDescription";
+import { ScheduleTypes } from "@/components/molecules/ScheduleTypes";
+
+import { specialDays, scheduleTextColor } from "@/lib/calendar";
+import {
+  getScheduleDetail,
+  deleteSchedule,
+  updateSchedule,
+} from "@/lib/supabase";
 import type { Schedule } from "@/lib/types";
-import { useEffect, useState } from "react";
-import { specialDays } from "@/lib/calendar";
+
+const customStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    width: "62.5rem",
+  },
+};
 
 function titleText(date: string): string {
   const today = dayjs();
@@ -27,8 +49,22 @@ function titleText(date: string): string {
 }
 
 export default function Date() {
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
   const [isLoad, setIsLoad] = useState<boolean>(false);
   const [schedules, setSchedules] = useState<Schedule[] | null>(null);
+
+  // 編集用パラメータ
+  const [editId, setEditId] = useState<Schedule["id"] | null>(null);
+  const [editTitle, setEditTitle] = useState<Schedule["title"]>("");
+  const [editDescription, setEditDescription] =
+    useState<Schedule["description"]>("");
+  const [editScheduleType, setEditScheduleType] = useState<
+    Schedule["scheduleTypes"] | null
+  >(null);
+
+  // バリデーション
+  const [titleError, setTitleError] = useState<string>("");
+  const [descriptionError, setDescriptionError] = useState<string>("");
 
   const router = useRouter();
   const dateParam: string | string[] | undefined = useRouter().query.id;
@@ -56,13 +92,53 @@ export default function Date() {
     return specialDays[md] ? specialDays[md] : "";
   };
 
-  // const updateSchedule = (id: Schedule["id"]): Promise<void> => {
-  //   console.log(id);
-  // };
+  const updSchedule = async (e: FormEvent<Element>): Promise<void> => {
+    e.preventDefault();
 
-  const deleteSchedule = async (id: Schedule["id"]) => {
+    setTitleError(
+      !editTitle
+        ? "タイトルを入力しろ、ボケ、普通入力するだろ、アホかお前。"
+        : ""
+    );
+    setDescriptionError(
+      !editDescription
+        ? "スケジュールの詳細書かないバカはいないだろ、書け馬鹿野郎"
+        : ""
+    );
+
+    if (editTitle && editDescription) {
+      const response = await updateSchedule({
+        id: Number(editId),
+        title: editTitle,
+        description: editDescription,
+        scheduleTypes: Number(editScheduleType),
+      });
+
+      if (!response) {
+        alert("スケジュール変更完了！");
+        setTitleError("");
+        setDescriptionError("");
+        setIsOpen(false);
+        onSetSchedules();
+      }
+    }
+  };
+
+  const openModal = (id: Schedule["id"]): void => {
+    const editSchedule = schedules?.filter((el) => el.id === id);
+
+    if (!editSchedule?.length) return;
+
+    setEditId(editSchedule[0].id);
+    setEditTitle(editSchedule[0].title);
+    setEditDescription(editSchedule[0].description);
+    setEditScheduleType(editSchedule[0].scheduleTypes);
+    setIsOpen(true);
+  };
+
+  const delSchedule = async (id: Schedule["id"]) => {
     setIsLoad(true);
-    const response = await updateScheduleDetail(id);
+    const response = await deleteSchedule(id);
 
     if (!response) {
       onSetSchedules();
@@ -98,13 +174,18 @@ export default function Date() {
                   {schedules.map((el) => {
                     return (
                       <li className="mt-1 flex items-center" key={el.id}>
-                        <p>{el.description}</p>
-                        <button className="ml-2 w-[80px] bg-[blue] text-[#fff] rounded-full">
+                        <p className={scheduleTextColor(el.scheduleTypes)}>
+                          {el.description}
+                        </p>
+                        <button
+                          className="ml-2 w-[80px] bg-[blue] text-[#fff] rounded-full"
+                          onClick={() => openModal(el.id)}
+                        >
                           編集
                         </button>
                         <button
                           className="ml-2 w-[80px] bg-[red] text-[#fff] rounded-full"
-                          onClick={() => deleteSchedule(el.id)}
+                          onClick={() => delSchedule(el.id)}
                         >
                           削除
                         </button>
@@ -122,9 +203,40 @@ export default function Date() {
           </div>
         </div>
       </section>
-      {isLoad && (
-        <div className="absolute bg-white w-full h-full">読み込み中</div>
-      )}
+      <Modal
+        isOpen={modalIsOpen}
+        ariaHideApp={false}
+        onRequestClose={() => setIsOpen(false)}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >
+        <form onSubmit={(e: FormEvent<Element>) => updSchedule(e)}>
+          <div className="">予定を編集</div>
+          <ScheduleTypes
+            type={editScheduleType}
+            onEventCallBack={(e: string) => setEditScheduleType(Number(e))}
+          />
+          <InputTitle
+            title={editTitle}
+            titleError={titleError}
+            onChangeTitle={(text: string) => setEditTitle(text)}
+          />
+          <InputDescription
+            description={editDescription}
+            descriptionError={descriptionError}
+            onchangeDescription={(text: string) => setEditDescription(text)}
+          />
+          <div className="text-center mt-5">
+            <Button
+              type="submit"
+              text="登録"
+              buttonColor="#a7f3d0"
+              underBarColor="#059669"
+            />
+          </div>
+        </form>
+      </Modal>
+      {isLoad && <div className="fixed bg-white w-full h-full">読み込み中</div>}
     </main>
   );
 }

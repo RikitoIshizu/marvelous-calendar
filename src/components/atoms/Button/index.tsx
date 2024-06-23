@@ -1,4 +1,5 @@
 import { Button as Btn } from "@/lib/types";
+import React from "react";
 
 type ButtonStyles = {
   width: string;
@@ -8,7 +9,7 @@ type ButtonStyles = {
 };
 
 // TODO: tailwindで書く
-export function buttonStyles(props: Btn) {
+export function buttonStyles(props: Btn): ButtonStyles {
   const params: ButtonStyles = {
     width: props.width ? `${props.width}px` : "150px",
     backgroundColor: props.buttonColor ? props.buttonColor : "rgb(3 105 161);",
@@ -24,7 +25,7 @@ export function buttonStyles(props: Btn) {
   return params;
 }
 
-const Button = (props: Btn) => {
+export function Button(props: Btn): React.ReactElement {
   return (
     <button
       type={props.type ? "submit" : "button"}
@@ -35,6 +36,4 @@ const Button = (props: Btn) => {
       {props.text}
     </button>
   );
-};
-
-export default Button;
+}

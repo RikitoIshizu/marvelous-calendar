@@ -1,7 +1,10 @@
 import React from "react";
 import Head from "next/head";
 
-export function MetaData(props: { title: string; description?: string }) {
+export function MetaData(props: {
+  title: string;
+  description?: string;
+}): React.ReactElement {
   return (
     <Head>
       {props.description ? (

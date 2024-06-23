@@ -1,22 +1,21 @@
 import dayjs from "dayjs";
 import isLeapYear from "dayjs/plugin/isLeapYear";
-import { FormEvent, useCallback, useEffect, useState, useRef } from "react";
+import React, {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import Select from "@/components/atoms/Select";
-import Radio from "@/components/atoms/Radio";
-import Button from "@/components/atoms/Button";
+import { Button } from "@/components/atoms/Button";
+import { InputTitle } from "@/components/molecules/InputTitle";
+import { InputDescription } from "@/components/molecules/InputDescription";
+import { ScheduleTypes } from "@/components/molecules/ScheduleTypes";
 import { amountOfDay, dayTextCommmon } from "@/lib/calendar";
 import { registerScheduleDetail } from "@/lib/supabase";
 
 dayjs.extend(isLeapYear);
-
-const scheduleTypes = [
-  { id: "1", name: "仕事" },
-  { id: "2", name: "休日" },
-  { id: "3", name: "プライベート" },
-  { id: "4", name: "会議" },
-  { id: "5", name: "法事" },
-  { id: "6", name: "その他" },
-];
 
 type Prop = {
   year: string;
@@ -24,7 +23,7 @@ type Prop = {
   onEventCallBack: Function;
 };
 
-export function CalendarRegister(props: Prop) {
+export function CalendarRegister(props: Prop): React.ReactElement {
   const isDisplay = useRef<boolean>(false);
   // 入力項目
   const [year, changeYear] = useState<string>(
@@ -48,7 +47,7 @@ export function CalendarRegister(props: Prop) {
   const [descriptionError, setDescriptionError] = useState<string>("");
 
   // カレンダーを読み込んだ時に選択できる年月日を設定する
-  const firstSetCalendar = useCallback(() => {
+  const firstSetCalendar = useCallback((): void => {
     const nowYearAndMonth = `${props.year}-${props.month}`;
 
     let yearList: string[] = [props.year];
@@ -63,9 +62,7 @@ export function CalendarRegister(props: Prop) {
 
     // 月(今年の今月以降の月を選択できるようにする)
     for (var n = 1; n <= 12; n++) {
-      if (n >= Number(props.month)) {
-        monthList = [...monthList, n.toString()];
-      }
+      n >= Number(props.month) && (monthList = [...monthList, n.toString()]);
     }
 
     // 日(当日より後の日だけ選択できるようにする)
@@ -90,7 +87,7 @@ export function CalendarRegister(props: Prop) {
     selectedYear: string,
     selectedMonth: string,
     selectedDay: string
-  ) => {
+  ): void => {
     // まずは年を選択した年にセットする
     changeYear(selectedYear);
 
@@ -149,7 +146,7 @@ export function CalendarRegister(props: Prop) {
     selectedYear: string,
     selectedMonth: string,
     selectedDay: string
-  ) => {
+  ): void => {
     // まずは月を選択した月にセットする
     changeMonth(selectedMonth);
 
@@ -170,9 +167,7 @@ export function CalendarRegister(props: Prop) {
         const date = `${selectedYearAndMonth}-${day}`;
         const checkDay = dayjs(date);
 
-        if (checkDay.isAfter(today)) {
-          dayList = [...dayList, day];
-        }
+        checkDay.isAfter(today) && (dayList = [...dayList, day]);
       }
 
       const nowSelectedDay = Number(selectedDay).toString().padStart(2, "0");
@@ -190,7 +185,7 @@ export function CalendarRegister(props: Prop) {
     setDayList(dayList);
   };
 
-  const registerSchedule = async (e: FormEvent<Element>) => {
+  const registerSchedule = async (e: FormEvent<Element>): Promise<void> => {
     e.preventDefault();
 
     setTitleError(
@@ -262,60 +257,20 @@ export function CalendarRegister(props: Prop) {
         />
         <span className="ml-2">日</span>
       </div>
-      <div className="mt-3 flex">
-        <label htmlFor="description" className="mr-2">
-          スケジュールの種類:
-        </label>
-        {scheduleTypes.map((el) => {
-          return (
-            <span key={el.id} className="ml-3">
-              <Radio
-                name={el.name}
-                id={el.id}
-                selectedId={`${type}`}
-                inputName="scheduleType"
-                onEventCallBack={(e: number) => changeType(e)}
-              />
-            </span>
-          );
-        })}
-      </div>
-      <div className="mt-3">
-        <div className="flex">
-          <label htmlFor="title" className="mr-2">
-            タイトル:
-          </label>
-          <input
-            name="title"
-            value={title}
-            className="resize-none border-2 rounded-lg border-slate-900 w-[300px]"
-            placeholder="スケジュールのタイトルを入力"
-            onChange={(e) => {
-              changeTitle(e.target.value);
-            }}
-          />
-        </div>
-        {titleError && <p className="text-xs text-[red]">{titleError}</p>}
-      </div>
-      <div className="mt-3">
-        <div className="flex">
-          <label htmlFor="description" className="mr-2">
-            メモ:
-          </label>
-          <textarea
-            name="description"
-            value={description}
-            className="resize-none border-2 rounded-lg border-slate-900 w-2/3"
-            placeholder="何かメモがあれば入力してください。"
-            onChange={(e) => {
-              changeDescription(e.target.value);
-            }}
-          />
-        </div>
-        {descriptionError && (
-          <p className="text-xs text-[red]">{descriptionError}</p>
-        )}
-      </div>
+      <ScheduleTypes
+        type={type}
+        onEventCallBack={(e: string) => changeType(Number(e))}
+      />
+      <InputTitle
+        title={title}
+        titleError={titleError}
+        onChangeTitle={(text: string) => changeTitle(text)}
+      />
+      <InputDescription
+        description={description}
+        descriptionError={descriptionError}
+        onchangeDescription={(text: string) => changeDescription(text)}
+      />
       <div className="text-center mt-5">
         <Button
           type="submit"

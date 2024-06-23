@@ -1,3 +1,5 @@
+import React from "react";
+
 type Props = {
   name: string;
   value: string;
@@ -5,7 +7,7 @@ type Props = {
   onEventCallBack: Function;
 };
 
-const Select = (props: Props) => {
+const Select = (props: Props): React.ReactElement => {
   return (
     <select
       name={props.name}

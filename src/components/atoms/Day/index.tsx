@@ -1,5 +1,7 @@
 import Link from "next/link";
 import dayjs from "dayjs";
+import type { Schedule } from "@/lib/types";
+import { scheduleTextColor } from "@/lib/calendar";
 
 import {
   holiday,
@@ -15,6 +17,7 @@ type Props = {
   keyOfdayOfWeek: number;
   selectYear: string;
   selectMonth: string;
+  schedules?: Pick<Schedule, "id" | "title" | "scheduleTypes">[];
 };
 
 export function Day(props: Props) {
@@ -32,7 +35,7 @@ export function Day(props: Props) {
 
     if (checkDay === today) {
       commonClass +=
-        " w-[35px] h-[35px] rounded-full bg-[red] text-center leading-9 text-white";
+        " w-[35px] rounded-full bg-[red] text-center leading-9 text-white";
     } else if (nowMonth !== checkMonth) {
       if (checkDay === today) {
         commonClass += "text-lime-400";
@@ -63,8 +66,8 @@ export function Day(props: Props) {
         }
       );
 
-    if (isHolidayAndSpecialDayException.length)
-      commonClass += " text-green-600";
+    isHolidayAndSpecialDayException.length &&
+      (commonClass += " text-green-600");
 
     const yesterday: string = dayjs(date).add(-1, "day").format("YYYYMMDD");
     const yesterdayOnlyYearAndMonth: string = dayjs(date)
@@ -72,8 +75,9 @@ export function Day(props: Props) {
       .format("MMDD");
     const dOfW = dayjs(yesterday).day();
 
-    if (holiday[`${yesterdayOnlyYearAndMonth}`] && dOfW === 0)
-      commonClass += " text-green-600";
+    holiday[`${yesterdayOnlyYearAndMonth}`] &&
+      dOfW === 0 &&
+      (commonClass += " text-green-600");
 
     return commonClass;
   };
@@ -137,7 +141,7 @@ export function Day(props: Props) {
     const checkDate = dayTextCommmon("MMDD", date);
 
     if (specialDays[`${checkDate}`])
-      return "h-[calc(((100vh-64px-75px)/7)-32px)] overflow-y-scroll p-1 text-cyan-500";
+      return "overflow-y-scroll p-1 text-cyan-500";
 
     const isHolidayAndSpecialDayException =
       holidayAndSpecialDayException.filter(
@@ -161,7 +165,7 @@ export function Day(props: Props) {
       isHolidayAndSpecialDayException.length ||
       (holiday[`${yesterdayOnlyYearAndMonth}`] && dOfW === 0)
     ) {
-      return "h-[calc(((100vh-64px-75px)/7)-32px)] overflow-y-scroll p-1 text-green-600";
+      return "p-1 text-green-600";
     }
 
     return "";
@@ -180,26 +184,39 @@ export function Day(props: Props) {
           >
             {dayText(props.date)}
           </div>
-          {holidayAndSpecialDayText(
+          {(holidayAndSpecialDayText(
             props.keyOfdayOfWeek,
             props.date,
             props.order
-          ) ? (
-            <div
-              className={holidayAndSpecialDayTextClass(
-                props.keyOfdayOfWeek,
-                props.date,
-                props.order
-              )}
-            >
-              {holidayAndSpecialDayText(
-                props.keyOfdayOfWeek,
-                props.date,
-                props.order
+          ) ||
+            props.schedules) && (
+            <div className="h-[calc(((100vh-64px-75px)/7)-32px)] overflow-y-scroll">
+              <div
+                className={holidayAndSpecialDayTextClass(
+                  props.keyOfdayOfWeek,
+                  props.date,
+                  props.order
+                )}
+              >
+                {holidayAndSpecialDayText(
+                  props.keyOfdayOfWeek,
+                  props.date,
+                  props.order
+                )}
+              </div>
+              {props.schedules && (
+                <ul>
+                  {props.schedules.map((el) => (
+                    <li
+                      key={el.id}
+                      className={scheduleTextColor(el.scheduleTypes)}
+                    >
+                      {el.title}
+                    </li>
+                  ))}
+                </ul>
               )}
             </div>
-          ) : (
-            ""
           )}
         </Link>
       </div>
