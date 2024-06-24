@@ -7,7 +7,7 @@ type Props = {
   onEventCallBack: Function;
 };
 
-const Select = (props: Props): React.ReactElement => {
+export function Select(props: Props): React.ReactElement {
   return (
     <select
       name={props.name}
@@ -24,6 +24,4 @@ const Select = (props: Props): React.ReactElement => {
       })}
     </select>
   );
-};
-
-export default Select;
+}

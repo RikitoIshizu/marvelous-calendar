@@ -8,7 +8,7 @@ type RadioType = {
   selectedId: string;
 };
 
-const Radio = (props: RadioType): React.ReactElement => {
+export function Radio(props: RadioType): React.ReactElement {
   function clickEvent(id: RadioType["id"]): void {
     props.onEventCallBack(id);
   }
@@ -25,6 +25,4 @@ const Radio = (props: RadioType): React.ReactElement => {
       <label htmlFor={props.id}>{props.name}</label>
     </>
   );
-};
-
-export default Radio;
+}

@@ -7,7 +7,7 @@ import React, {
   useState,
   useRef,
 } from "react";
-import Select from "@/components/atoms/Select";
+import { Select } from "@/components/atoms/Select";
 import { Button } from "@/components/atoms/Button";
 import { InputTitle } from "@/components/molecules/InputTitle";
 import { InputDescription } from "@/components/molecules/InputDescription";
@@ -83,64 +83,67 @@ export function CalendarRegister(props: Prop): React.ReactElement {
     setDayList(dayList);
   }, []);
 
-  const onChangeYear = (
-    selectedYear: string,
-    selectedMonth: string,
-    selectedDay: string
-  ): void => {
-    // まずは年を選択した年にセットする
-    changeYear(selectedYear);
+  const onChangeYear = useCallback(
+    (
+      selectedYear: string,
+      selectedMonth: string,
+      selectedDay: string
+    ): void => {
+      // まずは年を選択した年にセットする
+      changeYear(() => selectedYear);
 
-    const selectedDate = `${selectedYear}-${selectedMonth
-      .toString()
-      .padStart(2, "0")}-${selectedDay.toString().padStart(2, "0")}`;
+      const selectedDate = `${selectedYear}-${selectedMonth
+        .toString()
+        .padStart(2, "0")}-${selectedDay.toString().padStart(2, "0")}`;
 
-    const today = dayjs().format("YYYY-MM-DD");
+      const today = dayjs().format("YYYY-MM-DD");
 
-    let monthList: string[] = [];
-    let dayList: string[] = [];
+      let monthList: string[] = [];
+      let dayList: string[] = [];
 
-    const thisMonthAmount = amountOfDay(dayjs().format("YYYY-MM"));
-    const thisYear = dayjs().year();
+      const thisMonthAmount = amountOfDay(dayjs().format("YYYY-MM"));
+      const thisYear = dayjs().year();
 
-    // 選択した年が過去の日になっちゃった時
-    if (
-      dayjs(selectedDate).isBefore(today) ||
-      thisYear === Number(selectedYear)
-    ) {
-      const todayMonth = dayjs().month() + 1;
-      const todayDay = dayjs().date();
+      // 選択した年が過去の日になっちゃった時
+      if (
+        dayjs(selectedDate).isBefore(today) ||
+        thisYear === Number(selectedYear)
+      ) {
+        const todayMonth = dayjs().month() + 1;
+        const todayDay = dayjs().date();
 
-      for (var m = todayMonth; m <= 12; m++) {
-        monthList = [...monthList, m.toString().padStart(2, "0")];
+        for (var m = todayMonth; m <= 12; m++) {
+          monthList = [...monthList, m.toString().padStart(2, "0")];
+        }
+
+        for (var d = todayDay + 1; d <= thisMonthAmount; d++) {
+          dayList = [...dayList, d.toString().padStart(2, "0")];
+        }
+
+        // さらに選択している月と日が過去の日になっちゃっている時
+        if (Number(selectedMonth) < todayMonth) {
+          changeMonth(() => todayMonth.toString().padStart(2, "0"));
+        }
+
+        if (Number(selectedDay) < todayDay) {
+          changeDay(() => (todayDay + 1).toString().padStart(2, "0"));
+        }
+      } else {
+        // 違う時は月と日のリストを作り直す
+        for (var mo = 1; mo <= 12; mo++) {
+          monthList = [...monthList, mo.toString().padStart(2, "0")];
+        }
+
+        for (var da = 1; da <= thisMonthAmount; da++) {
+          dayList = [...dayList, da.toString().padStart(2, "0")];
+        }
       }
 
-      for (var d = todayDay + 1; d <= thisMonthAmount; d++) {
-        dayList = [...dayList, d.toString().padStart(2, "0")];
-      }
-
-      // さらに選択している月と日が過去の日になっちゃっている時
-      if (Number(selectedMonth) < todayMonth) {
-        changeMonth(todayMonth.toString().padStart(2, "0"));
-      }
-
-      if (Number(selectedDay) < todayDay) {
-        changeDay((todayDay + 1).toString().padStart(2, "0"));
-      }
-    } else {
-      // 違う時は月と日のリストを作り直す
-      for (var mo = 1; mo <= 12; mo++) {
-        monthList = [...monthList, mo.toString().padStart(2, "0")];
-      }
-
-      for (var da = 1; da <= thisMonthAmount; da++) {
-        dayList = [...dayList, da.toString().padStart(2, "0")];
-      }
-    }
-
-    setMonthList(monthList);
-    setDayList(dayList);
-  };
+      setMonthList(monthList);
+      setDayList(dayList);
+    },
+    []
+  );
 
   const onChangeMonth = (
     selectedYear: string,

@@ -1,4 +1,4 @@
-import Radio from "@/components/atoms/Radio";
+import { Radio } from "@/components/atoms/Radio";
 import React from "react";
 
 const scheduleTypes = [
