@@ -5,7 +5,7 @@ import Modal from "react-modal";
 import { Button } from "@/components/atoms/Button";
 import { CalendarRegister } from "@/components/organisms/CalendarRegister";
 import { Day } from "@/components/atoms/Day";
-import Select from "@/components/atoms/Select";
+import { Select } from "@/components/atoms/Select";
 import { YearAndMonthAndDateList } from "@/lib/calendar";
 import { getSchedule } from "@/lib/supabase";
 import type { Schedule } from "@/lib/types";
