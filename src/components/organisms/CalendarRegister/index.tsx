@@ -188,13 +188,9 @@ export function CalendarRegister(props: Prop): React.ReactElement {
   const registerSchedule = async (e: FormEvent<Element>): Promise<void> => {
     e.preventDefault();
 
-    setTitleError(
-      !title ? "タイトルを入力しろ、ボケ、普通入力するだろ、アホかお前。" : ""
-    );
+    setTitleError(!title ? "タイトルを入力してください。" : "");
     setDescriptionError(
-      !description
-        ? "スケジュールの詳細書かないバカはいないだろ、書け馬鹿野郎"
-        : ""
+      !description ? "スケジュールの詳細を入力してください。" : ""
     );
 
     if (title && description) {
