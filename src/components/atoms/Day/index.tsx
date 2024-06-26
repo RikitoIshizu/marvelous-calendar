@@ -175,12 +175,25 @@ export function Day(props: Props) {
     [props]
   );
 
+  const classes = useCallback((): string => {
+    let commonClasses =
+      "h-[calc((100vh-64px-75px)/7)] align-text-top cursor-pointer";
+    if (props.keyOfdayOfWeek !== 6) commonClasses += " border-r-2 border-black";
+
+    const today = dayjs();
+    const theDay = dayjs(props.date);
+
+    const tod = today.format("YYYYMMDD");
+    const the = theDay.format("YYYYMMDD");
+
+    if (tod === the) commonClasses += " bg-yellow-200";
+    else if (theDay.isBefore(today)) commonClasses += " bg-neutral-300";
+
+    return commonClasses;
+  }, [props]);
+
   return (
-    <td
-      className={`h-[calc((100vh-64px-75px)/7)] align-text-top cursor-pointer ${
-        props.keyOfdayOfWeek !== 6 ? "border-r-2 border-black" : ""
-      }`}
-    >
+    <td className={classes()}>
       <div className="items-center">
         <Link href={`/date/${dayjs(props.date).format("YYYYMMDD")}`}>
           <div
