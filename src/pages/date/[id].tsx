@@ -83,7 +83,7 @@ export default function Date() {
     const date = router.query.id as string;
     const s = await getScheduleDetail(date);
     setSchedules(s);
-  }, []);
+  }, [router]);
 
   const specialDay = useMemo((): string => {
     const date = router.query.id as string;
