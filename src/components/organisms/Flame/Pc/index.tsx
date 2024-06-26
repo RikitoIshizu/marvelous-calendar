@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
 
 import { Button } from "@/components/atoms/Button";
@@ -48,34 +48,43 @@ export function FlamePc(props: Props) {
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
   const [schedules, setSchedules] = useState<Schedule[] | undefined>(undefined);
 
-  const onClickBtn = (c: number) => {
-    return props.onEventCallBack(c);
-  };
+  const onClickBtn = useCallback(
+    (c: number) => {
+      return props.onEventCallBack(c);
+    },
+    [props]
+  );
 
-  const onChangeYearAndMonth = (y: string, m: string) => {
-    return props.onChangeYearAndMonth(y, m);
-  };
+  const onChangeYearAndMonth = useCallback(
+    (y: string, m: string) => {
+      return props.onChangeYearAndMonth(y, m);
+    },
+    [props]
+  );
 
-  const onGetSchedules = async (): Promise<void> => {
+  const onGetSchedules = useCallback(async (): Promise<void> => {
     const schedule = await getSchedule(
       Number(props.selectYear),
       Number(props.selectMonth)
     );
     setSchedules(schedule);
-  };
+  }, [props]);
 
-  const getScheduleOnTheDate = (
-    day: string
-  ): Pick<Schedule, "id" | "title" | "scheduleTypes">[] | undefined => {
-    const checkDay = dayjs(day).get("D");
+  const getScheduleOnTheDate = useCallback(
+    (
+      day: string
+    ): Pick<Schedule, "id" | "title" | "scheduleTypes">[] | undefined => {
+      const checkDay = dayjs(day).get("D");
 
-    return schedules
-      ?.filter((el) => Number(el.day) === checkDay)
-      .map((el) => {
-        const { id, title, scheduleTypes } = el;
-        return { id, title, scheduleTypes };
-      });
-  };
+      return schedules
+        ?.filter((el) => Number(el.day) === checkDay)
+        .map((el) => {
+          const { id, title, scheduleTypes } = el;
+          return { id, title, scheduleTypes };
+        });
+    },
+    [schedules]
+  );
 
   useEffect(() => {
     if (!isAct.current) {

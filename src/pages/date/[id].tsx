@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState, useCallback, useMemo } from "react";
 import Modal from "react-modal";
 
 import { Button } from "@/components/atoms/Button";
@@ -79,72 +79,81 @@ export default function Date() {
     ? `${date}の予定を確認・変更・作成ができます。`
     : "";
 
-  const onSetSchedules = async () => {
+  const onSetSchedules = useCallback(async () => {
     const date = router.query.id as string;
     const s = await getScheduleDetail(date);
     setSchedules(s);
-  };
+  }, []);
 
-  const specialDay = (): string => {
+  const specialDay = useMemo((): string => {
     const date = router.query.id as string;
     const md = dayjs(date).format("MMDD");
 
     return specialDays[md] ? specialDays[md] : "";
-  };
+  }, []);
 
-  const updSchedule = async (e: FormEvent<Element>): Promise<void> => {
-    e.preventDefault();
+  const updSchedule = useCallback(
+    async (e: FormEvent<Element>): Promise<void> => {
+      e.preventDefault();
 
-    setTitleError(
-      !editTitle
-        ? "タイトルを入力しろ、ボケ、普通入力するだろ、アホかお前。"
-        : ""
-    );
-    setDescriptionError(
-      !editDescription
-        ? "スケジュールの詳細書かないバカはいないだろ、書け馬鹿野郎"
-        : ""
-    );
+      setTitleError(
+        !editTitle
+          ? "タイトルを入力しろ、ボケ、普通入力するだろ、アホかお前。"
+          : ""
+      );
+      setDescriptionError(
+        !editDescription
+          ? "スケジュールの詳細書かないバカはいないだろ、書け馬鹿野郎"
+          : ""
+      );
 
-    if (editTitle && editDescription) {
-      const response = await updateSchedule({
-        id: Number(editId),
-        title: editTitle,
-        description: editDescription,
-        scheduleTypes: Number(editScheduleType),
-      });
+      if (editTitle && editDescription) {
+        const response = await updateSchedule({
+          id: Number(editId),
+          title: editTitle,
+          description: editDescription,
+          scheduleTypes: Number(editScheduleType),
+        });
+
+        if (!response) {
+          alert("スケジュール変更完了！");
+          setTitleError("");
+          setDescriptionError("");
+          setIsOpen(false);
+          onSetSchedules();
+        }
+      }
+    },
+    [editTitle, editDescription, editScheduleType, titleError, descriptionError]
+  );
+
+  const openModal = useCallback(
+    (id: Schedule["id"]): void => {
+      const editSchedule = schedules?.filter((el) => el.id === id);
+
+      if (!editSchedule?.length) return;
+
+      setEditId(editSchedule[0].id);
+      setEditTitle(editSchedule[0].title);
+      setEditDescription(editSchedule[0].description);
+      setEditScheduleType(editSchedule[0].scheduleTypes);
+      setIsOpen(true);
+    },
+    [schedules]
+  );
+
+  const delSchedule = useCallback(
+    async (id: Schedule["id"]) => {
+      setIsLoad(true);
+      const response = await deleteSchedule(id);
 
       if (!response) {
-        alert("スケジュール変更完了！");
-        setTitleError("");
-        setDescriptionError("");
-        setIsOpen(false);
         onSetSchedules();
+        setIsLoad(false);
       }
-    }
-  };
-
-  const openModal = (id: Schedule["id"]): void => {
-    const editSchedule = schedules?.filter((el) => el.id === id);
-
-    if (!editSchedule?.length) return;
-
-    setEditId(editSchedule[0].id);
-    setEditTitle(editSchedule[0].title);
-    setEditDescription(editSchedule[0].description);
-    setEditScheduleType(editSchedule[0].scheduleTypes);
-    setIsOpen(true);
-  };
-
-  const delSchedule = async (id: Schedule["id"]) => {
-    setIsLoad(true);
-    const response = await deleteSchedule(id);
-
-    if (!response) {
-      onSetSchedules();
-      setIsLoad(false);
-    }
-  };
+    },
+    [schedules]
+  );
 
   useEffect(() => {
     router.isReady && onSetSchedules();
@@ -160,13 +169,13 @@ export default function Date() {
           </h1>
         )}
         <div className="w-[1000px] mx-auto">
-          {specialDay() && (
+          {specialDay && (
             <section>
               <h2 className="text-2xl font-bold">今日は何の日？</h2>
-              <p className="mt-1">{specialDay()}</p>
+              <p className="mt-1">{specialDay}</p>
             </section>
           )}
-          {schedules?.length && (
+          {schedules?.length ? (
             <section className="mt-4">
               <h2 className="text-2xl font-bold">登録されているスケジュール</h2>
               {schedules && (
@@ -195,7 +204,7 @@ export default function Date() {
                 </ul>
               )}
             </section>
-          )}
+          ) : null}
           <div className="mt-6">
             <Link href="/" className="w-[100px] h-[50px] bg-[red]s">
               戻る

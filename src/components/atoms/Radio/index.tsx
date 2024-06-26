@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 type RadioType = {
   name: string;
@@ -9,9 +9,12 @@ type RadioType = {
 };
 
 export function Radio(props: RadioType): React.ReactElement {
-  function clickEvent(id: RadioType["id"]): void {
-    props.onEventCallBack(id);
-  }
+  const clickEvent = useCallback(
+    (id: RadioType["id"]): void => {
+      props.onEventCallBack(id);
+    },
+    [props]
+  );
 
   return (
     <>

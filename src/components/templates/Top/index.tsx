@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { isMobile } from "react-device-detect";
-import { useRef, useCallback, useEffect, useState } from "react";
+import { useRef, useCallback, useEffect, useState, useMemo } from "react";
 
 import { dayTextCommmon } from "@/lib/calendar";
 import { amountOfDay } from "@/lib/calendar";
@@ -27,135 +27,147 @@ export function Top() {
   const [selectMonth, chnageMonth] = useState<string>(dayTextCommmon("MM"));
 
   // countを変える
-  const onChangeCount = (c: number) => {
-    changeCount(c);
-    setNowYearAndMonth(c);
-    setCalendar(c);
-  };
+  const onChangeCount = useCallback(
+    (c: number) => {
+      changeCount(c);
+      setNowYearAndMonth(c);
+      setCalendar(c);
+    },
+    [count]
+  );
 
   // 年と月を取得する
-  const setNowYearAndMonth = (val?: number) => {
-    const setYear: string = val
-      ? dayjs().add(val, "month").format("YYYY")
-      : dayTextCommmon("YYYY");
-    const setMonth: string = val
-      ? dayjs().add(val, "month").format("MM")
-      : dayTextCommmon("MM");
+  const setNowYearAndMonth = useCallback(
+    (val?: number) => {
+      const setYear: string = val
+        ? dayjs().add(val, "month").format("YYYY")
+        : dayTextCommmon("YYYY");
+      const setMonth: string = val
+        ? dayjs().add(val, "month").format("MM")
+        : dayTextCommmon("MM");
 
-    changeYear(setYear);
-    chnageMonth(setMonth);
-  };
+      changeYear(setYear);
+      chnageMonth(setMonth);
+    },
+    [selectYear, selectMonth]
+  );
 
   // カレンダーの日付を取得
-  const setCalendar = useCallback((val?: number) => {
-    const setYandM =
-      val === 0 || val === undefined
-        ? dayTextCommmon("YYYY-MM")
-        : dayjs().add(val, "month").format("YYYY-MM");
+  const setCalendar = useCallback(
+    (val?: number) => {
+      const setYandM =
+        val === 0 || val === undefined
+          ? dayTextCommmon("YYYY-MM")
+          : dayjs().add(val, "month").format("YYYY-MM");
 
-    // カレンダーを取得する
-    // その月の全日付を取得
-    let nowCalendar: Calendar[] = [];
+      // カレンダーを取得する
+      // その月の全日付を取得
+      let nowCalendar: Calendar[] = [];
 
-    // まずは現在見ている月のカレンダーの日付を取得する
-    for (var i = 1; i <= amountOfDay(setYandM); i++) {
-      const day = i.toString().padStart(2, "0");
-      const yearAndMonth = dayTextCommmon("YYYY-MM", setYandM);
-      const date = dayTextCommmon("YYYY-MM-DD", `${yearAndMonth}-${day}`);
-      const keyOfdayOfWeek = dayjs(date).day();
-      const order =
-        nowCalendar.filter(
-          (el: Calendar) => el.keyOfdayOfWeek === keyOfdayOfWeek
-        ).length + 1;
+      // まずは現在見ている月のカレンダーの日付を取得する
+      for (var i = 1; i <= amountOfDay(setYandM); i++) {
+        const day = i.toString().padStart(2, "0");
+        const yearAndMonth = dayTextCommmon("YYYY-MM", setYandM);
+        const date = dayTextCommmon("YYYY-MM-DD", `${yearAndMonth}-${day}`);
+        const keyOfdayOfWeek = dayjs(date).day();
+        const order =
+          nowCalendar.filter(
+            (el: Calendar) => el.keyOfdayOfWeek === keyOfdayOfWeek
+          ).length + 1;
 
-      const setData: Calendar = { date, keyOfdayOfWeek, order };
-      nowCalendar = [...nowCalendar, setData];
-    }
+        const setData: Calendar = { date, keyOfdayOfWeek, order };
+        nowCalendar = [...nowCalendar, setData];
+      }
 
-    // 足りない前後の月の日付を取得する。
-    let prevMonthDate: Calendar[] = [];
-    let nextMonthDate: Calendar[] = [];
+      // 足りない前後の月の日付を取得する。
+      let prevMonthDate: Calendar[] = [];
+      let nextMonthDate: Calendar[] = [];
 
-    nowCalendar.forEach((date) => {
-      const d = dayjs(date.date);
-      const day: number = d.date();
+      nowCalendar.forEach((date) => {
+        const d = dayjs(date.date);
+        const day: number = d.date();
 
-      if (day === 1) {
-        // 月初の場合、前月の足りない日数を追加する
-        if (date.keyOfdayOfWeek) {
-          for (var i = date.keyOfdayOfWeek; i > 0; i--) {
-            const addPrevMonthDate = d.add(-i, "day");
-            prevMonthDate = [
-              ...prevMonthDate,
-              {
-                date: addPrevMonthDate.format("YYYY-MM-DD"),
-                keyOfdayOfWeek: addPrevMonthDate.day(),
-                order: 1,
-              },
-            ];
+        if (day === 1) {
+          // 月初の場合、前月の足りない日数を追加する
+          if (date.keyOfdayOfWeek) {
+            for (var i = date.keyOfdayOfWeek; i > 0; i--) {
+              const addPrevMonthDate = d.add(-i, "day");
+              prevMonthDate = [
+                ...prevMonthDate,
+                {
+                  date: addPrevMonthDate.format("YYYY-MM-DD"),
+                  keyOfdayOfWeek: addPrevMonthDate.day(),
+                  order: 1,
+                },
+              ];
+            }
+          }
+        } else if (day === nowCalendar.length) {
+          // 月末の場合、次月の足りない日数を追加する
+          if (date.keyOfdayOfWeek !== 6) {
+            for (var n = 1; n <= 6 - date.keyOfdayOfWeek; n++) {
+              const addPrevMonthDate = d.add(n, "day");
+              nextMonthDate = [
+                ...nextMonthDate,
+                {
+                  date: addPrevMonthDate.format("YYYY-MM-DD"),
+                  keyOfdayOfWeek: addPrevMonthDate.day(),
+                  order: 6,
+                },
+              ];
+            }
           }
         }
-      } else if (day === nowCalendar.length) {
-        // 月末の場合、次月の足りない日数を追加する
-        if (date.keyOfdayOfWeek !== 6) {
-          for (var n = 1; n <= 6 - date.keyOfdayOfWeek; n++) {
-            const addPrevMonthDate = d.add(n, "day");
-            nextMonthDate = [
-              ...nextMonthDate,
-              {
-                date: addPrevMonthDate.format("YYYY-MM-DD"),
-                keyOfdayOfWeek: addPrevMonthDate.day(),
-                order: 6,
-              },
-            ];
-          }
+      });
+
+      const displayCalendar = [
+        ...prevMonthDate,
+        ...nowCalendar,
+        ...nextMonthDate,
+      ];
+
+      let datePerWeek: WeeklyDay[] = [];
+      let oneWeek: Calendar[] = [];
+      let week = 1;
+
+      // 週ごとに分ける
+      displayCalendar.forEach((date: Calendar) => {
+        oneWeek = [...oneWeek, date];
+
+        if (date.keyOfdayOfWeek === 6) {
+          const addData: WeeklyDay[] = [{ week, days: oneWeek }];
+
+          datePerWeek = [...datePerWeek, ...addData];
+          oneWeek = [];
+          week++;
         }
-      }
-    });
+      });
 
-    const displayCalendar = [
-      ...prevMonthDate,
-      ...nowCalendar,
-      ...nextMonthDate,
-    ];
-
-    let datePerWeek: WeeklyDay[] = [];
-    let oneWeek: Calendar[] = [];
-    let week = 1;
-
-    // 週ごとに分ける
-    displayCalendar.forEach((date: Calendar) => {
-      oneWeek = [...oneWeek, date];
-
-      if (date.keyOfdayOfWeek === 6) {
-        const addData: WeeklyDay[] = [{ week, days: oneWeek }];
-
-        datePerWeek = [...datePerWeek, ...addData];
-        oneWeek = [];
-        week++;
-      }
-    });
-
-    setDays(datePerWeek);
-  }, []);
+      setDays(datePerWeek);
+    },
+    [days]
+  );
 
   // 年と月を変える
-  const onChangeYearAndMonth = (year: string, month: string): void => {
-    const now = dayTextCommmon("YYYY-MM");
-    const nowYandM = dayjs(now);
-    const sltYandM = dayjs(`${year}-${month}`);
-    const setCount = sltYandM.diff(nowYandM, "month");
+  const onChangeYearAndMonth = useCallback(
+    (year: string, month: string): void => {
+      const now = dayTextCommmon("YYYY-MM");
+      const nowYandM = dayjs(now);
+      const sltYandM = dayjs(`${year}-${month}`);
+      const setCount = sltYandM.diff(nowYandM, "month");
 
-    changeCount(setCount);
-    setNowYearAndMonth(setCount);
-    setCalendar(setCount);
-  };
+      changeCount(setCount);
+      setNowYearAndMonth(setCount);
+      setCalendar(setCount);
+    },
+    [count]
+  );
 
   // 今見ているカレンダーが実際の現在の年月かどうか
-  const isNowMonth = () => {
+  const isNowMonth = useMemo(() => {
     const yearAndMonth = `${selectYear}-${selectMonth}`;
     return yearAndMonth === dayjs().format("YYYY-MM");
-  };
+  }, []);
 
   useEffect(() => {
     if (!isDisplay.current) {
@@ -171,7 +183,7 @@ export function Top() {
       days={days}
       selectYear={selectYear}
       selectMonth={selectMonth}
-      isNowMonth={isNowMonth()}
+      isNowMonth={isNowMonth}
       onEventCallBack={(c: number) => {
         onChangeCount(c);
       }}
@@ -185,7 +197,7 @@ export function Top() {
       days={days}
       selectYear={selectYear}
       selectMonth={selectMonth}
-      isNowMonth={isNowMonth()}
+      isNowMonth={isNowMonth}
       onEventCallBack={(c: number) => {
         onChangeCount(c);
       }}
