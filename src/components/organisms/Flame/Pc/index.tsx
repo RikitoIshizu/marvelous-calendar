@@ -70,14 +70,29 @@ export function FlamePc(props: Props) {
     setSchedules(schedule);
   }, [props]);
 
+  const onResetSchedule = useCallback(() => {
+    onGetSchedules();
+    setIsOpen(false);
+  }, []);
+
   const getScheduleOnTheDate = useCallback(
     (
       day: string
     ): Pick<Schedule, "id" | "title" | "scheduleTypes">[] | undefined => {
-      const checkDay = dayjs(day).get("D");
+      const y = dayjs(day).format("YYYY");
+      const m = dayjs(day).format("M");
+      const d = dayjs(day).format("D");
 
       return schedules
-        ?.filter((el) => Number(el.day) === checkDay)
+        ?.filter((el) => {
+          const { year, month, day } = el;
+
+          return (
+            Number(year) === Number(y) &&
+            Number(month) === Number(m) &&
+            Number(day) === Number(d)
+          );
+        })
         .map((el) => {
           const { id, title, scheduleTypes } = el;
           return { id, title, scheduleTypes };
@@ -241,7 +256,7 @@ export function FlamePc(props: Props) {
         <CalendarRegister
           year={props.selectYear}
           month={props.selectMonth}
-          onEventCallBack={() => setIsOpen(false)}
+          onEventCallBack={() => onResetSchedule()}
         />
       </Modal>
     </main>
