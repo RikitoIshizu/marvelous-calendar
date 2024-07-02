@@ -7,7 +7,7 @@ import React from "react";
 
 function MyApp({ Component, pageProps }: AppProps): React.ReactElement {
   return (
-    <React.StrictMode>
+    <>
       <Head>
         <link rel="icon" href="/favicon.ico" />
         <title>おもいでをおもいだせるカレンダー</title>
@@ -23,7 +23,7 @@ function MyApp({ Component, pageProps }: AppProps): React.ReactElement {
         />
       </Head>
       <Component {...pageProps} />
-    </React.StrictMode>
+    </>
   );
 }
 
