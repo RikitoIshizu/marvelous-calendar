@@ -1,10 +1,14 @@
-import React from "react";
+import React, { NamedExoticComponent, memo } from "react";
 import Head from "next/head";
 
-export function MetaData(props: {
+type Props = {
   title: string;
   description?: string;
-}): React.ReactElement {
+};
+
+export const MetaData: NamedExoticComponent<Props> = memo(function MetaData(
+  props: Props
+) {
   return (
     <Head>
       {props.description ? (
@@ -12,4 +16,4 @@ export function MetaData(props: {
       ) : null}
     </Head>
   );
-}
+});

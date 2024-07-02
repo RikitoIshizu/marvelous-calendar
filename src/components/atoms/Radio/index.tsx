@@ -1,6 +1,6 @@
-import React, { useCallback } from "react";
+import { useCallback, memo, NamedExoticComponent } from "react";
 
-type RadioType = {
+type Props = {
   name: string;
   id: string;
   inputName: string;
@@ -8,9 +8,11 @@ type RadioType = {
   selectedId: string;
 };
 
-export function Radio(props: RadioType): React.ReactElement {
+export const Radio: NamedExoticComponent<Props> = memo(function Radio(
+  props: Props
+) {
   const clickEvent = useCallback(
-    (id: RadioType["id"]): void => {
+    (id: Props["id"]): void => {
       props.onEventCallBack(id);
     },
     [props]
@@ -28,4 +30,4 @@ export function Radio(props: RadioType): React.ReactElement {
       <label htmlFor={props.id}>{props.name}</label>
     </>
   );
-}
+});

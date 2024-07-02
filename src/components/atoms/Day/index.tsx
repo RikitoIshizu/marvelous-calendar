@@ -10,7 +10,7 @@ import {
   dayTextCommmon,
 } from "@/lib/calendar";
 import { HolidayAndSpecialDayException } from "@/lib/types";
-import { useCallback } from "react";
+import { NamedExoticComponent, useCallback, memo } from "react";
 
 type Props = {
   date: string;
@@ -94,7 +94,9 @@ const holidayAndSpecialDayTextClass = (
   return "";
 };
 
-export function Day(props: Props) {
+export const Day: NamedExoticComponent<Props> = memo(function Day(
+  props: Props
+) {
   const dayClass = useCallback(
     (
       keyOfdayOfWeek: Props["keyOfdayOfWeek"],
@@ -239,4 +241,4 @@ export function Day(props: Props) {
       </div>
     </td>
   );
-}
+});
