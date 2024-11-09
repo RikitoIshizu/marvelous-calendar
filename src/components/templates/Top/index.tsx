@@ -1,11 +1,11 @@
-import dayjs from "dayjs";
-import { isMobile } from "react-device-detect";
-import { useRef, useCallback, useEffect, useState, useMemo } from "react";
+import dayjs from 'dayjs';
+import { isMobile } from 'react-device-detect';
+import { useRef, useCallback, useEffect, useState, useMemo } from 'react';
 
-import { dayTextCommmon } from "@/lib/calendar";
-import { amountOfDay } from "@/lib/calendar";
-import { FlamePc } from "@/components/organisms/Flame/Pc";
-import { FlameSp } from "@/components/organisms/Flame/Sp";
+import { dayTextCommmon } from '@/lib/calendar';
+import { amountOfDay } from '@/lib/calendar';
+import { FlamePc } from '@/components/organisms/Flame/Pc';
+import { FlameSp } from '@/components/organisms/Flame/Sp';
 
 type Calendar = {
   keyOfdayOfWeek: number;
@@ -23,8 +23,8 @@ export function Top() {
   const isDisplay = useRef(false);
   const [count, changeCount] = useState<number>(0);
   const [days, setDays] = useState<WeeklyDay[]>([]);
-  const [selectYear, changeYear] = useState<string>(dayTextCommmon("YYYY"));
-  const [selectMonth, chnageMonth] = useState<string>(dayTextCommmon("MM"));
+  const [selectYear, changeYear] = useState<string>(dayTextCommmon('YYYY'));
+  const [selectMonth, chnageMonth] = useState<string>(dayTextCommmon('MM'));
 
   // countを変える
   const onChangeCount = useCallback(
@@ -40,11 +40,11 @@ export function Top() {
   const setNowYearAndMonth = useCallback(
     (val?: number) => {
       const setYear: string = val
-        ? dayjs().add(val, "month").format("YYYY")
-        : dayTextCommmon("YYYY");
+        ? dayjs().add(val, 'month').format('YYYY')
+        : dayTextCommmon('YYYY');
       const setMonth: string = val
-        ? dayjs().add(val, "month").format("MM")
-        : dayTextCommmon("MM");
+        ? dayjs().add(val, 'month').format('MM')
+        : dayTextCommmon('MM');
 
       changeYear(setYear);
       chnageMonth(setMonth);
@@ -57,8 +57,8 @@ export function Top() {
     (val?: number) => {
       const setYandM =
         val === 0 || val === undefined
-          ? dayTextCommmon("YYYY-MM")
-          : dayjs().add(val, "month").format("YYYY-MM");
+          ? dayTextCommmon('YYYY-MM')
+          : dayjs().add(val, 'month').format('YYYY-MM');
 
       // カレンダーを取得する
       // その月の全日付を取得
@@ -66,9 +66,9 @@ export function Top() {
 
       // まずは現在見ている月のカレンダーの日付を取得する
       for (var i = 1; i <= amountOfDay(setYandM); i++) {
-        const day = i.toString().padStart(2, "0");
-        const yearAndMonth = dayTextCommmon("YYYY-MM", setYandM);
-        const date = dayTextCommmon("YYYY-MM-DD", `${yearAndMonth}-${day}`);
+        const day = i.toString().padStart(2, '0');
+        const yearAndMonth = dayTextCommmon('YYYY-MM', setYandM);
+        const date = dayTextCommmon('YYYY-MM-DD', `${yearAndMonth}-${day}`);
         const keyOfdayOfWeek = dayjs(date).day();
         const order =
           nowCalendar.filter(
@@ -91,11 +91,11 @@ export function Top() {
           // 月初の場合、前月の足りない日数を追加する
           if (date.keyOfdayOfWeek) {
             for (var i = date.keyOfdayOfWeek; i > 0; i--) {
-              const addPrevMonthDate = d.add(-i, "day");
+              const addPrevMonthDate = d.add(-i, 'day');
               prevMonthDate = [
                 ...prevMonthDate,
                 {
-                  date: addPrevMonthDate.format("YYYY-MM-DD"),
+                  date: addPrevMonthDate.format('YYYY-MM-DD'),
                   keyOfdayOfWeek: addPrevMonthDate.day(),
                   order: 1,
                 },
@@ -106,11 +106,11 @@ export function Top() {
           // 月末の場合、次月の足りない日数を追加する
           if (date.keyOfdayOfWeek !== 6) {
             for (var n = 1; n <= 6 - date.keyOfdayOfWeek; n++) {
-              const addPrevMonthDate = d.add(n, "day");
+              const addPrevMonthDate = d.add(n, 'day');
               nextMonthDate = [
                 ...nextMonthDate,
                 {
-                  date: addPrevMonthDate.format("YYYY-MM-DD"),
+                  date: addPrevMonthDate.format('YYYY-MM-DD'),
                   keyOfdayOfWeek: addPrevMonthDate.day(),
                   order: 6,
                 },
@@ -151,10 +151,10 @@ export function Top() {
   // 年と月を変える
   const onChangeYearAndMonth = useCallback(
     (year: string, month: string): void => {
-      const now = dayTextCommmon("YYYY-MM");
+      const now = dayTextCommmon('YYYY-MM');
       const nowYandM = dayjs(now);
       const sltYandM = dayjs(`${year}-${month}`);
-      const setCount = sltYandM.diff(nowYandM, "month");
+      const setCount = sltYandM.diff(nowYandM, 'month');
 
       changeCount(setCount);
       setNowYearAndMonth(setCount);
@@ -166,7 +166,7 @@ export function Top() {
   // 今見ているカレンダーが実際の現在の年月かどうか
   const isNowMonth = useMemo(() => {
     const yearAndMonth = `${selectYear}-${selectMonth}`;
-    return yearAndMonth === dayjs().format("YYYY-MM");
+    return yearAndMonth === dayjs().format('YYYY-MM');
   }, []);
 
   useEffect(() => {

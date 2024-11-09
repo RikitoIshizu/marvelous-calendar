@@ -1,19 +1,19 @@
-import dayjs from "dayjs";
-import isLeapYear from "dayjs/plugin/isLeapYear";
+import dayjs from 'dayjs';
+import isLeapYear from 'dayjs/plugin/isLeapYear';
 import React, {
   FormEvent,
   useCallback,
   useEffect,
   useState,
   useRef,
-} from "react";
-import { Select } from "@/components/atoms/Select";
-import { Button } from "@/components/atoms/Button";
-import { InputTitle } from "@/components/molecules/InputTitle";
-import { InputDescription } from "@/components/molecules/InputDescription";
-import { ScheduleTypes } from "@/components/molecules/ScheduleTypes";
-import { amountOfDay, dayTextCommmon } from "@/lib/calendar";
-import { registerScheduleDetail } from "@/lib/supabase";
+} from 'react';
+import { Select } from '@/components/atoms/Select';
+import { Button } from '@/components/atoms/Button';
+import { InputTitle } from '@/components/molecules/InputTitle';
+import { InputDescription } from '@/components/molecules/InputDescription';
+import { ScheduleTypes } from '@/components/molecules/ScheduleTypes';
+import { amountOfDay, dayTextCommmon } from '@/lib/calendar';
+import { registerScheduleDetail } from '@/lib/supabase';
 
 dayjs.extend(isLeapYear);
 
@@ -27,14 +27,14 @@ export function CalendarRegister(props: Prop): React.ReactElement {
   const isDisplay = useRef<boolean>(false);
   // 入力項目
   const [year, changeYear] = useState<string>(
-    props.year ? props.year : dayTextCommmon("YYYY")
+    props.year ? props.year : dayTextCommmon('YYYY')
   );
   const [month, changeMonth] = useState<string>(
-    props.month ? props.month : dayTextCommmon("MM")
+    props.month ? props.month : dayTextCommmon('MM')
   );
-  const [day, changeDay] = useState<string>("");
-  const [title, changeTitle] = useState<string>("");
-  const [description, changeDescription] = useState<string>("");
+  const [day, changeDay] = useState<string>('');
+  const [title, changeTitle] = useState<string>('');
+  const [description, changeDescription] = useState<string>('');
   const [type, changeType] = useState<number>(1);
 
   // カレンダーの年月日のリスト
@@ -43,8 +43,8 @@ export function CalendarRegister(props: Prop): React.ReactElement {
   const [nowDayList, setDayList] = useState<string[]>([]);
 
   // バリデーション
-  const [titleError, setTitleError] = useState<string>("");
-  const [descriptionError, setDescriptionError] = useState<string>("");
+  const [titleError, setTitleError] = useState<string>('');
+  const [descriptionError, setDescriptionError] = useState<string>('');
 
   // カレンダーを読み込んだ時に選択できる年月日を設定する
   const firstSetCalendar = useCallback((): void => {
@@ -56,7 +56,7 @@ export function CalendarRegister(props: Prop): React.ReactElement {
 
     // 年(今月から10年後までの年を選択できるようにする)
     for (var i = 1; i <= 9; i++) {
-      const setYear = dayjs(`${props.year}-01`).add(i, "year").format("YYYY");
+      const setYear = dayjs(`${props.year}-01`).add(i, 'year').format('YYYY');
       yearList = [...yearList, setYear];
     }
 
@@ -67,7 +67,7 @@ export function CalendarRegister(props: Prop): React.ReactElement {
 
     // 日(当日より後の日だけ選択できるようにする)
     for (var m = 1; m <= amountOfDay(nowYearAndMonth); m++) {
-      const day = m.toString().padStart(2, "0");
+      const day = m.toString().padStart(2, '0');
 
       const checkData = dayjs(`${nowYearAndMonth}-${day}`);
       const dateCheck = checkData.isAfter(dayjs());
@@ -94,14 +94,14 @@ export function CalendarRegister(props: Prop): React.ReactElement {
 
       const selectedDate = `${selectedYear}-${selectedMonth
         .toString()
-        .padStart(2, "0")}-${selectedDay.toString().padStart(2, "0")}`;
+        .padStart(2, '0')}-${selectedDay.toString().padStart(2, '0')}`;
 
-      const today = dayjs().format("YYYY-MM-DD");
+      const today = dayjs().format('YYYY-MM-DD');
 
       let monthList: string[] = [];
       let dayList: string[] = [];
 
-      const thisMonthAmount = amountOfDay(dayjs().format("YYYY-MM"));
+      const thisMonthAmount = amountOfDay(dayjs().format('YYYY-MM'));
       const thisYear = dayjs().year();
 
       // 選択した年が過去の日になっちゃった時
@@ -113,29 +113,29 @@ export function CalendarRegister(props: Prop): React.ReactElement {
         const todayDay = dayjs().date();
 
         for (var m = todayMonth; m <= 12; m++) {
-          monthList = [...monthList, m.toString().padStart(2, "0")];
+          monthList = [...monthList, m.toString().padStart(2, '0')];
         }
 
         for (var d = todayDay + 1; d <= thisMonthAmount; d++) {
-          dayList = [...dayList, d.toString().padStart(2, "0")];
+          dayList = [...dayList, d.toString().padStart(2, '0')];
         }
 
         // さらに選択している月と日が過去の日になっちゃっている時
         if (Number(selectedMonth) < todayMonth) {
-          changeMonth(() => todayMonth.toString().padStart(2, "0"));
+          changeMonth(() => todayMonth.toString().padStart(2, '0'));
         }
 
         if (Number(selectedDay) < todayDay) {
-          changeDay(() => (todayDay + 1).toString().padStart(2, "0"));
+          changeDay(() => (todayDay + 1).toString().padStart(2, '0'));
         }
       } else {
         // 違う時は月と日のリストを作り直す
         for (var mo = 1; mo <= 12; mo++) {
-          monthList = [...monthList, mo.toString().padStart(2, "0")];
+          monthList = [...monthList, mo.toString().padStart(2, '0')];
         }
 
         for (var da = 1; da <= thisMonthAmount; da++) {
-          dayList = [...dayList, da.toString().padStart(2, "0")];
+          dayList = [...dayList, da.toString().padStart(2, '0')];
         }
       }
 
@@ -157,8 +157,8 @@ export function CalendarRegister(props: Prop): React.ReactElement {
       // 今月なら当日以前の日付が選択されていないかを確認しないといけない
       const selectedYearAndMonth = `${selectedYear}-${selectedMonth
         .toString()
-        .padStart(2, "0")}`;
-      const nowMonth = dayjs().format("YYYY-MM");
+        .padStart(2, '0')}`;
+      const nowMonth = dayjs().format('YYYY-MM');
 
       const amountOfMonth = amountOfDay(selectedYearAndMonth);
 
@@ -167,19 +167,19 @@ export function CalendarRegister(props: Prop): React.ReactElement {
       if (selectedYearAndMonth === nowMonth) {
         const today = dayjs();
         for (var i = 1; i <= amountOfMonth; i++) {
-          const day = i.toString().padStart(2, "0");
+          const day = i.toString().padStart(2, '0');
           const date = `${selectedYearAndMonth}-${day}`;
           const checkDay = dayjs(date);
 
           checkDay.isAfter(today) && (dayList = [...dayList, day]);
         }
 
-        const nowSelectedDay = Number(selectedDay).toString().padStart(2, "0");
+        const nowSelectedDay = Number(selectedDay).toString().padStart(2, '0');
 
         !dayList.includes(nowSelectedDay) && changeDay(nowSelectedDay);
       } else {
         for (var n = 1; n <= amountOfMonth; n++) {
-          dayList = [...dayList, n.toString().padStart(2, "0")];
+          dayList = [...dayList, n.toString().padStart(2, '0')];
         }
 
         Number(selectedDay) > amountOfMonth &&
@@ -195,9 +195,9 @@ export function CalendarRegister(props: Prop): React.ReactElement {
     async (e: FormEvent<Element>): Promise<void> => {
       e.preventDefault();
 
-      setTitleError(!title ? "タイトルを入力してください。" : "");
+      setTitleError(!title ? 'タイトルを入力してください。' : '');
       setDescriptionError(
-        !description ? "スケジュールの詳細を入力してください。" : ""
+        !description ? 'スケジュールの詳細を入力してください。' : ''
       );
 
       if (title && description) {
@@ -211,9 +211,9 @@ export function CalendarRegister(props: Prop): React.ReactElement {
         });
 
         if (!response) {
-          alert("スケジュール登録完了！");
-          setTitleError("");
-          setDescriptionError("");
+          alert('スケジュール登録完了！');
+          setTitleError('');
+          setDescriptionError('');
           return props.onEventCallBack();
         }
       }

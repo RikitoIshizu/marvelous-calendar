@@ -1,14 +1,14 @@
-import dayjs from "dayjs";
-import { useCallback, useEffect, useRef, useState } from "react";
-import Modal from "react-modal";
+import dayjs from 'dayjs';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import Modal from 'react-modal';
 
-import { Button } from "@/components/atoms/Button";
-import { CalendarRegister } from "@/components/organisms/CalendarRegister";
-import { Day } from "@/components/atoms/Day";
-import { Select } from "@/components/atoms/Select";
-import { YearAndMonthAndDateList } from "@/lib/calendar";
-import { getSchedule } from "@/lib/supabase";
-import type { Schedule } from "@/lib/types";
+import { Button } from '@/components/atoms/Button';
+import { CalendarRegister } from '@/components/organisms/CalendarRegister';
+import { Day } from '@/components/atoms/Day';
+import { Select } from '@/components/atoms/Select';
+import { YearAndMonthAndDateList } from '@/lib/calendar';
+import { getSchedule } from '@/lib/supabase';
+import type { Schedule } from '@/lib/types';
 
 type Calendar = {
   keyOfdayOfWeek: number;
@@ -23,13 +23,13 @@ type WeeklyDay = {
 
 const customStyles = {
   content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    width: "62.5rem",
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    width: '62.5rem',
   },
 };
 
@@ -78,10 +78,10 @@ export function FlamePc(props: Props) {
   const getScheduleOnTheDate = useCallback(
     (
       day: string
-    ): Pick<Schedule, "id" | "title" | "scheduleTypes">[] | undefined => {
-      const y = dayjs(day).format("YYYY");
-      const m = dayjs(day).format("M");
-      const d = dayjs(day).format("D");
+    ): Pick<Schedule, 'id' | 'title' | 'scheduleTypes'>[] | undefined => {
+      const y = dayjs(day).format('YYYY');
+      const m = dayjs(day).format('M');
+      const d = dayjs(day).format('D');
 
       return schedules
         ?.filter((el) => {
@@ -157,7 +157,7 @@ export function FlamePc(props: Props) {
         </div>
         <div className="w-[450px] flex">
           <Button
-            text="予定を登録"
+            text="予定を登録しん"
             buttonColor="#a7f3d0"
             underBarColor="#059669"
             onEventCallBack={() => {
@@ -252,7 +252,7 @@ export function FlamePc(props: Props) {
         style={customStyles}
         contentLabel="Example Modal"
       >
-        <div className="">予定を登録</div>
+        <div className="">予定を登録し</div>
         <CalendarRegister
           year={props.selectYear}
           month={props.selectMonth}

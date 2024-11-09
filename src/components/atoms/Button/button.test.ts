@@ -1,5 +1,5 @@
 // import { buttonStyles } from "./index";
-import { ButtonStyleInput, ButtonStyle } from "../../../lib/types";
+import { ButtonStyleInput, ButtonStyle } from '../../../lib/types';
 
 async function test(title: string, callback: Function) {
   try {
@@ -7,7 +7,7 @@ async function test(title: string, callback: Function) {
     console.log(title);
   } catch (error) {
     console.error(error);
-    console.error("エラー発見修正箇所あり");
+    console.error('エラー発見修正箇所あり');
   }
 }
 
@@ -23,25 +23,25 @@ function expect(result: ButtonStyleInput) {
 
 function buttonStyles(props: ButtonStyleInput) {
   return {
-    width: props.width ? `${props.width}px` : "150px",
-    backgroundColor: props.buttonColor ? props.buttonColor : "rgb(3 105 161);",
-    color: props.textColor ? props.textColor : "",
+    width: props.width ? `${props.width}px` : '150px',
+    backgroundColor: props.buttonColor ? props.buttonColor : 'rgb(3 105 161);',
+    color: props.textColor ? props.textColor : '',
     borderBottom: props.underBarColor
       ? `5px solid ${props.underBarColor}`
-      : "5px solid rgb(3 105 161)",
+      : '5px solid rgb(3 105 161)',
   };
 }
 
 const buttonText: ButtonStyleInput = {
-  buttonColor: "#a7f3d0",
-  underBarColor: "#059669",
+  buttonColor: '#a7f3d0',
+  underBarColor: '#059669',
 };
 
-test("button collor", () => {
+test('button collor', () => {
   expect(buttonStyles(buttonText)).toBe({
-    width: "150px",
-    backgroundColor: "#a7f3d0",
-    borderBottom: "#059669",
-    color: "",
+    width: '150px',
+    backgroundColor: '#a7f3d0',
+    borderBottom: '#059669',
+    color: '',
   });
 });

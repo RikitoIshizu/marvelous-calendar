@@ -1,5 +1,5 @@
-import React, { NamedExoticComponent, memo } from "react";
-import Head from "next/head";
+import React, { NamedExoticComponent, memo } from 'react';
+import Head from 'next/head';
 
 type Props = {
   title: string;

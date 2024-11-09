@@ -1,5 +1,5 @@
-import React, { memo, NamedExoticComponent, useCallback } from "react";
-import type { ChangeEvent } from "react";
+import React, { memo, NamedExoticComponent, useCallback } from 'react';
+import type { ChangeEvent } from 'react';
 
 type Props = {
   name: string;
@@ -13,7 +13,7 @@ export const Select: NamedExoticComponent<Props> = memo(function Select(
   props: Props
 ) {
   const clickEvent = useCallback(
-    (text: Props["value"]): void => {
+    (text: Props['value']): void => {
       props.onEventCallBack(text);
     },
     [props]

@@ -1,50 +1,50 @@
-import dayjs from "dayjs";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState, useCallback, useMemo } from "react";
-import Modal from "react-modal";
+import dayjs from 'dayjs';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { FormEvent, useEffect, useState, useCallback, useMemo } from 'react';
+import Modal from 'react-modal';
 
-import { Button } from "@/components/atoms/Button";
-import { MetaData } from "@/components/atoms/MetaData";
-import { InputTitle } from "@/components/molecules/InputTitle";
-import { InputDescription } from "@/components/molecules/InputDescription";
-import { ScheduleTypes } from "@/components/molecules/ScheduleTypes";
+import { Button } from '@/components/atoms/Button';
+import { MetaData } from '@/components/atoms/MetaData';
+import { InputTitle } from '@/components/molecules/InputTitle';
+import { InputDescription } from '@/components/molecules/InputDescription';
+import { ScheduleTypes } from '@/components/molecules/ScheduleTypes';
 
-import { specialDays, scheduleTextColor } from "@/lib/calendar";
+import { specialDays, scheduleTextColor } from '@/lib/calendar';
 import {
   getScheduleDetail,
   deleteSchedule,
   updateSchedule,
-} from "@/lib/supabase";
-import type { Schedule } from "@/lib/types";
+} from '@/lib/supabase';
+import type { Schedule } from '@/lib/types';
 
 const customStyles = {
   content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    width: "62.5rem",
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    width: '62.5rem',
   },
 };
 
 function titleText(date: string): string {
   const today = dayjs();
   const selectDay = dayjs(date);
-  const selectDayFormat = selectDay.format("YYYYMMDD");
+  const selectDayFormat = selectDay.format('YYYYMMDD');
 
-  if (today.format("YYYYMMDD") === selectDayFormat) {
-    return "今日の予定";
-  } else if (today.add(1, "day").format("YYYYMMDD") === selectDayFormat) {
-    return "明日の予定";
-  } else if (today.add(-1, "day").format("YYYYMMDD") === selectDayFormat) {
-    return "昨日の予定";
+  if (today.format('YYYYMMDD') === selectDayFormat) {
+    return '今日の予定';
+  } else if (today.add(1, 'day').format('YYYYMMDD') === selectDayFormat) {
+    return '明日の予定';
+  } else if (today.add(-1, 'day').format('YYYYMMDD') === selectDayFormat) {
+    return '昨日の予定';
   } else if (selectDay.isBefore(today)) {
-    return `${selectDay.format("YYYY年M月D日")}に追加された予定`;
+    return `${selectDay.format('YYYY年M月D日')}に追加された予定`;
   } else {
-    return `${selectDay.format("YYYY年M月D日")}の予定`;
+    return `${selectDay.format('YYYY年M月D日')}の予定`;
   }
 }
 
@@ -54,30 +54,30 @@ export default function Date() {
   const [schedules, setSchedules] = useState<Schedule[] | null>(null);
 
   // 編集用パラメータ
-  const [editId, setEditId] = useState<Schedule["id"] | null>(null);
-  const [editTitle, setEditTitle] = useState<Schedule["title"]>("");
+  const [editId, setEditId] = useState<Schedule['id'] | null>(null);
+  const [editTitle, setEditTitle] = useState<Schedule['title']>('');
   const [editDescription, setEditDescription] =
-    useState<Schedule["description"]>("");
+    useState<Schedule['description']>('');
   const [editScheduleType, setEditScheduleType] = useState<
-    Schedule["scheduleTypes"] | null
+    Schedule['scheduleTypes'] | null
   >(null);
 
   // バリデーション
-  const [titleError, setTitleError] = useState<string>("");
-  const [descriptionError, setDescriptionError] = useState<string>("");
+  const [titleError, setTitleError] = useState<string>('');
+  const [descriptionError, setDescriptionError] = useState<string>('');
 
   const router = useRouter();
   const dateParam: string | string[] | undefined = useRouter().query.id;
-  const check: boolean = typeof dateParam === "string" && !!dateParam;
+  const check: boolean = typeof dateParam === 'string' && !!dateParam;
 
   const date: string =
-    typeof dateParam === "string" && !!dateParam
-      ? dayjs(dateParam).format("YYYY年M月D日")
-      : "";
-  const pageTitle: string = check ? `${date}の予定` : "";
+    typeof dateParam === 'string' && !!dateParam
+      ? dayjs(dateParam).format('YYYY年M月D日')
+      : '';
+  const pageTitle: string = check ? `${date}の予定` : '';
   const pageDescription: string = check
     ? `${date}の予定を確認・変更・作成ができます。`
-    : "";
+    : '';
 
   const onSetSchedules = useCallback(async () => {
     const date = router.query.id as string;
@@ -87,9 +87,9 @@ export default function Date() {
 
   const specialDay = useMemo((): string => {
     const date = router.query.id as string;
-    const md = dayjs(date).format("MMDD");
+    const md = dayjs(date).format('MMDD');
 
-    return specialDays[md] ? specialDays[md] : "";
+    return specialDays[md] ? specialDays[md] : '';
   }, []);
 
   const updSchedule = useCallback(
@@ -98,13 +98,13 @@ export default function Date() {
 
       setTitleError(
         !editTitle
-          ? "タイトルを入力しろ、ボケ、普通入力するだろ、アホかお前。"
-          : ""
+          ? 'タイトルを入力しろ、ボケ、普通入力するだろ、アホかお前。'
+          : ''
       );
       setDescriptionError(
         !editDescription
-          ? "スケジュールの詳細書かないバカはいないだろ、書け馬鹿野郎"
-          : ""
+          ? 'スケジュールの詳細書かないバカはいないだろ、書け馬鹿野郎'
+          : ''
       );
 
       if (editTitle && editDescription) {
@@ -116,9 +116,9 @@ export default function Date() {
         });
 
         if (!response) {
-          alert("スケジュール変更完了！");
-          setTitleError("");
-          setDescriptionError("");
+          alert('スケジュール変更完了！');
+          setTitleError('');
+          setDescriptionError('');
           setIsOpen(false);
           onSetSchedules();
         }
@@ -128,7 +128,7 @@ export default function Date() {
   );
 
   const openModal = useCallback(
-    (id: Schedule["id"]): void => {
+    (id: Schedule['id']): void => {
       const editSchedule = schedules?.filter((el) => el.id === id);
 
       if (!editSchedule?.length) return;
@@ -143,7 +143,7 @@ export default function Date() {
   );
 
   const delSchedule = useCallback(
-    async (id: Schedule["id"]) => {
+    async (id: Schedule['id']) => {
       setIsLoad(true);
       const response = await deleteSchedule(id);
 
@@ -163,7 +163,7 @@ export default function Date() {
     <main>
       <MetaData title={pageTitle} description={pageDescription} />
       <section className="my-2 relative">
-        {typeof dateParam === "string" && !!dateParam && (
+        {typeof dateParam === 'string' && !!dateParam && (
           <h1 className="text-4xl font-bold text-center">
             {titleText(dateParam)}
           </h1>

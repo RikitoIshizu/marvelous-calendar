@@ -1,4 +1,4 @@
-import React, { memo, NamedExoticComponent } from "react";
+import React, { memo, NamedExoticComponent } from 'react';
 
 type Props = {
   name: string;

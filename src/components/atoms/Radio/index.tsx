@@ -1,4 +1,4 @@
-import { useCallback, memo, NamedExoticComponent } from "react";
+import { useCallback, memo, NamedExoticComponent } from 'react';
 
 type Props = {
   name: string;
@@ -12,7 +12,7 @@ export const Radio: NamedExoticComponent<Props> = memo(function Radio(
   props: Props
 ) {
   const clickEvent = useCallback(
-    (id: Props["id"]): void => {
+    (id: Props['id']): void => {
       props.onEventCallBack(id);
     },
     [props]

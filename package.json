@@ -9,10 +9,9 @@
     "twbuld": "cross-env NODE_ENV=production tailwindcss build src/styles/styles.css -o src/styles/styles_dev.css",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "lint-fix": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
-    "tsc": "tsc",
-    "test": "jest"
+    "codecheck": "tsc",
+    "test": "jest",
+    "lintfix": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\""
   },
   "dependencies": {
     "@supabase/auth-ui-react": "^0.4.7",

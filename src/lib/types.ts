@@ -5,7 +5,8 @@ export type Button = {
   underBarColor?: string;
   textColor?: string;
   onEventCallBack?: Function;
-  type?: "submit" | "reset" | "button";
+  disabled?: false;
+  type?: 'submit' | 'reset' | 'button';
 };
 
 export type HolidayAndSpecialDayException = {

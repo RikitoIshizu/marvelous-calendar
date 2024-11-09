@@ -1,14 +1,14 @@
-import dayjs from "dayjs";
-import { useEffect, useRef, useState, LegacyRef } from "react";
+import dayjs from 'dayjs';
+import { useEffect, useRef, useState, LegacyRef } from 'react';
 
-import { Button } from "@/components/atoms/Button";
-import { Select } from "@/components/atoms/Select";
+import { Button } from '@/components/atoms/Button';
+import { Select } from '@/components/atoms/Select';
 import {
   dayTextCommmon,
   YearAndMonthAndDateList,
   specialDayList,
   holiday as holidays,
-} from "@/lib/calendar";
+} from '@/lib/calendar';
 
 type Calendar = {
   keyOfdayOfWeek: number;
@@ -33,7 +33,7 @@ type Props = {
 
 export function FlameSp(props: Props) {
   const [isShowDetail, openDetail] = useState<boolean>(false);
-  const [displayDate, changeTitle] = useState<string>("");
+  const [displayDate, changeTitle] = useState<string>('');
   const [calendarDetailHeight, setCalendarHeight] = useState<number>(0);
 
   // useStateの関数群
@@ -44,32 +44,32 @@ export function FlameSp(props: Props) {
   };
 
   const onChangeDetailTitle = (date: string) => {
-    changeTitle(dayjs(date).format("YYYYMMDD"));
+    changeTitle(dayjs(date).format('YYYYMMDD'));
   };
 
   const displayText = () => {
     const weekDay: { [key: string]: string } = {
-      Su: "日",
-      Mo: "月",
-      Tu: "火",
-      We: "水",
-      Th: "木",
-      Fr: "金",
-      Sa: "土",
+      Su: '日',
+      Mo: '月',
+      Tu: '火',
+      We: '水',
+      Th: '木',
+      Fr: '金',
+      Sa: '土',
     };
     const d = dayjs(displayDate);
-    const wd = d.format("dd");
+    const wd = d.format('dd');
 
     return d.format(`YYYY年M月D日(${weekDay[`${wd}`]})`);
   };
 
   const dayClass = (date: string) => {
-    let classes = "w-[calc(100%/7)] min-w-[calc(100%/7)] text-center p-3";
+    let classes = 'w-[calc(100%/7)] min-w-[calc(100%/7)] text-center p-3';
     const nowM = dayjs(`${props.selectYear}-${props.selectMonth}`).month();
     const d = dayjs(date).month();
 
     if (d !== nowM) {
-      classes += " text-gray-400";
+      classes += ' text-gray-400';
     }
 
     return classes;
@@ -85,20 +85,20 @@ export function FlameSp(props: Props) {
   };
 
   const isToday = (date: string) => {
-    const today = dayTextCommmon("YMD");
-    const checkDay = dayTextCommmon("YMD", date);
+    const today = dayTextCommmon('YMD');
+    const checkDay = dayTextCommmon('YMD', date);
 
     return today === checkDay;
   };
 
   const sdList = () => {
     return specialDayList
-      .filter((el) => dayjs(displayDate).format("MMDD") == el.date)
+      .filter((el) => dayjs(displayDate).format('MMDD') == el.date)
       .map((el) => el.name);
   };
 
   const holiday = () => {
-    return holidays[`${dayjs(displayDate).format("MMDD")}`];
+    return holidays[`${dayjs(displayDate).format('MMDD')}`];
   };
 
   const header = useRef<HTMLDivElement>(null);
@@ -196,7 +196,7 @@ export function FlameSp(props: Props) {
       >
         <thead>
           <tr>
-            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((el) => (
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((el) => (
               <td
                 key={el}
                 className="w-[calc(100%/7)] min-w-[calc(100%/7)] text-center p-2 font-bold text-xl"
@@ -224,8 +224,8 @@ export function FlameSp(props: Props) {
                         }}
                         className={
                           isToday(el.date)
-                            ? "w-[30px] h-[30px] rounded-full bg-[red] text-center text-white"
-                            : ""
+                            ? 'w-[30px] h-[30px] rounded-full bg-[red] text-center text-white'
+                            : ''
                         }
                       >
                         {dayjs(el.date).date()}
@@ -243,7 +243,7 @@ export function FlameSp(props: Props) {
           <h1 className="mt-2 text-center text-xl">{displayText()}</h1>
           <div
             className="overflow-y-scroll p-2"
-            style={{ height: calendarDetailHeight + "px" }}
+            style={{ height: calendarDetailHeight + 'px' }}
           >
             {holiday() ? (
               <div className="font-bold text-center text-red-400 text-xl">

@@ -1,9 +1,9 @@
-import "@/styles/globals.css";
-import "tailwindcss/tailwind.css";
-import Head from "next/head";
-import { AppProps } from "next/app";
-import Script from "next/script";
-import React from "react";
+import '@/styles/globals.css';
+import 'tailwindcss/tailwind.css';
+import Head from 'next/head';
+import { AppProps } from 'next/app';
+import Script from 'next/script';
+import React from 'react';
 
 function MyApp({ Component, pageProps }: AppProps): React.ReactElement {
   return (
