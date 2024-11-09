@@ -8,10 +8,10 @@ const supabase = createClient(supabaseUrl!, supabaseAnonKey!);
 
 const GET_COLUMN = 'id, year, month, day, scheduleTypes, title, description';
 
-export async function getSchedule(
+export const getSchedule = async (
   year?: Schedule['year'],
   month?: Schedule['month']
-): Promise<Schedule[]> {
+): Promise<Schedule[]> => {
   const { data, error, status } =
     year && month
       ? await supabase
@@ -24,9 +24,9 @@ export async function getSchedule(
     throw error;
   }
   return data as Schedule[];
-}
+};
 
-export async function getScheduleDetail(date: string): Promise<Schedule[]> {
+export const getScheduleDetail = async (date: string): Promise<Schedule[]> => {
   const dateParams = dayjs(date);
   const year = dateParams.format('YYYY');
   const month = dateParams.format('M');
@@ -41,14 +41,14 @@ export async function getScheduleDetail(date: string): Promise<Schedule[]> {
     throw error;
   }
   return data as Schedule[];
-}
+};
 
-export async function registerScheduleDetail(
+export const registerScheduleDetail = async (
   registerParams: Pick<
     Schedule,
     'year' | 'month' | 'day' | 'scheduleTypes' | 'title' | 'description'
   >
-): Promise<null> {
+): Promise<null> => {
   const { year, month, day, scheduleTypes, title, description } =
     registerParams;
 
@@ -60,9 +60,9 @@ export async function registerScheduleDetail(
     throw error;
   }
   return null;
-}
+};
 
-export async function deleteSchedule(id: Schedule['id']): Promise<null> {
+export const deleteSchedule = async (id: Schedule['id']): Promise<null> => {
   const { error, status } = await supabase
     .from('schedule')
     .delete()
@@ -72,11 +72,11 @@ export async function deleteSchedule(id: Schedule['id']): Promise<null> {
     throw error;
   }
   return null;
-}
+};
 
-export async function updateSchedule(
+export const updateSchedule = async (
   params: Pick<Schedule, 'id' | 'title' | 'description' | 'scheduleTypes'>
-): Promise<null> {
+): Promise<null> => {
   const { id, title, description, scheduleTypes } = params;
   const { error } = await supabase
     .from('schedule')
@@ -88,4 +88,4 @@ export async function updateSchedule(
   }
 
   return null;
-}
+};
