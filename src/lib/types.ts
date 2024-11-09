@@ -49,3 +49,8 @@ export type Schedule = {
   title: string;
   description: string;
 };
+
+export type Login = {
+  id: string;
+  password: string;
+};

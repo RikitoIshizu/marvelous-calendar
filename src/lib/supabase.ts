@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import type { Schedule } from './types';
+import type { Login, Schedule } from './types';
 import dayjs from 'dayjs';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -86,6 +86,19 @@ export const updateSchedule = async (
   if (error) {
     throw error;
   }
+
+  return null;
+};
+
+export const getLoginAccount = async (params: Login): Promise<null> => {
+  const { id, password } = params;
+  const data = await supabase
+    .from('accounts')
+    .select('id, password')
+    .eq('userID', id)
+    .eq('password', password);
+
+  console.log('とれた？', data);
 
   return null;
 };
