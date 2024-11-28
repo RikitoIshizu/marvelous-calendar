@@ -157,7 +157,7 @@ export function FlamePc(props: Props) {
         </div>
         <div className="w-[450px] flex">
           <Button
-            text="予定を登録しん"
+            text="予定を登録"
             buttonColor="#a7f3d0"
             underBarColor="#059669"
             onEventCallBack={() => {
@@ -252,7 +252,7 @@ export function FlamePc(props: Props) {
         style={customStyles}
         contentLabel="Example Modal"
       >
-        <div className="">予定を登録し</div>
+        <div className="">予定を登録</div>
         <CalendarRegister
           year={props.selectYear}
           month={props.selectMonth}
