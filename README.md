@@ -1,9 +1,6 @@
 # カレンダー仕様等
 React開発の学習のために作ったカレンダーアプリ。
 
-## URL
-https://famc.vercel.app/
-
 ## 仕様ライブラリ
 
 ◯TypeScript ver 4.7.2  
