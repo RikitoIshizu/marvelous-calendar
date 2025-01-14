@@ -15,6 +15,7 @@ import {
 	getScheduleDetail,
 	deleteSchedule,
 	updateSchedule,
+	registerScheduleDetail,
 } from '@/lib/supabase';
 import type { Schedule } from '@/lib/types';
 
@@ -50,12 +51,13 @@ const titleText = (date: string): string => {
 export default function Date() {
 	const router = useRouter();
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+	const [modalMode, setModalMode] = useState<'register' | 'edit'>('register');
 	const [isNewScheduleLoading, setIsNewScheduleLoading] =
 		useState<boolean>(false);
-	const [schedules, setSchedules] = useState<Schedule[] | null>(null);
+	const [schedules, setSchedules] = useState<Schedule[]>([]);
 
 	// 編集用パラメータ
-	const [scheduleId, setScheduleId] = useState<Schedule['id'] | null>(null);
+	const [scheduleId, setScheduleId] = useState<Schedule['id'] | ''>('');
 	const [scheduleTitle, setScheduleTitle] = useState<Schedule['title']>('');
 	const [scheduleDescription, setScheduletDescription] =
 		useState<Schedule['description']>('');
@@ -80,11 +82,11 @@ export default function Date() {
 		setSchedules(schedules);
 	}, [date]);
 
-	const specialDay = useMemo((): string => {
+	const specialDay = useCallback(() => {
 		const md = dayjs(date).format('MMDD');
 
 		return specialDays[md] ? specialDays[md] : '';
-	}, []);
+	}, [date]);
 
 	const updSchedule = useCallback(
 		async (e: FormEvent<Element>): Promise<void> => {
@@ -95,7 +97,25 @@ export default function Date() {
 				!scheduleDescription ? 'スケジュールの詳細は必須です。' : ''
 			);
 
-			if (scheduleTitle && scheduleDescription) {
+			if (!scheduleTitle && !scheduleDescription) return;
+
+			if (modalMode === 'register') {
+				const registeringDate = dayjs(date);
+				const year = registeringDate.format('YYYY');
+				const month = registeringDate.format('MM');
+				const day = registeringDate.format('DD');
+
+				const response = await registerScheduleDetail({
+					year: Number(year),
+					month: Number(month),
+					day: Number(day),
+					title: scheduleTitle,
+					description: scheduleDescription,
+					scheduleTypes: Number(scheduleType),
+				});
+
+				!response && alert('スケジュール登録完了！');
+			} else {
 				const response = await updateSchedule({
 					id: Number(scheduleId),
 					title: scheduleTitle,
@@ -103,14 +123,13 @@ export default function Date() {
 					scheduleTypes: Number(scheduleType),
 				});
 
-				if (!response) {
-					alert('スケジュール変更完了！');
-					setTitleError('');
-					setDescriptionError('');
-					setIsModalOpen(false);
-					loadSchedules();
-				}
+				!response && alert('スケジュール変更完了！');
 			}
+
+			setTitleError('');
+			setDescriptionError('');
+			setIsModalOpen(false);
+			loadSchedules();
 		},
 		[
 			scheduleTitle,
@@ -118,11 +137,13 @@ export default function Date() {
 			scheduleType,
 			titleError,
 			descriptionError,
+			date,
 		]
 	);
 
 	const openModal = useCallback(
 		(id: Schedule['id']): void => {
+			setModalMode('edit');
 			const editSchedule = schedules?.filter((el) => el.id === id);
 
 			if (!editSchedule?.length) return;
@@ -154,6 +175,15 @@ export default function Date() {
 		[schedules]
 	);
 
+	const openRegisterScheduleModal = () => {
+		setIsModalOpen(true);
+		setModalMode('register');
+		setScheduleId('');
+		setScheduleTitle('');
+		setScheduletDescription('');
+		setScheduleType(null);
+	};
+
 	useEffect(() => {
 		router.isReady && loadSchedules();
 	}, [router]);
@@ -166,44 +196,51 @@ export default function Date() {
 					<h1 className="text-4xl font-bold text-center">{titleText(date)}</h1>
 				)}
 				<div className="w-[1000px] mx-auto">
-					{specialDay && (
+					{specialDay() && (
 						<section>
 							<h2 className="text-2xl font-bold">今日は何の日？</h2>
-							<div className="mt-1">{specialDay}</div>
+							<div className="mt-1">{specialDay()}</div>
 						</section>
 					)}
-					{schedules?.length ? (
-						<section className="mt-4">
-							<h2 className="text-2xl font-bold">登録されているスケジュール</h2>
-							{schedules && (
-								<ul>
-									{schedules.map((el) => {
-										return (
-											<li className="mt-1 flex items-center" key={el.id}>
-												<p className={scheduleTextColor(el.scheduleTypes)}>
-													{el.description}
-												</p>
-												<button
-													className="ml-2 w-[80px] bg-[blue] text-[#fff] rounded-full"
-													onClick={() => openModal(el.id)}
-												>
-													編集
-												</button>
-												<button
-													className="ml-2 w-[80px] bg-[red] text-[#fff] rounded-full"
-													onClick={() => confirmShouldDeleteSchedule(el.id)}
-												>
-													削除
-												</button>
-											</li>
-										);
-									})}
-								</ul>
-							)}
-						</section>
-					) : null}
-					<div className="mt-6">
-						<Link href="/" className="w-[100px] h-[50px] bg-[red]s">
+					<section className="mt-4">
+						<div className="flex">
+							<h2 className="text-2xl font-bold mr-4">スケジュール</h2>
+							<Button
+								text="登録"
+								textColor="#fff"
+								onEventCallBack={openRegisterScheduleModal}
+							/>
+						</div>
+						{schedules.length ? (
+							<ul className="mt-4">
+								{schedules.map((el) => {
+									return (
+										<li className="mt-1 flex items-center" key={el.id}>
+											<p className={scheduleTextColor(el.scheduleTypes)}>
+												{el.description}
+											</p>
+											<button
+												className="ml-2 w-[80px] bg-[blue] text-[#fff] rounded-full"
+												onClick={() => openModal(el.id)}
+											>
+												編集
+											</button>
+											<button
+												className="ml-2 w-[80px] bg-[red] text-[#fff] rounded-full"
+												onClick={() => confirmShouldDeleteSchedule(el.id)}
+											>
+												削除
+											</button>
+										</li>
+									);
+								})}
+							</ul>
+						) : (
+							<div className="mt-4">スケジュールは登録されていません。</div>
+						)}
+					</section>
+					<div className="mt-6 text-center">
+						<Link href="/" className="w-[100px] h-[50px] text-blue-700">
 							戻る
 						</Link>
 					</div>
@@ -235,12 +272,7 @@ export default function Date() {
 						}
 					/>
 					<div className="text-center mt-5">
-						<Button
-							type="submit"
-							text="登録"
-							buttonColor="#a7f3d0"
-							underBarColor="#059669"
-						/>
+						<Button type="submit" text="登録" buttonColor="#a7f3d0" />
 					</div>
 				</form>
 			</Modal>
