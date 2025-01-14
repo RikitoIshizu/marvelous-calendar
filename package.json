@@ -4,7 +4,7 @@
 	"license": "UNLICENSED",
 	"private": true,
 	"scripts": {
-		"dev": "next dev",
+		"dev": "next dev -H 0.0.0.0",
 		"tw": "tailwindcss build src/styles/styles.css -o src/styles/styles_dev.css",
 		"twbuld": "cross-env NODE_ENV=production tailwindcss build src/styles/styles.css -o src/styles/styles_dev.css",
 		"build": "next build",
