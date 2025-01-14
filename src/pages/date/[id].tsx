@@ -188,6 +188,10 @@ export default function Date() {
 		router.isReady && loadSchedules();
 	}, [router]);
 
+	const shouldShowScheduleRegisterBtn = useCallback(() => {
+		return dayjs(date).isAfter(dayjs());
+	}, []);
+
 	return (
 		<main>
 			<MetaData title={pageTitle} description={pageDescription} />
@@ -205,11 +209,13 @@ export default function Date() {
 					<section className="mt-4">
 						<div className="flex">
 							<h2 className="text-2xl font-bold mr-4">スケジュール</h2>
-							<Button
-								text="登録"
-								textColor="#fff"
-								onEventCallBack={openRegisterScheduleModal}
-							/>
+							{shouldShowScheduleRegisterBtn() && (
+								<Button
+									text="登録"
+									textColor="#fff"
+									onEventCallBack={openRegisterScheduleModal}
+								/>
+							)}
 						</div>
 						{schedules.length ? (
 							<ul className="mt-4">
