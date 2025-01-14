@@ -158,8 +158,8 @@ export function FlamePc(props: Props) {
 				<div className="w-[450px] flex">
 					<Button
 						text="予定を登録"
-						buttonColor="#a7f3d0"
-						underBarColor="#059669"
+						buttonColor="blue"
+						textColor="#fff"
 						onEventCallBack={() => {
 							setIsOpen(true);
 						}}
@@ -167,8 +167,9 @@ export function FlamePc(props: Props) {
 					{!props.isNowMonth && (
 						<Button
 							text="月をリセット"
-							buttonColor="rgb(253 164 175)"
-							underBarColor="rgb(244 63 94)"
+							buttonColor="red"
+							underBarColor="#691"
+							textColor="#fff"
 							onEventCallBack={() => {
 								onClickBtn(0);
 							}}
