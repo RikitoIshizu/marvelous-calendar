@@ -1,16 +1,19 @@
 # カレンダー仕様等
-React開発の学習のために作ったカレンダーアプリ。
+
+React 開発の学習のために作ったカレンダーアプリ。
 
 ## 仕様ライブラリ
 
 ◯TypeScript ver 4.7.2  
 ◯react-modal ver 3.15.1  
-◯dayjs 　 ver 1.11.3  
+◯dayjs ver 1.11.3  
 ◯tailwindcss ver 3.3.2
 ◯prettier ver 2.6.2  
 ◯react-device-detect ver 2.2.3
 
 ## ページ
+
+PC で使う想定のため、SP のデザインはあまり対応していない。
 
 ### カレンダーページ
 
