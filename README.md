@@ -3,8 +3,7 @@
 React 開発の学習のために作ったカレンダーアプリ。
 
 ## URL
-
-https://memorycalendar.vercel.app/
+https://famc-git-main-rikitoishizus-projects.vercel.app/
 
 ## 仕様ライブラリ
 
