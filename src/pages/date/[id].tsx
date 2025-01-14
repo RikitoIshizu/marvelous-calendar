@@ -1,8 +1,17 @@
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FormEvent, useEffect, useState, useCallback, useMemo } from 'react';
-import Modal from 'react-modal';
+import {
+	FormEvent,
+	useEffect,
+	useState,
+	useCallback,
+	useMemo,
+	ComponentType,
+} from 'react';
+import ReactModal from 'react-modal';
+
+const Modal = ReactModal as unknown as ComponentType<any>;
 
 import { Button } from '@/components/atoms/Button';
 import { MetaData } from '@/components/atoms/MetaData';

@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import Modal from 'react-modal';
+import { useCallback, useEffect, useRef, useState, ComponentType } from 'react';
+import ReactModal from 'react-modal';
+
+const Modal = ReactModal as unknown as ComponentType<any>;
 
 import { Button } from '@/components/atoms/Button';
 import { CalendarRegister } from '@/components/organisms/CalendarRegister';
