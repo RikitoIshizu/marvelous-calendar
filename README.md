@@ -2,10 +2,6 @@
 
 React 開発の学習のために作ったカレンダーアプリ。
 
-## URL
-
-https://famc-git-main-rikitoishizus-projects.vercel.app/
-
 ## 使用ライブラリ
 
 TypeScript ver 5.7.3<br/>
