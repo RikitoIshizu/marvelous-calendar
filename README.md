@@ -8,11 +8,11 @@ https://famc-git-main-rikitoishizus-projects.vercel.app/
 
 ## 仕様ライブラリ
 
-◯TypeScript ver 4.7.2  
-◯react-modal ver 3.15.1  
-◯dayjs ver 1.11.3  
-◯tailwindcss ver 3.3.2
-◯prettier ver 2.6.2
+TypeScript ver 5.7.3<br/>
+react-modal ver 3.16.3<br/>
+dayjs ver 1.11.13<br/>
+tailwindcss ver 3.4.17<br/>
+prettier ver 3.4.2<br/>
 
 ## ページ
 
