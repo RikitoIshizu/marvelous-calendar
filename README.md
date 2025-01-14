@@ -3,6 +3,7 @@
 React 開発の学習のために作ったカレンダーアプリ。
 
 ## URL
+
 https://famc-git-main-rikitoishizus-projects.vercel.app/
 
 ## 仕様ライブラリ
@@ -11,8 +12,7 @@ https://famc-git-main-rikitoishizus-projects.vercel.app/
 ◯react-modal ver 3.15.1  
 ◯dayjs ver 1.11.3  
 ◯tailwindcss ver 3.3.2
-◯prettier ver 2.6.2  
-◯react-device-detect ver 2.2.3
+◯prettier ver 2.6.2
 
 ## ページ
 
