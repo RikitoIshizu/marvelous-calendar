@@ -15,7 +15,7 @@ export const Button: NamedExoticComponent<Btn> = memo(function Btn(props: Btn) {
 		props.textColor && (classes += ` text-[${props.textColor}]`);
 
 		return classes;
-	}, []);
+	}, [props.underBarColor, props.width, props.buttonColor, props.textColor]);
 
 	return (
 		<button

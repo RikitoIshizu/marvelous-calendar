@@ -73,7 +73,7 @@ export function FlamePc(props: Props) {
 	const onResetSchedule = useCallback(() => {
 		onGetSchedules();
 		setIsOpen(false);
-	}, []);
+	}, [onGetSchedules]);
 
 	const getScheduleOnTheDate = useCallback(
 		(
@@ -106,13 +106,13 @@ export function FlamePc(props: Props) {
 			isAct.current = true;
 			onGetSchedules();
 		}
-	}, []);
+	}, [onGetSchedules]);
 
 	useEffect(() => {
 		if (schedules) {
 			onGetSchedules();
 		}
-	}, [props.count]);
+	}, [onGetSchedules, schedules]);
 
 	return (
 		<main className="w-full relative">

@@ -24,6 +24,112 @@ export function Top() {
 	const [selectYear, changeYear] = useState<string>(dayTextCommmon('YYYY'));
 	const [selectMonth, chnageMonth] = useState<string>(dayTextCommmon('MM'));
 
+	// 年と月を取得する
+	const setNowYearAndMonth = useCallback((val?: number) => {
+		const setYear: string = val
+			? dayjs().add(val, 'month').format('YYYY')
+			: dayTextCommmon('YYYY');
+		const setMonth: string = val
+			? dayjs().add(val, 'month').format('MM')
+			: dayTextCommmon('MM');
+
+		changeYear(setYear);
+		chnageMonth(setMonth);
+	}, []);
+
+	// カレンダーの日付を取得
+	const setCalendar = useCallback((val?: number) => {
+		const setYandM =
+			val === 0 || val === undefined
+				? dayTextCommmon('YYYY-MM')
+				: dayjs().add(val, 'month').format('YYYY-MM');
+
+		// カレンダーを取得する
+		// その月の全日付を取得
+		let nowCalendar: Calendar[] = [];
+
+		// まずは現在見ている月のカレンダーの日付を取得する
+		for (var i = 1; i <= amountOfDay(setYandM); i++) {
+			const day = i.toString().padStart(2, '0');
+			const yearAndMonth = dayTextCommmon('YYYY-MM', setYandM);
+			const date = dayTextCommmon('YYYY-MM-DD', `${yearAndMonth}-${day}`);
+			const keyOfdayOfWeek = dayjs(date).day();
+			const order =
+				nowCalendar.filter(
+					(el: Calendar) => el.keyOfdayOfWeek === keyOfdayOfWeek
+				).length + 1;
+
+			const setData: Calendar = { date, keyOfdayOfWeek, order };
+			nowCalendar = [...nowCalendar, setData];
+		}
+
+		// 足りない前後の月の日付を取得する。
+		let prevMonthDate: Calendar[] = [];
+		let nextMonthDate: Calendar[] = [];
+
+		nowCalendar.forEach((date) => {
+			const d = dayjs(date.date);
+			const day: number = d.date();
+
+			if (day === 1) {
+				// 月初の場合、前月の足りない日数を追加する
+				if (date.keyOfdayOfWeek) {
+					for (var i = date.keyOfdayOfWeek; i > 0; i--) {
+						const addPrevMonthDate = d.add(-i, 'day');
+						prevMonthDate = [
+							...prevMonthDate,
+							{
+								date: addPrevMonthDate.format('YYYY-MM-DD'),
+								keyOfdayOfWeek: addPrevMonthDate.day(),
+								order: 1,
+							},
+						];
+					}
+				}
+			} else if (day === nowCalendar.length) {
+				// 月末の場合、次月の足りない日数を追加する
+				if (date.keyOfdayOfWeek !== 6) {
+					for (var n = 1; n <= 6 - date.keyOfdayOfWeek; n++) {
+						const addPrevMonthDate = d.add(n, 'day');
+						nextMonthDate = [
+							...nextMonthDate,
+							{
+								date: addPrevMonthDate.format('YYYY-MM-DD'),
+								keyOfdayOfWeek: addPrevMonthDate.day(),
+								order: 6,
+							},
+						];
+					}
+				}
+			}
+		});
+
+		const displayCalendar = [
+			...prevMonthDate,
+			...nowCalendar,
+			...nextMonthDate,
+		];
+
+		let datePerWeek: WeeklyDay[] = [];
+		let oneWeek: Calendar[] = [];
+		let week = 1;
+
+		// 週ごとに分ける
+		displayCalendar.forEach((date: Calendar) => {
+			oneWeek = [...oneWeek, date];
+
+			if (date.keyOfdayOfWeek === 6) {
+				const addData: WeeklyDay[] = [{ week, days: oneWeek }];
+
+				datePerWeek = [...datePerWeek, ...addData];
+				oneWeek = [];
+				week++;
+			}
+		});
+
+		setDays(datePerWeek);
+	}, []);
+
 	// countを変える
 	const onChangeCount = useCallback(
 		(c: number) => {
@@ -31,119 +137,7 @@ export function Top() {
 			setNowYearAndMonth(c);
 			setCalendar(c);
 		},
-		[count]
-	);
-
-	// 年と月を取得する
-	const setNowYearAndMonth = useCallback(
-		(val?: number) => {
-			const setYear: string = val
-				? dayjs().add(val, 'month').format('YYYY')
-				: dayTextCommmon('YYYY');
-			const setMonth: string = val
-				? dayjs().add(val, 'month').format('MM')
-				: dayTextCommmon('MM');
-
-			changeYear(setYear);
-			chnageMonth(setMonth);
-		},
-		[selectYear, selectMonth]
-	);
-
-	// カレンダーの日付を取得
-	const setCalendar = useCallback(
-		(val?: number) => {
-			const setYandM =
-				val === 0 || val === undefined
-					? dayTextCommmon('YYYY-MM')
-					: dayjs().add(val, 'month').format('YYYY-MM');
-
-			// カレンダーを取得する
-			// その月の全日付を取得
-			let nowCalendar: Calendar[] = [];
-
-			// まずは現在見ている月のカレンダーの日付を取得する
-			for (var i = 1; i <= amountOfDay(setYandM); i++) {
-				const day = i.toString().padStart(2, '0');
-				const yearAndMonth = dayTextCommmon('YYYY-MM', setYandM);
-				const date = dayTextCommmon('YYYY-MM-DD', `${yearAndMonth}-${day}`);
-				const keyOfdayOfWeek = dayjs(date).day();
-				const order =
-					nowCalendar.filter(
-						(el: Calendar) => el.keyOfdayOfWeek === keyOfdayOfWeek
-					).length + 1;
-
-				const setData: Calendar = { date, keyOfdayOfWeek, order };
-				nowCalendar = [...nowCalendar, setData];
-			}
-
-			// 足りない前後の月の日付を取得する。
-			let prevMonthDate: Calendar[] = [];
-			let nextMonthDate: Calendar[] = [];
-
-			nowCalendar.forEach((date) => {
-				const d = dayjs(date.date);
-				const day: number = d.date();
-
-				if (day === 1) {
-					// 月初の場合、前月の足りない日数を追加する
-					if (date.keyOfdayOfWeek) {
-						for (var i = date.keyOfdayOfWeek; i > 0; i--) {
-							const addPrevMonthDate = d.add(-i, 'day');
-							prevMonthDate = [
-								...prevMonthDate,
-								{
-									date: addPrevMonthDate.format('YYYY-MM-DD'),
-									keyOfdayOfWeek: addPrevMonthDate.day(),
-									order: 1,
-								},
-							];
-						}
-					}
-				} else if (day === nowCalendar.length) {
-					// 月末の場合、次月の足りない日数を追加する
-					if (date.keyOfdayOfWeek !== 6) {
-						for (var n = 1; n <= 6 - date.keyOfdayOfWeek; n++) {
-							const addPrevMonthDate = d.add(n, 'day');
-							nextMonthDate = [
-								...nextMonthDate,
-								{
-									date: addPrevMonthDate.format('YYYY-MM-DD'),
-									keyOfdayOfWeek: addPrevMonthDate.day(),
-									order: 6,
-								},
-							];
-						}
-					}
-				}
-			});
-
-			const displayCalendar = [
-				...prevMonthDate,
-				...nowCalendar,
-				...nextMonthDate,
-			];
-
-			let datePerWeek: WeeklyDay[] = [];
-			let oneWeek: Calendar[] = [];
-			let week = 1;
-
-			// 週ごとに分ける
-			displayCalendar.forEach((date: Calendar) => {
-				oneWeek = [...oneWeek, date];
-
-				if (date.keyOfdayOfWeek === 6) {
-					const addData: WeeklyDay[] = [{ week, days: oneWeek }];
-
-					datePerWeek = [...datePerWeek, ...addData];
-					oneWeek = [];
-					week++;
-				}
-			});
-
-			setDays(datePerWeek);
-		},
-		[days]
+		[setCalendar, setNowYearAndMonth]
 	);
 
 	// 年と月を変える
@@ -158,7 +152,7 @@ export function Top() {
 			setNowYearAndMonth(setCount);
 			setCalendar(setCount);
 		},
-		[count]
+		[setCalendar, setNowYearAndMonth]
 	);
 
 	// 今見ているカレンダーが実際の現在の年月かどうか
@@ -173,7 +167,7 @@ export function Top() {
 			setNowYearAndMonth();
 			setCalendar();
 		}
-	}, []);
+	}, [isDisplay, setNowYearAndMonth, setCalendar]);
 
 	return (
 		<FlamePc

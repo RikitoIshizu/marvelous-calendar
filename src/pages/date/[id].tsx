@@ -70,11 +70,11 @@ export default function Date() {
 	const [descriptionError, setDescriptionError] = useState<string>('');
 
 	const date = useRouter().query.id as string;
-	const dateText = useMemo(() => dayjs(date).format('YYYY年M月D日'), []);
-	const pageTitle = useMemo(() => `${dateText}の予定`, []);
+	const dateText = useMemo(() => dayjs(date).format('YYYY年M月D日'), [date]);
+	const pageTitle = useMemo(() => `${dateText}の予定`, [dateText]);
 	const pageDescription = useMemo(
 		() => `${date}の予定を確認・変更・作成ができます。`,
-		[]
+		[date]
 	);
 
 	const loadSchedules = useCallback(async () => {
@@ -135,9 +135,10 @@ export default function Date() {
 			scheduleTitle,
 			scheduleDescription,
 			scheduleType,
-			titleError,
-			descriptionError,
 			date,
+			loadSchedules,
+			modalMode,
+			scheduleId,
 		]
 	);
 
@@ -172,7 +173,7 @@ export default function Date() {
 				setIsNewScheduleLoading(false);
 			}
 		},
-		[schedules]
+		[loadSchedules]
 	);
 
 	const openRegisterScheduleModal = () => {
@@ -186,11 +187,11 @@ export default function Date() {
 
 	useEffect(() => {
 		router.isReady && loadSchedules();
-	}, [router]);
+	}, [router, loadSchedules]);
 
 	const shouldShowScheduleRegisterBtn = useCallback(() => {
 		return dayjs(date).isAfter(dayjs());
-	}, []);
+	}, [date]);
 
 	return (
 		<main>
