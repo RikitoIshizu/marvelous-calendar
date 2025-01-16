@@ -54,20 +54,20 @@ export function FlamePc(props: Props) {
 		(c: number) => {
 			return props.onEventCallBack(c);
 		},
-		[props]
+		[props],
 	);
 
 	const onChangeYearAndMonth = useCallback(
 		(y: string, m: string) => {
 			return props.onChangeYearAndMonth(y, m);
 		},
-		[props]
+		[props],
 	);
 
 	const onGetSchedules = useCallback(async (): Promise<void> => {
 		const schedule = await getSchedule(
 			Number(props.selectYear),
-			Number(props.selectMonth)
+			Number(props.selectMonth),
 		);
 		setSchedules(schedule);
 	}, [props]);
@@ -79,7 +79,7 @@ export function FlamePc(props: Props) {
 
 	const getScheduleOnTheDate = useCallback(
 		(
-			day: string
+			day: string,
 		): Pick<Schedule, 'id' | 'title' | 'scheduleTypes'>[] | undefined => {
 			const y = dayjs(day).format('YYYY');
 			const m = dayjs(day).format('M');
@@ -100,7 +100,7 @@ export function FlamePc(props: Props) {
 					return { id, title, scheduleTypes };
 				});
 		},
-		[schedules]
+		[schedules],
 	);
 
 	useEffect(() => {
@@ -109,12 +109,6 @@ export function FlamePc(props: Props) {
 			onGetSchedules();
 		}
 	}, [onGetSchedules]);
-
-	useEffect(() => {
-		if (schedules) {
-			onGetSchedules();
-		}
-	}, [onGetSchedules, schedules]);
 
 	return (
 		<main className="w-full relative">
@@ -135,7 +129,7 @@ export function FlamePc(props: Props) {
 						value={props.selectYear}
 						selectList={
 							YearAndMonthAndDateList(
-								`${props.selectYear}-${props.selectMonth}`
+								`${props.selectYear}-${props.selectMonth}`,
 							).yearList
 						}
 						onEventCallBack={(year: string) => {
@@ -148,7 +142,7 @@ export function FlamePc(props: Props) {
 						value={props.selectMonth}
 						selectList={
 							YearAndMonthAndDateList(
-								`${props.selectYear}-${props.selectMonth}`
+								`${props.selectYear}-${props.selectMonth}`,
 							).monthList
 						}
 						onEventCallBack={(month: string) => {
@@ -205,7 +199,8 @@ export function FlamePc(props: Props) {
 							Tuesday
 						</td>
 						<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
-							水<br />
+							水
+							<br />
 							Wednesday
 						</td>
 						<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
