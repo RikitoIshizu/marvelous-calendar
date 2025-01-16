@@ -1,26 +1,23 @@
-FROM node:20-alpine
+FROM node:20-alpine AS builder
 
 WORKDIR /app
-
-# package.json と yarn.lock をコピーして依存関係をインストール
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
-
-# アプリケーションのソースコードをすべてコピー
 COPY . .
 RUN yarn build
 
+# 開発用（または実行用）ステージ
+FROM node:20-alpine
+
+WORKDIR /app
+COPY --from=builder /app /app
+
+# 非root ユーザー、ヘルスチェックなどの設定
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
 
-# ビルド成果物のみをコピー
-COPY --from=builder /app/build ./build
-
 EXPOSE 3000
-
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:3000/ || exit 1
 
-# 開発モードで起動
-CMD ["yarn", "start"]
-
+CMD ["yarn", "dev"]
