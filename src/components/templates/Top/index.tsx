@@ -129,17 +129,24 @@ export const Top = () => {
 	const [schedules, setSchedules] = useState<Schedule[]>([]);
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-	// 年と月を取得する
-	const setNowYearAndMonth = async (val: number) => {
-		console.log(val);
-		const y = dayjs().add(val, 'month').format('YYYY');
-		const m = dayjs().add(val, 'month').format('MM');
-
-		setYear(() => y);
-		setMonth(() => m);
-
-		onGetSchedules(Number(y), Number(m));
+	const onGetSchedules = async (y: number, m: number): Promise<void> => {
+		const schedule = await getSchedule(y, m);
+		setSchedules(schedule);
 	};
+
+	const setNowYearAndMonth = useCallback(
+		async (val: number) => {
+			console.log(val);
+			const y = dayjs().add(val, 'month').format('YYYY');
+			const m = dayjs().add(val, 'month').format('MM');
+
+			setYear(() => y);
+			setMonth(() => m);
+
+			onGetSchedules(Number(y), Number(m));
+		},
+		[onGetSchedules, setYear, setMonth],
+	);
 
 	// カレンダーの日付を取得
 	const setCalendar = (val: number) => {
@@ -229,11 +236,6 @@ export const Top = () => {
 		});
 
 		setDays(datePerWeek);
-	};
-
-	const onGetSchedules = async (y: number, m: number): Promise<void> => {
-		const schedule = await getSchedule(y, m);
-		setSchedules(schedule);
 	};
 
 	// 月を変える
