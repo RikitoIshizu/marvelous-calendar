@@ -43,7 +43,7 @@ const customStyles = {
 	},
 };
 
-const Calendar = ({
+const CalendarComponent = ({
 	days,
 	month,
 	year,
@@ -52,9 +52,7 @@ const Calendar = ({
 	days: WeeklyDay[];
 	month: string;
 	year: string;
-	getScheduleOnTheDate: (
-		date: string,
-	) => Pick<Schedule, 'id' | 'title' | 'scheduleTypes'>[];
+	getScheduleOnTheDate: Function;
 }) => {
 	return (
 		<table
@@ -245,7 +243,7 @@ export const Top = () => {
 			setNowYearAndMonth(c);
 			setCalendar(c);
 		},
-		[setCount, setNowYearAndMonth, setCalendar, onGetSchedules],
+		[setCount, setNowYearAndMonth, setCalendar],
 	);
 
 	// 年と月を変える
@@ -358,7 +356,7 @@ export const Top = () => {
 					<img src="./arrowRight.svg" alt="次の月" className="h-[40px]" />
 				</button>
 			</div>
-			<Calendar
+			<CalendarComponent
 				days={days}
 				month={month}
 				year={year}
