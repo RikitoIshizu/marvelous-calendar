@@ -6,6 +6,7 @@ module.exports = [
 			'tailwind.config.js',
 			'next.config.js',
 			'postcss.config.js',
+			'**/*.test.{js,jsx,ts,tsx}',
 		],
 		files: ['**/*.{js,jsx,ts,tsx}'],
 		languageOptions: {
@@ -14,9 +15,14 @@ module.exports = [
 				sourceType: 'module',
 				ecmaVersion: 13,
 			},
-			globals: {},
+			globals: {
+				process: 'readonly',
+				HTMLSelectElement: 'readonly',
+				Element: 'readonly',
+				window: 'readonly',
+				alert: 'readonly', // TODO: alertを使ってるところは後で別の処理にする
+			},
 		},
-
 		plugins: {
 			react: require('eslint-plugin-react'),
 			'react-hooks': require('eslint-plugin-react-hooks'),
