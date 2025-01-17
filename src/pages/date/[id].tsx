@@ -83,7 +83,7 @@ export default function Date() {
 	const pageTitle = useMemo(() => `${dateText}の予定`, [dateText]);
 	const pageDescription = useMemo(
 		() => `${date}の予定を確認・変更・作成ができます。`,
-		[date]
+		[date],
 	);
 
 	const loadSchedules = useCallback(async () => {
@@ -103,7 +103,7 @@ export default function Date() {
 
 			setTitleError(!scheduleTitle ? 'タイトルを入力は必須です。' : '');
 			setDescriptionError(
-				!scheduleDescription ? 'スケジュールの詳細は必須です。' : ''
+				!scheduleDescription ? 'スケジュールの詳細は必須です。' : '',
 			);
 
 			if (!scheduleTitle && !scheduleDescription) return;
@@ -148,7 +148,7 @@ export default function Date() {
 			loadSchedules,
 			modalMode,
 			scheduleId,
-		]
+		],
 	);
 
 	const openModal = useCallback(
@@ -164,7 +164,7 @@ export default function Date() {
 			setScheduleType(editSchedule[0].scheduleTypes);
 			setIsModalOpen(true);
 		},
-		[schedules]
+		[schedules],
 	);
 
 	const confirmShouldDeleteSchedule = useCallback(
@@ -182,7 +182,7 @@ export default function Date() {
 				setIsNewScheduleLoading(false);
 			}
 		},
-		[loadSchedules]
+		[loadSchedules],
 	);
 
 	const openRegisterScheduleModal = () => {

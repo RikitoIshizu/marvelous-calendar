@@ -1,9 +1,24 @@
 import dayjs from 'dayjs';
-import { useRef, useCallback, useEffect, useState, useMemo } from 'react';
+import {
+	useRef,
+	useEffect,
+	useState,
+	useMemo,
+	ComponentType,
+	useCallback,
+} from 'react';
+import ReactModal from 'react-modal';
 
-import { dayTextCommmon } from '@/lib/calendar';
+const Modal = ReactModal as unknown as ComponentType<any>;
+
+import { dayTextCommmon, YearAndMonthAndDateList } from '@/lib/calendar';
 import { amountOfDay } from '@/lib/calendar';
-import { FlamePc } from '@/components/organisms/Flame/Pc';
+import { Schedule } from '@/lib/types';
+import { getSchedule } from '@/lib/supabase';
+import { Day } from '@/components/atoms/Day';
+import { CalendarRegister } from '@/components/organisms/CalendarRegister';
+import { Select } from '@/components/atoms/Select';
+import { Button } from '@/components/atoms/Button';
 
 type Calendar = {
 	keyOfdayOfWeek: number;
@@ -16,33 +31,121 @@ type WeeklyDay = {
 	week: number;
 };
 
-export function Top() {
+const customStyles = {
+	content: {
+		top: '50%',
+		left: '50%',
+		right: 'auto',
+		bottom: 'auto',
+		marginRight: '-50%',
+		transform: 'translate(-50%, -50%)',
+		width: '62.5rem',
+	},
+};
+
+const Calendar = ({
+	days,
+	month,
+	year,
+	getScheduleOnTheDate,
+}: {
+	days: WeeklyDay[];
+	month: string;
+	year: string;
+	getScheduleOnTheDate: (
+		date: string,
+	) => Pick<Schedule, 'id' | 'title' | 'scheduleTypes'>[];
+}) => {
+	return (
+		<table
+			id="calender-main-area"
+			className="h-[calc(100vh-64px)] top-[64px] w-full border-solid border-4 border-black table-fixed"
+		>
+			<thead className="border-b-2 border-black">
+				<tr>
+					<td className="text-center p-2 font-bold text-xl border-r-2 border-black text-sky-600">
+						日<br />
+						Sunday
+					</td>
+					<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
+						月<br />
+						Monday
+					</td>
+					<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
+						火<br />
+						Tuesday
+					</td>
+					<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
+						水<br />
+						Wednesday
+					</td>
+					<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
+						木<br />
+						Thursday
+					</td>
+					<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
+						金<br />
+						Friday
+					</td>
+					<td className="text-center p-2 font-bold text-xl text-amber-600">
+						土<br />
+						Saturday
+					</td>
+				</tr>
+			</thead>
+			<tbody>
+				{days.map((el) => {
+					return (
+						<tr
+							key={`${`${el.week}-${el.days}`}`}
+							className="border-b-2 border-black"
+						>
+							{el.days.map((elem) => {
+								return (
+									<Day
+										key={elem.date}
+										date={elem.date}
+										order={elem.order}
+										keyOfdayOfWeek={elem.keyOfdayOfWeek}
+										selectMonth={month}
+										selectYear={year}
+										schedules={getScheduleOnTheDate(elem.date)}
+									/>
+								);
+							})}
+						</tr>
+					);
+				})}
+			</tbody>
+		</table>
+	);
+};
+
+export const Top = () => {
 	// 共通の処理はこのコンポーネントでまとめる
 	const isDisplay = useRef(false);
-	const [count, changeCount] = useState<number>(0);
+	const [count, setCount] = useState<number>(0);
 	const [days, setDays] = useState<WeeklyDay[]>([]);
-	const [selectYear, changeYear] = useState<string>(dayTextCommmon('YYYY'));
-	const [selectMonth, chnageMonth] = useState<string>(dayTextCommmon('MM'));
+	const [year, setYear] = useState<string>(dayTextCommmon('YYYY'));
+	const [month, setMonth] = useState<string>(dayTextCommmon('MM'));
+	const [schedules, setSchedules] = useState<Schedule[]>([]);
+	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
 	// 年と月を取得する
-	const setNowYearAndMonth = useCallback((val?: number) => {
-		const setYear: string = val
-			? dayjs().add(val, 'month').format('YYYY')
-			: dayTextCommmon('YYYY');
-		const setMonth: string = val
-			? dayjs().add(val, 'month').format('MM')
-			: dayTextCommmon('MM');
+	const setNowYearAndMonth = async (val: number) => {
+		console.log(val);
+		const y = dayjs().add(val, 'month').format('YYYY');
+		const m = dayjs().add(val, 'month').format('MM');
 
-		changeYear(setYear);
-		chnageMonth(setMonth);
-	}, []);
+		setYear(() => y);
+		setMonth(() => m);
+
+		onGetSchedules(Number(y), Number(m));
+	};
 
 	// カレンダーの日付を取得
-	const setCalendar = useCallback((val?: number) => {
-		const setYandM =
-			val === 0 || val === undefined
-				? dayTextCommmon('YYYY-MM')
-				: dayjs().add(val, 'month').format('YYYY-MM');
+	const setCalendar = (val: number) => {
+		const setYandM = dayjs().add(val, 'month').format('YYYY-MM');
 
 		// カレンダーを取得する
 		// その月の全日付を取得
@@ -56,7 +159,7 @@ export function Top() {
 			const keyOfdayOfWeek = dayjs(date).day();
 			const order =
 				nowCalendar.filter(
-					(el: Calendar) => el.keyOfdayOfWeek === keyOfdayOfWeek
+					(el: Calendar) => el.keyOfdayOfWeek === keyOfdayOfWeek,
 				).length + 1;
 
 			const setData: Calendar = { date, keyOfdayOfWeek, order };
@@ -128,60 +231,153 @@ export function Top() {
 		});
 
 		setDays(datePerWeek);
-	}, []);
+	};
 
-	// countを変える
-	const onChangeCount = useCallback(
+	const onGetSchedules = async (y: number, m: number): Promise<void> => {
+		const schedule = await getSchedule(y, m);
+		setSchedules(schedule);
+	};
+
+	// 月を変える
+	const changeMonth = useCallback(
 		(c: number) => {
-			changeCount(c);
+			setCount(c);
 			setNowYearAndMonth(c);
 			setCalendar(c);
 		},
-		[setCalendar, setNowYearAndMonth]
+		[setCount, setNowYearAndMonth, setCalendar, onGetSchedules],
 	);
 
 	// 年と月を変える
-	const onChangeYearAndMonth = useCallback(
-		(year: string, month: string): void => {
-			const now = dayTextCommmon('YYYY-MM');
-			const nowYandM = dayjs(now);
-			const sltYandM = dayjs(`${year}-${month}`);
-			const setCount = sltYandM.diff(nowYandM, 'month');
+	const onChangeYearAndMonth = (year: string, month: string): void => {
+		const now = dayTextCommmon('YYYY-MM');
+		const nowYandM = dayjs(now);
+		const sltYandM = dayjs(`${year}-${month}`);
+		const c = sltYandM.diff(nowYandM, 'month');
 
-			changeCount(setCount);
-			setNowYearAndMonth(setCount);
-			setCalendar(setCount);
-		},
-		[setCalendar, setNowYearAndMonth]
-	);
+		changeMonth(c);
+	};
 
 	// 今見ているカレンダーが実際の現在の年月かどうか
-	const isNowMonth = useMemo(() => {
-		const yearAndMonth = `${selectYear}-${selectMonth}`;
-		return yearAndMonth === dayjs().format('YYYY-MM');
-	}, [selectYear, selectMonth]);
+	const isNowMonth = useMemo(() => count === 0, [count]);
+
+	const onResetSchedule = () => {
+		onGetSchedules(Number(year), Number(month));
+		setIsModalOpen(false);
+	};
+
+	const getScheduleOnTheDate = (
+		day: string,
+	): Pick<Schedule, 'id' | 'title' | 'scheduleTypes'>[] => {
+		const y = dayjs(day).format('YYYY');
+		const m = dayjs(day).format('M');
+		const d = dayjs(day).format('D');
+
+		return schedules
+			.filter((el) => {
+				const { year, month, day } = el;
+
+				return (
+					Number(year) === Number(y) &&
+					Number(month) === Number(m) &&
+					Number(day) === Number(d)
+				);
+			})
+			.map((el) => {
+				const { id, title, scheduleTypes } = el;
+				return { id, title, scheduleTypes };
+			});
+	};
 
 	useEffect(() => {
 		if (!isDisplay.current) {
 			isDisplay.current = true;
-			setNowYearAndMonth();
-			setCalendar();
+			changeMonth(0);
 		}
-	}, [isDisplay, setNowYearAndMonth, setCalendar]);
+	}, [changeMonth]);
 
 	return (
-		<FlamePc
-			count={count}
-			days={days}
-			selectYear={selectYear}
-			selectMonth={selectMonth}
-			isNowMonth={isNowMonth}
-			onEventCallBack={(c: number) => {
-				onChangeCount(c);
-			}}
-			onChangeYearAndMonth={(y: string, m: string) => {
-				onChangeYearAndMonth(y, m);
-			}}
-		/>
+		<main className="w-full relative">
+			<div
+				id="calender-head"
+				className="p-3 flex justify-between items-content w-full bg-white z-10"
+			>
+				<button
+					onClick={() => {
+						changeMonth(count - 1);
+					}}
+				>
+					<img src="./arrowLeft.svg" alt="前の月" className="h-[40px]" />
+				</button>
+				<div className="w-[300px] flex items-center">
+					<Select
+						name="year"
+						value={year}
+						selectList={YearAndMonthAndDateList(`${year}-${month}`).yearList}
+						onEventCallBack={(year: string) => {
+							onChangeYearAndMonth(year, month);
+						}}
+					/>
+					<span className="mx-1">年</span>
+					<Select
+						name="month"
+						value={month}
+						selectList={YearAndMonthAndDateList(`${year}-${month}`).monthList}
+						onEventCallBack={(month: string) => {
+							onChangeYearAndMonth(year, month);
+						}}
+					/>
+					<span className="ml-1">月</span>
+				</div>
+				<div className="w-[450px] flex">
+					<Button
+						text="予定を登録"
+						buttonColor="blue"
+						textColor="#fff"
+						onEventCallBack={() => {
+							setIsModalOpen(true);
+						}}
+					/>
+					{!isNowMonth && (
+						<Button
+							text="月をリセット"
+							buttonColor="red"
+							underBarColor="#691"
+							textColor="#fff"
+							onEventCallBack={() => {
+								changeMonth(0);
+							}}
+						/>
+					)}
+				</div>
+				<button
+					onClick={() => {
+						changeMonth(count + 1);
+					}}
+				>
+					<img src="./arrowRight.svg" alt="次の月" className="h-[40px]" />
+				</button>
+			</div>
+			<Calendar
+				days={days}
+				month={month}
+				year={year}
+				getScheduleOnTheDate={getScheduleOnTheDate}
+			/>
+			<Modal
+				isOpen={isModalOpen}
+				ariaHideApp={false}
+				onRequestClose={() => setIsModalOpen(false)}
+				style={customStyles}
+				contentLabel="Example Modal"
+			>
+				<div className="">予定を登録</div>
+				<CalendarRegister
+					year={year}
+					month={month}
+					onEventCallBack={() => onResetSchedule()}
+				/>
+			</Modal>
+		</main>
 	);
-}
+};

@@ -9,83 +9,83 @@ const supabase = createClient(supabaseUrl!, supabaseAnonKey!);
 const GET_COLUMN = 'id, year, month, day, scheduleTypes, title, description';
 
 export const getSchedule = async (
-  year?: Schedule['year'],
-  month?: Schedule['month']
+	year?: Schedule['year'],
+	month?: Schedule['month'],
 ): Promise<Schedule[]> => {
-  const { data, error, status } =
-    year && month
-      ? await supabase
-          .from('schedule')
-          .select(GET_COLUMN)
-          .match({ year, month })
-      : await supabase.from('schedule').select(GET_COLUMN);
+	const { data, error, status } =
+		year && month
+			? await supabase
+					.from('schedule')
+					.select(GET_COLUMN)
+					.match({ year, month })
+			: await supabase.from('schedule').select(GET_COLUMN);
 
-  if (error && status !== 406) {
-    throw error;
-  }
-  return data as Schedule[];
+	if (error && status !== 406) {
+		throw error;
+	}
+	return data as Schedule[];
 };
 
 export const getScheduleDetail = async (date: string): Promise<Schedule[]> => {
-  const dateParams = dayjs(date);
-  const year = dateParams.format('YYYY');
-  const month = dateParams.format('M');
-  const day = dateParams.format('D');
+	const dateParams = dayjs(date);
+	const year = dateParams.format('YYYY');
+	const month = dateParams.format('M');
+	const day = dateParams.format('D');
 
-  const { data, error, status } = await supabase
-    .from('schedule')
-    .select(GET_COLUMN)
-    .match({ year, month, day });
+	const { data, error, status } = await supabase
+		.from('schedule')
+		.select(GET_COLUMN)
+		.match({ year, month, day });
 
-  if (error && status !== 406) {
-    throw error;
-  }
-  return data as Schedule[];
+	if (error && status !== 406) {
+		throw error;
+	}
+	return data as Schedule[];
 };
 
 export const registerScheduleDetail = async (
-  registerParams: Pick<
-    Schedule,
-    'year' | 'month' | 'day' | 'scheduleTypes' | 'title' | 'description'
-  >
+	registerParams: Pick<
+		Schedule,
+		'year' | 'month' | 'day' | 'scheduleTypes' | 'title' | 'description'
+	>,
 ): Promise<null> => {
-  const { year, month, day, scheduleTypes, title, description } =
-    registerParams;
+	const { year, month, day, scheduleTypes, title, description } =
+		registerParams;
 
-  const { error, status } = await supabase
-    .from('schedule')
-    .insert({ year, month, day, scheduleTypes, title, description });
+	const { error, status } = await supabase
+		.from('schedule')
+		.insert({ year, month, day, scheduleTypes, title, description });
 
-  if (error && status !== 406) {
-    throw error;
-  }
-  return null;
+	if (error && status !== 406) {
+		throw error;
+	}
+	return null;
 };
 
 export const deleteSchedule = async (id: Schedule['id']): Promise<null> => {
-  const { error, status } = await supabase
-    .from('schedule')
-    .delete()
-    .eq('id', id);
+	const { error, status } = await supabase
+		.from('schedule')
+		.delete()
+		.eq('id', id);
 
-  if (error && status !== 406) {
-    throw error;
-  }
-  return null;
+	if (error && status !== 406) {
+		throw error;
+	}
+	return null;
 };
 
 export const updateSchedule = async (
-  params: Pick<Schedule, 'id' | 'title' | 'description' | 'scheduleTypes'>
+	params: Pick<Schedule, 'id' | 'title' | 'description' | 'scheduleTypes'>,
 ): Promise<null> => {
-  const { id, title, description, scheduleTypes } = params;
-  const { error } = await supabase
-    .from('schedule')
-    .update({ title, description, scheduleTypes })
-    .eq('id', id);
+	const { id, title, description, scheduleTypes } = params;
+	const { error } = await supabase
+		.from('schedule')
+		.update({ title, description, scheduleTypes })
+		.eq('id', id);
 
-  if (error) {
-    throw error;
-  }
+	if (error) {
+		throw error;
+	}
 
-  return null;
+	return null;
 };
