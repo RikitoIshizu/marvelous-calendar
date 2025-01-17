@@ -139,7 +139,6 @@ export const Top = () => {
 
 	const setNowYearAndMonth = useCallback(
 		async (val: number) => {
-			console.log(val);
 			const y = dayjs().add(val, 'month').format('YYYY');
 			const m = dayjs().add(val, 'month').format('MM');
 
@@ -148,7 +147,7 @@ export const Top = () => {
 
 			onGetSchedules(Number(y), Number(m));
 		},
-		[onGetSchedules, setYear, setMonth],
+		[onGetSchedules],
 	);
 
 	// カレンダーの日付を取得
