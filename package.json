@@ -13,7 +13,7 @@
 		"test": "jest",
 		"lint": "npx eslint . --no-cache",
 		"lintfix": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
-		"node_modules:reset": "rm -rf .next node_modules && yarn && yarn build"
+		"reset": "rm -rf .next node_modules && yarn && yarn build"
 	},
 	"dependencies": {
 		"@supabase/auth-ui-react": "^0.4.7",
