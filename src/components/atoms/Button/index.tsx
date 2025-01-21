@@ -1,3 +1,4 @@
+'use client';
 import { Button as Btn } from '@/lib/types';
 import { memo, NamedExoticComponent, useMemo } from 'react';
 

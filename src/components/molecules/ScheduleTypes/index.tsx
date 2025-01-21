@@ -1,3 +1,4 @@
+'use client';
 import { Radio } from '@/components/atoms/Radio';
 import React from 'react';
 

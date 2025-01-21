@@ -1,3 +1,4 @@
+'use client';
 import React, { memo, NamedExoticComponent } from 'react';
 
 type Props = {

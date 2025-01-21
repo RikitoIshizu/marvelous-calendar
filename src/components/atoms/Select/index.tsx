@@ -1,3 +1,4 @@
+'use client';
 import React, { memo, NamedExoticComponent, useCallback } from 'react';
 import type { ChangeEvent } from 'react';
 
