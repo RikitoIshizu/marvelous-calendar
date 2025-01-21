@@ -1,5 +1,5 @@
 'use client';
-import { Radio } from '@/components/atoms/Radio';
+import { Radio } from '@/components/parts/Radio';
 import React from 'react';
 
 const scheduleTypes = [

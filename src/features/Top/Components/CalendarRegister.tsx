@@ -7,13 +7,13 @@ import React, {
 	useState,
 	useRef,
 } from 'react';
-import { Select } from '@/components/atoms/Select';
-import { Button } from '@/components/atoms/Button';
-import { InputTitle } from '@/components/molecules/InputTitle';
-import { InputDescription } from '@/components/molecules/InputDescription';
-import { ScheduleTypes } from '@/components/molecules/ScheduleTypes';
+import { Select } from '@/components/parts/Select';
+import { Button } from '@/components/parts/Button';
+import { InputTitle } from '@/components/parts/Input/InputTitle';
+import { ScheduleTypes } from '@/components/parts/ScheduleTypes';
 import { amountOfDay, dayTextCommmon } from '@/lib/calendar';
 import { registerScheduleDetail } from '@/lib/supabase';
+import { InputDescription } from '@/components/parts/Input/InputDescription';
 
 dayjs.extend(isLeapYear);
 

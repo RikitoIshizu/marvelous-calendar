@@ -1,4 +1,4 @@
-import { Top } from '@/components/templates/Top';
+import { Top } from '@/features/Top';
 
 export default function Index() {
 	return <Top />;

@@ -29,6 +29,7 @@
 			"@/public/*": ["./public/*"],
 			"@/styles/*": ["styles/*"],
 			"@utils/*": ["utils/*"],
+			"@/features/*": ["features/*"],
 			"react": ["./node_modules/@types/react"]
 		}
 	},
