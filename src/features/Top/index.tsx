@@ -1,12 +1,18 @@
-import { useRef, useEffect, useState, ComponentType } from 'react';
+import {
+	useRef,
+	useEffect,
+	useState,
+	ComponentType,
+	ComponentProps,
+} from 'react';
 import ReactModal from 'react-modal';
 
 const Modal = ReactModal as unknown as ComponentType<any>;
 
-import { YearAndMonthAndDateList } from '@/lib/calendar';
-import { useCalandar } from '@/features/Top/hooks/useCalendar';
+import { yearAndMonthAndDateList } from '@/lib/calendar';
+import { useCalandar } from 'hooks/useCalendar';
 import { Calendar } from '@/features/Top/Components/Calendar';
-import { CalendarRegister } from '@/features/Top/Components/CalendarRegister';
+import { CalendarRegister } from '@/components/parts/CalendarRegister';
 import { CalendarHead } from '@/features/Top/Components/CalendarHead';
 
 const customStyles = {
@@ -31,6 +37,7 @@ export const Top = () => {
 		days,
 		year,
 		month,
+		day,
 		isNowMonth,
 		changeMonth,
 		onChangeYearAndMonth,
@@ -38,7 +45,9 @@ export const Top = () => {
 		onGetSchedules,
 	} = useCalandar();
 
-	const onResetSchedule = () => {
+	const onResetSchedule: ComponentProps<
+		typeof CalendarRegister
+	>['onEventCallBack'] = () => {
 		onGetSchedules(Number(year), Number(month));
 		setIsModalOpen(false);
 	};
@@ -58,7 +67,7 @@ export const Top = () => {
 				month={month}
 				isNowMonth={isNowMonth}
 				changeMonth={changeMonth}
-				YearAndMonthAndDateList={YearAndMonthAndDateList}
+				yearAndMonthAndDateList={yearAndMonthAndDateList}
 				onChangeYearAndMonth={onChangeYearAndMonth}
 				setIsModalOpen={setIsModalOpen}
 			/>
@@ -77,9 +86,13 @@ export const Top = () => {
 			>
 				<div>予定を登録</div>
 				<CalendarRegister
-					year={year}
-					month={month}
 					onEventCallBack={() => onResetSchedule()}
+					type="register"
+					schedule={{
+						year: Number(year),
+						month: Number(month),
+						day: Number(day),
+					}}
 				/>
 			</Modal>
 		</main>

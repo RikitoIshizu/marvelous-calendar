@@ -7,7 +7,7 @@ export const CalendarHead = ({
 	month,
 	isNowMonth,
 	changeMonth,
-	YearAndMonthAndDateList,
+	yearAndMonthAndDateList,
 	onChangeYearAndMonth,
 	setIsModalOpen,
 }: {
@@ -16,7 +16,7 @@ export const CalendarHead = ({
 	month: string;
 	isNowMonth: boolean;
 	changeMonth: Function;
-	YearAndMonthAndDateList: Function;
+	yearAndMonthAndDateList: Function;
 	onChangeYearAndMonth: Function;
 	setIsModalOpen: Function;
 }) => {
@@ -36,7 +36,7 @@ export const CalendarHead = ({
 				<Select
 					name="year"
 					value={year}
-					selectList={YearAndMonthAndDateList(`${year}-${month}`).yearList}
+					selectList={yearAndMonthAndDateList(`${year}-${month}`).yearList}
 					onEventCallBack={(year: string) => {
 						onChangeYearAndMonth(year, month);
 					}}
@@ -45,7 +45,7 @@ export const CalendarHead = ({
 				<Select
 					name="month"
 					value={month}
-					selectList={YearAndMonthAndDateList(`${year}-${month}`).monthList}
+					selectList={yearAndMonthAndDateList(`${year}-${month}`).monthList}
 					onEventCallBack={(month: string) => {
 						onChangeYearAndMonth(year, month);
 					}}

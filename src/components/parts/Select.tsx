@@ -4,8 +4,8 @@ import type { ChangeEvent } from 'react';
 
 type Props = {
 	name: string;
-	value: string;
-	selectList: string[];
+	value: string | number;
+	selectList: string[] | number[];
 	suffix?: string;
 	onEventCallBack: Function;
 };

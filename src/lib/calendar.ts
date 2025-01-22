@@ -148,7 +148,7 @@ export const dayTextCommmon = (
 	return date ? dayjs(date).format(format) : dayjs().format(format);
 };
 
-export const YearAndMonthAndDateList = (
+export const yearAndMonthAndDateList = (
 	yearAndMonth: string,
 	isNeedDay?: boolean,
 ): { yearList: string[]; monthList: string[]; dayList?: string[] } => {

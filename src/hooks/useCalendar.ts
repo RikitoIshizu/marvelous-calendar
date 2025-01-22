@@ -3,7 +3,9 @@ import { amountOfDay, dayTextCommmon } from '@/lib/calendar';
 import { getSchedule } from '@/lib/supabase';
 import { Schedule } from '@/lib/types';
 import dayjs from 'dayjs';
-import { useCallback, useMemo, useState } from 'react';
+import { ComponentProps, useCallback, useMemo, useState } from 'react';
+import { Calendar } from '../features/Top/Components/Calendar';
+import { Select } from '@/components/parts/Select';
 
 type Calendar = {
 	keyOfdayOfWeek: number;
@@ -21,6 +23,7 @@ export const useCalandar = () => {
 	const [days, setDays] = useState<WeeklyDay[]>([]);
 	const [year, setYear] = useState<string>(dayTextCommmon('YYYY'));
 	const [month, setMonth] = useState<string>(dayTextCommmon('MM'));
+	const [day, setDay] = useState<string>(dayTextCommmon('DD'));
 	const [schedules, setSchedules] = useState<Schedule[]>([]);
 
 	const onGetSchedules = useCallback(
@@ -145,7 +148,9 @@ export const useCalandar = () => {
 	);
 
 	// 年と月を変える
-	const onChangeYearAndMonth = (year: string, month: string): void => {
+	const onChangeYearAndMonth: ComponentProps<
+		typeof Select
+	>['onEventCallBack'] = (year: string, month: string): void => {
 		const now = dayTextCommmon('YYYY-MM');
 		const nowYandM = dayjs(now);
 		const sltYandM = dayjs(`${year}-${month}`);
@@ -157,12 +162,9 @@ export const useCalandar = () => {
 	// 今見ているカレンダーが実際の現在の年月かどうか
 	const isNowMonth = useMemo(() => count === 0, [count]);
 
-	// const onResetSchedule = () => {
-	// 	onGetSchedules(Number(year), Number(month));
-	// 	// setIsModalOpen(false);
-	// };
-
-	const getScheduleOnTheDate = (
+	const getScheduleOnTheDate: ComponentProps<
+		typeof Calendar
+	>['getScheduleOnTheDate'] = (
 		day: string,
 	): Pick<Schedule, 'id' | 'title' | 'scheduleTypes'>[] => {
 		const y = dayjs(day).format('YYYY');
@@ -190,11 +192,13 @@ export const useCalandar = () => {
 		days,
 		year,
 		month,
+		day,
 		schedules,
 		isNowMonth,
 		changeMonth,
 		onChangeYearAndMonth,
 		getScheduleOnTheDate,
 		onGetSchedules,
+		setDay,
 	};
 };

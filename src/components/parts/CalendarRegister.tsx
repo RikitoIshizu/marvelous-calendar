@@ -11,31 +11,32 @@ import { Select } from '@/components/parts/Select';
 import { Button } from '@/components/parts/Button';
 import { InputTitle } from '@/components/parts/Input/InputTitle';
 import { ScheduleTypes } from '@/components/parts/ScheduleTypes';
-import { amountOfDay, dayTextCommmon } from '@/lib/calendar';
-import { registerScheduleDetail } from '@/lib/supabase';
+import { amountOfDay } from '@/lib/calendar';
+import { registerScheduleDetail, updateSchedule } from '@/lib/supabase';
 import { InputDescription } from '@/components/parts/Input/InputDescription';
+import { Schedule } from '@/lib/types';
 
 dayjs.extend(isLeapYear);
 
-type Prop = {
-	year: string;
-	month: string;
-	onEventCallBack: Function;
-};
-
-export function CalendarRegister(props: Prop): React.ReactElement {
+export const CalendarRegister = (props: {
+	onEventCallBack: () => void;
+	type: 'register' | 'edit';
+	schedule: Pick<Schedule, 'year' | 'month' | 'day'> &
+		Partial<Pick<Schedule, 'id' | 'title' | 'description' | 'scheduleTypes'>>;
+}) => {
+	const { schedule } = props;
 	const isDisplay = useRef<boolean>(false);
 	// 入力項目
-	const [year, changeYear] = useState<string>(
-		props.year ? props.year : dayTextCommmon('YYYY'),
+	const [year, setYear] = useState<string>(schedule.year.toString());
+	const [month, setMonth] = useState<string>(schedule.month.toString());
+	const [day, setDay] = useState<string>(schedule.day.toString());
+	const [title, setTitle] = useState<Schedule['title']>(schedule.title || '');
+	const [description, setDescription] = useState<Schedule['description']>(
+		schedule.description || '',
 	);
-	const [month, changeMonth] = useState<string>(
-		props.month ? props.month : dayTextCommmon('MM'),
+	const [type, setType] = useState<Schedule['scheduleTypes']>(
+		schedule.scheduleTypes || 1,
 	);
-	const [day, changeDay] = useState<string>('');
-	const [title, changeTitle] = useState<string>('');
-	const [description, changeDescription] = useState<string>('');
-	const [type, changeType] = useState<number>(1);
 
 	// カレンダーの年月日のリスト
 	const [nowYearList, setYearList] = useState<string[]>([]);
@@ -48,21 +49,21 @@ export function CalendarRegister(props: Prop): React.ReactElement {
 
 	// カレンダーを読み込んだ時に選択できる年月日を設定する
 	const firstSetCalendar = useCallback((): void => {
-		const nowYearAndMonth = `${props.year}-${props.month}`;
+		const nowYearAndMonth = `${year}-${month}`;
 
-		let yearList: string[] = [props.year];
+		let yearList: string[] = [year.toString()];
 		let monthList: string[] = [];
 		let dayList: string[] = [];
 
 		// 年(今月から10年後までの年を選択できるようにする)
 		for (var i = 1; i <= 9; i++) {
-			const setYear = dayjs(`${props.year}-01`).add(i, 'year').format('YYYY');
+			const setYear = dayjs(`${year}-01`).add(i, 'year').format('YYYY');
 			yearList = [...yearList, setYear];
 		}
 
 		// 月(今年の今月以降の月を選択できるようにする)
 		for (var n = 1; n <= 12; n++) {
-			n >= Number(props.month) && (monthList = [...monthList, n.toString()]);
+			n >= Number(month) && (monthList = [...monthList, n.toString()]);
 		}
 
 		// 日(当日より後の日だけ選択できるようにする)
@@ -75,13 +76,10 @@ export function CalendarRegister(props: Prop): React.ReactElement {
 			dateCheck && (dayList = [...dayList, day]);
 		}
 
-		// 日リストの最初の値を選択している日にセットする
-		changeDay(dayList[0]);
-
 		setYearList(yearList);
 		setMonthList(monthList);
 		setDayList(dayList);
-	}, [props.month, props.year]);
+	}, [month, year]);
 
 	const onChangeYear = useCallback(
 		(
@@ -90,7 +88,7 @@ export function CalendarRegister(props: Prop): React.ReactElement {
 			selectedDay: string,
 		): void => {
 			// まずは年を選択した年にセットする
-			changeYear(() => selectedYear);
+			setYear(() => selectedYear);
 
 			const selectedDate = `${selectedYear}-${selectedMonth
 				.toString()
@@ -122,11 +120,11 @@ export function CalendarRegister(props: Prop): React.ReactElement {
 
 				// さらに選択している月と日が過去の日になっちゃっている時
 				if (Number(selectedMonth) < todayMonth) {
-					changeMonth(() => todayMonth.toString().padStart(2, '0'));
+					setMonth(() => todayMonth.toString().padStart(2, '0'));
 				}
 
 				if (Number(selectedDay) < todayDay) {
-					changeDay(() => (todayDay + 1).toString().padStart(2, '0'));
+					setDay(() => (todayDay + 1).toString().padStart(2, '0'));
 				}
 			} else {
 				// 違う時は月と日のリストを作り直す
@@ -152,7 +150,7 @@ export function CalendarRegister(props: Prop): React.ReactElement {
 			selectedDay: string,
 		): void => {
 			// まずは月を選択した月にセットする
-			changeMonth(selectedMonth);
+			setMonth(selectedMonth);
 
 			// 今月なら当日以前の日付が選択されていないかを確認しないといけない
 			const selectedYearAndMonth = `${selectedYear}-${selectedMonth
@@ -176,14 +174,13 @@ export function CalendarRegister(props: Prop): React.ReactElement {
 
 				const nowSelectedDay = Number(selectedDay).toString().padStart(2, '0');
 
-				!dayList.includes(nowSelectedDay) && changeDay(nowSelectedDay);
+				!dayList.includes(nowSelectedDay) && setDay(nowSelectedDay);
 			} else {
 				for (var n = 1; n <= amountOfMonth; n++) {
 					dayList = [...dayList, n.toString().padStart(2, '0')];
 				}
 
-				Number(selectedDay) > amountOfMonth &&
-					changeDay(amountOfMonth.toString());
+				Number(selectedDay) > amountOfMonth && setDay(amountOfMonth.toString());
 			}
 
 			setDayList(dayList);
@@ -192,7 +189,7 @@ export function CalendarRegister(props: Prop): React.ReactElement {
 	);
 
 	const registerSchedule = useCallback(
-		async (e: FormEvent<Element>): Promise<void> => {
+		async (e: FormEvent<Element>) => {
 			e.preventDefault();
 
 			setTitleError(!title ? 'タイトルを入力してください。' : '');
@@ -200,25 +197,33 @@ export function CalendarRegister(props: Prop): React.ReactElement {
 				!description ? 'スケジュールの詳細を入力してください。' : '',
 			);
 
-			if (title && description) {
-				const response = await registerScheduleDetail({
-					year: Number(year),
-					month: Number(month),
-					day: Number(day),
-					title,
-					description,
-					scheduleTypes: type,
-				});
+			if (!title && !description) return;
 
-				if (!response) {
-					alert('スケジュール登録完了！');
-					setTitleError('');
-					setDescriptionError('');
-					return props.onEventCallBack();
-				}
+			const response =
+				props.type === 'register'
+					? await registerScheduleDetail({
+							year: Number(year),
+							month: Number(month),
+							day: Number(day),
+							title,
+							description,
+							scheduleTypes: type,
+						})
+					: await updateSchedule({
+							id: Number(props.schedule?.id),
+							title,
+							description,
+							scheduleTypes: type,
+						});
+
+			if (!response) {
+				alert('スケジュール登録完了！');
+				setTitleError('');
+				setDescriptionError('');
+				return props.onEventCallBack();
 			}
 		},
-		[title, description, day, month, type, year, props],
+		[day, description, month, year, type, title, props],
 	);
 
 	useEffect(() => {
@@ -230,51 +235,53 @@ export function CalendarRegister(props: Prop): React.ReactElement {
 
 	return (
 		<form onSubmit={(e: FormEvent<Element>) => registerSchedule(e)}>
-			<div className="mt-3 flex items-center">
-				<label htmlFor="date" className="mr-2">
-					日付:
-				</label>
-				<Select
-					name="year"
-					value={year}
-					selectList={nowYearList}
-					suffix="年"
-					onEventCallBack={(year: string) => {
-						onChangeYear(year, month, day);
-					}}
-				/>
-				<Select
-					name="month"
-					value={month}
-					selectList={nowMonthList}
-					suffix="月"
-					onEventCallBack={(month: string) => {
-						onChangeMonth(year, month, day);
-					}}
-				/>
-				<Select
-					name="day"
-					value={day}
-					selectList={nowDayList}
-					suffix="日"
-					onEventCallBack={(day: string) => {
-						changeDay(day);
-					}}
-				/>
-			</div>
+			{props.type === 'register' && (
+				<div className="mt-3 flex items-center">
+					<label htmlFor="date" className="mr-2">
+						日付:
+					</label>
+					<Select
+						name="year"
+						value={year}
+						selectList={nowYearList}
+						suffix="年"
+						onEventCallBack={(year: string) => {
+							onChangeYear(year, month, day);
+						}}
+					/>
+					<Select
+						name="month"
+						value={month}
+						selectList={nowMonthList}
+						suffix="月"
+						onEventCallBack={(month: string) => {
+							onChangeMonth(year, month, day);
+						}}
+					/>
+					<Select
+						name="day"
+						value={day}
+						selectList={nowDayList}
+						suffix="日"
+						onEventCallBack={(day: string) => {
+							setDay(day);
+						}}
+					/>
+				</div>
+			)}
 			<ScheduleTypes
 				type={type}
-				onEventCallBack={(e: string) => changeType(Number(e))}
+				onEventCallBack={(e: string) => setType(Number(e))}
 			/>
 			<InputTitle
 				title={title}
 				titleError={titleError}
-				onChangeTitle={(text: string) => changeTitle(text)}
+				onChangeTitle={(text: string) => setTitle(text)}
 			/>
 			<InputDescription
 				description={description}
 				descriptionError={descriptionError}
-				onchangeDescription={(text: string) => changeDescription(text)}
+				onchangeDescription={(text: string) => setDescription(text)}
 			/>
 			<div className="text-center mt-5">
 				<Button
@@ -286,4 +293,4 @@ export function CalendarRegister(props: Prop): React.ReactElement {
 			</div>
 		</form>
 	);
-}
+};
