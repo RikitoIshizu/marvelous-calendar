@@ -14,7 +14,7 @@ export const Select: NamedExoticComponent<Props> = memo(function Select(
 	props: Props,
 ) {
 	const clickEvent = useCallback(
-		(text: Props['value']): void => {
+		(text: Props['value']) => {
 			props.onEventCallBack(text);
 		},
 		[props],

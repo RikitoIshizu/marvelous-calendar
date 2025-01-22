@@ -13,7 +13,7 @@ export const Radio: NamedExoticComponent<Props> = memo(function Radio(
 	props: Props,
 ) {
 	const clickEvent = useCallback(
-		(id: Props['id']): void => {
+		(id: Props['id']) => {
 			props.onEventCallBack(id);
 		},
 		[props],

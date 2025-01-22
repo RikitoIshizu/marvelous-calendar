@@ -26,13 +26,10 @@ export const useCalandar = () => {
 	const [day, setDay] = useState<string>(dayTextCommmon('DD'));
 	const [schedules, setSchedules] = useState<Schedule[]>([]);
 
-	const onGetSchedules = useCallback(
-		async (y: number, m: number): Promise<void> => {
-			const schedule = await getSchedule(y, m);
-			setSchedules(schedule);
-		},
-		[],
-	);
+	const onGetSchedules = useCallback(async (y: number, m: number) => {
+		const schedule = await getSchedule(y, m);
+		setSchedules(schedule);
+	}, []);
 
 	const setNowYearAndMonth = useCallback(
 		async (val: number) => {
@@ -150,7 +147,7 @@ export const useCalandar = () => {
 	// 年と月を変える
 	const onChangeYearAndMonth: ComponentProps<
 		typeof Select
-	>['onEventCallBack'] = (year: string, month: string): void => {
+	>['onEventCallBack'] = (year: string, month: string) => {
 		const now = dayTextCommmon('YYYY-MM');
 		const nowYandM = dayjs(now);
 		const sltYandM = dayjs(`${year}-${month}`);

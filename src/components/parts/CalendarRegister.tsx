@@ -48,7 +48,7 @@ export const CalendarRegister = (props: {
 	const [descriptionError, setDescriptionError] = useState<string>('');
 
 	// カレンダーを読み込んだ時に選択できる年月日を設定する
-	const firstSetCalendar = useCallback((): void => {
+	const firstSetCalendar = useCallback(() => {
 		const nowYearAndMonth = `${year}-${month}`;
 
 		let yearList: string[] = [year.toString()];
@@ -82,11 +82,7 @@ export const CalendarRegister = (props: {
 	}, [month, year]);
 
 	const onChangeYear = useCallback(
-		(
-			selectedYear: string,
-			selectedMonth: string,
-			selectedDay: string,
-		): void => {
+		(selectedYear: string, selectedMonth: string, selectedDay: string) => {
 			// まずは年を選択した年にセットする
 			setYear(() => selectedYear);
 
@@ -144,11 +140,7 @@ export const CalendarRegister = (props: {
 	);
 
 	const onChangeMonth = useCallback(
-		(
-			selectedYear: string,
-			selectedMonth: string,
-			selectedDay: string,
-		): void => {
+		(selectedYear: string, selectedMonth: string, selectedDay: string) => {
 			// まずは月を選択した月にセットする
 			setMonth(selectedMonth);
 

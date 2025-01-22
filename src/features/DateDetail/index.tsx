@@ -7,15 +7,11 @@ import {
 	useCallback,
 	ComponentType,
 	ComponentProps,
+	useMemo,
 } from 'react';
 import ReactModal from 'react-modal';
 import { specialDays } from '@/lib/calendar';
-import {
-	getScheduleDetail,
-	deleteSchedule,
-	// updateSchedule,
-	// registerScheduleDetail,
-} from '@/lib/supabase';
+import { getScheduleDetail, deleteSchedule } from '@/lib/supabase';
 import type { Schedule } from '@/lib/types';
 import { Schedule as ScheduleComponent } from './Components/Schedule';
 import { CalendarRegister } from '../../components/parts/CalendarRegister';
@@ -68,89 +64,55 @@ export const DateDetail = () => {
 		useState<Schedule['scheduleTypes']>(1);
 
 	const date = useRouter().query.id as string;
-	const registeringDate = dayjs(date);
-	const year = registeringDate.format('YYYY');
-	const month = registeringDate.format('MM');
-	const day = registeringDate.format('DD');
+	const year = useMemo(() => dayjs(date).format('YYYY'), [date]);
+	const month = useMemo(() => dayjs(date).format('MM'), [date]);
+	const day = useMemo(() => dayjs(date).format('DD'), [date]);
+	const specialDay = useMemo(() => {
+		const md = dayjs(date).format('MMDD');
+
+		return specialDays[md] ? specialDays[md] : '';
+	}, [date]);
 
 	const loadSchedules = useCallback(async () => {
 		const schedules = await getScheduleDetail(date);
 		setSchedules(schedules);
 	}, [date]);
 
-	const specialDay = useCallback(() => {
-		const md = dayjs(date).format('MMDD');
-
-		return specialDays[md] ? specialDays[md] : '';
-	}, [date]);
-
 	const updSchedule: ComponentProps<
 		typeof CalendarRegister
-	>['onEventCallBack'] = useCallback(async (): Promise<void> => {
-		// if (modalMode === 'register') {
-		// 	const registeringDate = dayjs(date);
-		// 	const year = registeringDate.format('YYYY');
-		// 	const month = registeringDate.format('MM');
-		// 	const day = registeringDate.format('DD');
-
-		// 	const response = await registerScheduleDetail({
-		// 		year: Number(year),
-		// 		month: Number(month),
-		// 		day: Number(day),
-		// 		title: scheduleTitle,
-		// 		description: scheduleDescription,
-		// 		scheduleTypes: Number(scheduleType),
-		// 	});
-
-		// 	!response && alert('スケジュール登録完了！');
-		// } else {
-		// 	const response = await updateSchedule({
-		// 		id: Number(scheduleId),
-		// 		title: scheduleTitle,
-		// 		description: scheduleDescription,
-		// 		scheduleTypes: Number(scheduleType),
-		// 	});
-
-		// 	!response && alert('スケジュール変更完了！');
-		// }
-
+	>['onEventCallBack'] = useCallback(async () => {
 		setIsModalOpen(false);
 		loadSchedules();
-	}, [
-		// scheduleTitle,
-		// scheduleDescription,
-		// scheduleType,
-		// date,
-		loadSchedules,
-		// modalMode,
-		// scheduleId,
-	]);
+	}, [loadSchedules]);
 
 	// 編集
-	const openModal = useCallback(
-		(id: Schedule['id']): void => {
-			setModalMode('edit');
-			const editSchedule = schedules?.filter((el) => el.id === id);
+	const openModal: ComponentProps<typeof ScheduleComponent>['onOpenModal'] =
+		useCallback(
+			(id: Schedule['id']) => {
+				setModalMode('edit');
+				const editSchedule = schedules?.filter((el) => el.id === id);
 
-			if (!editSchedule?.length) return;
+				if (!editSchedule?.length) return;
 
-			setScheduleId(editSchedule[0].id);
-			setScheduleTitle(editSchedule[0].title);
-			setScheduletDescription(editSchedule[0].description);
-			setScheduleType(editSchedule[0].scheduleTypes);
-			setIsModalOpen(true);
-		},
-		[schedules],
-	);
+				setScheduleId(editSchedule[0].id);
+				setScheduleTitle(editSchedule[0].title);
+				setScheduletDescription(editSchedule[0].description);
+				setScheduleType(editSchedule[0].scheduleTypes);
+				setIsModalOpen(true);
+			},
+			[schedules],
+		);
 
 	// 登録
-	const openRegisterScheduleModal = () => {
+	const openRegisterScheduleModal: ComponentProps<
+		typeof ScheduleComponent
+	>['onOpenRegisterScheduleModal'] = useCallback(() => {
 		setIsModalOpen(true);
 		setModalMode('register');
 		setScheduleId('');
 		setScheduleTitle('');
 		setScheduletDescription('');
-	};
+	}, []);
 
 	const confirmShouldDeleteSchedule = useCallback(
 		async (id: Schedule['id']) => {
@@ -176,10 +138,10 @@ export const DateDetail = () => {
 					<h1 className="text-4xl font-bold text-center">{titleText(date)}</h1>
 				)}
 				<div className="w-[1000px] mx-auto">
-					{specialDay() && (
+					{specialDay && (
 						<section>
 							<h2 className="text-2xl font-bold">今日は何の日？</h2>
-							<div className="mt-1">{specialDay()}</div>
+							<div className="mt-1">{specialDay}</div>
 						</section>
 					)}
 					<ScheduleComponent
