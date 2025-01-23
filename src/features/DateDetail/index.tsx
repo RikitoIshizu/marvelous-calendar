@@ -11,10 +11,11 @@ import {
 } from 'react';
 import ReactModal from 'react-modal';
 import { specialDays } from '@/lib/calendar';
-import { getScheduleDetail, deleteSchedule } from '@/lib/supabase';
+import { deleteSchedule } from '@/lib/supabase';
 import type { Schedule } from '@/lib/types';
 import { Schedule as ScheduleComponent } from './Components/Schedule';
 import { CalendarRegister } from '../../components/parts/CalendarRegister';
+import { useSchedule } from 'hooks/useSchedule';
 
 const Modal = ReactModal as unknown as ComponentType<any>;
 
@@ -53,15 +54,6 @@ export const DateDetail = () => {
 	const [modalMode, setModalMode] = useState<'register' | 'edit'>('register');
 	const [isNewScheduleLoading, setIsNewScheduleLoading] =
 		useState<boolean>(false);
-	const [schedules, setSchedules] = useState<Schedule[]>([]);
-
-	// 編集用パラメータ
-	const [scheduleId, setScheduleId] = useState<Schedule['id'] | ''>('');
-	const [scheduleTitle, setScheduleTitle] = useState<Schedule['title']>('');
-	const [scheduleDescription, setScheduletDescription] =
-		useState<Schedule['description']>('');
-	const [scheduleType, setScheduleType] =
-		useState<Schedule['scheduleTypes']>(1);
 
 	const date = useRouter().query.id as string;
 	const year = useMemo(() => dayjs(date).format('YYYY'), [date]);
@@ -73,10 +65,18 @@ export const DateDetail = () => {
 		return specialDays[md] ? specialDays[md] : '';
 	}, [date]);
 
-	const loadSchedules = useCallback(async () => {
-		const schedules = await getScheduleDetail(date);
-		setSchedules(schedules);
-	}, [date]);
+	const {
+		schedules,
+		scheduleId,
+		setScheduleId,
+		scheduleTitle,
+		setScheduleTitle,
+		scheduleDescription,
+		setScheduletDescription,
+		scheduleType,
+		setScheduleType,
+		loadSchedules,
+	} = useSchedule(date);
 
 	const updSchedule: ComponentProps<
 		typeof CalendarRegister
@@ -100,7 +100,13 @@ export const DateDetail = () => {
 				setScheduleType(editSchedule[0].scheduleTypes);
 				setIsModalOpen(true);
 			},
-			[schedules],
+			[
+				schedules,
+				setScheduleId,
+				setScheduleTitle,
+				setScheduletDescription,
+				setScheduleType,
+			],
 		);
 
 	// 登録
@@ -112,9 +118,11 @@ export const DateDetail = () => {
 		setScheduleId('');
 		setScheduleTitle('');
 		setScheduletDescription('');
-	}, []);
+	}, [setScheduleId, setScheduleTitle, setScheduletDescription]);
 
-	const confirmShouldDeleteSchedule = useCallback(
+	const confirmShouldDeleteSchedule: ComponentProps<
+		typeof ScheduleComponent
+	>['onDeleteSchedule'] = useCallback(
 		async (id: Schedule['id']) => {
 			setIsNewScheduleLoading(true);
 			const response = await deleteSchedule(id);
