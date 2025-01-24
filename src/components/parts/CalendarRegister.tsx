@@ -21,6 +21,7 @@ dayjs.extend(isLeapYear);
 export const CalendarRegister = (props: {
 	onEventCallBack: () => void;
 	type: 'register' | 'edit';
+	shouldHideDateArea: boolean;
 	schedule: Pick<Schedule, 'year' | 'month' | 'day'> &
 		Partial<Pick<Schedule, 'id' | 'title' | 'description' | 'scheduleTypes'>>;
 }) => {
@@ -227,7 +228,7 @@ export const CalendarRegister = (props: {
 
 	return (
 		<form onSubmit={(e: FormEvent<Element>) => registerSchedule(e)}>
-			{props.type === 'register' && (
+			{!props.shouldHideDateArea && props.type === 'register' && (
 				<div className="mt-3 flex items-center">
 					<label htmlFor="date" className="mr-2">
 						日付:

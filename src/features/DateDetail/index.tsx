@@ -177,6 +177,7 @@ export const DateDetail = () => {
 				<CalendarRegister
 					onEventCallBack={() => updSchedule()}
 					type={modalMode}
+					shouldHideDateArea={true}
 					schedule={{
 						year: Number(year),
 						month: Number(month),

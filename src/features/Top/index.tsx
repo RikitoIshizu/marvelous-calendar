@@ -88,6 +88,7 @@ export const Top = () => {
 				<CalendarRegister
 					onEventCallBack={() => onResetSchedule()}
 					type="register"
+					shouldHideDateArea={false}
 					schedule={{
 						year: Number(year),
 						month: Number(month),
