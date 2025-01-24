@@ -280,8 +280,8 @@ export const CalendarRegister = (props: {
 				<Button
 					type="submit"
 					text="登録"
-					buttonColor="#a7f3d0"
-					underBarColor="#059669"
+					buttonColor="bg-[#a7f3d0]"
+					otherClasses="h-[50px]"
 				/>
 			</div>
 		</form>

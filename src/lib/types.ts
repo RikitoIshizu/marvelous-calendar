@@ -2,11 +2,11 @@ export type Button = {
 	text: string;
 	buttonColor?: string;
 	width?: string;
-	underBarColor?: string;
 	textColor?: string;
-	onEventCallBack?: Function;
+	onEventCallBack?: () => void;
 	disabled?: false;
 	type?: 'submit' | 'reset' | 'button';
+	otherClasses?: string;
 };
 
 export type HolidayAndSpecialDayException = {
@@ -23,20 +23,6 @@ export type SchduleRegisterInput = {
 	type: number;
 	description: string;
 	title: string;
-};
-
-export type ButtonStyleInput = {
-	width?: string;
-	buttonColor?: string;
-	textColor?: string;
-	underBarColor?: string;
-};
-
-export type ButtonStyle = {
-	width?: string;
-	backgroundColor?: string;
-	color?: string;
-	borderBottom?: string;
 };
 
 export type Schedule = {

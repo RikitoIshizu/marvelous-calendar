@@ -33,7 +33,7 @@ export const Schedule = ({
 				{shouldShowScheduleRegisterBtn && (
 					<Button
 						text="登録"
-						textColor="#fff"
+						textColor="text-[#fff]"
 						onEventCallBack={onOpenRegisterScheduleModal}
 					/>
 				)}
@@ -42,22 +42,30 @@ export const Schedule = ({
 				<ul className="mt-4">
 					{schedules.map((el) => {
 						return (
-							<li className="mt-1 flex items-center" key={el.id}>
-								<p className={scheduleTextColor(el.scheduleTypes)}>
+							<li className="mt-2 flex items-center" key={el.id}>
+								<p
+									className={
+										scheduleTextColor(el.scheduleTypes) + ' font-bold text-xl'
+									}
+								>
 									{el.description}
 								</p>
-								<button
-									className="ml-2 w-[80px] bg-[blue] text-[#fff] rounded-full"
-									onClick={() => onOpenModal(el.id)}
-								>
-									編集
-								</button>
-								<button
-									className="ml-2 w-[80px] bg-[red] text-[#fff] rounded-full"
-									onClick={() => confirmShouldDeleteSchedule(el.id)}
-								>
-									削除
-								</button>
+								<Button
+									text="編集"
+									width="w-[80px]"
+									textColor="text-[#fff]"
+									buttonColor="bg-[blue]"
+									otherClasses="ml-4"
+									onEventCallBack={() => onOpenModal(el.id)}
+								/>
+								<Button
+									text="編集"
+									width="w-[80px]"
+									textColor="text-[#fff]"
+									buttonColor="bg-[red]"
+									otherClasses="ml-4"
+									onEventCallBack={() => confirmShouldDeleteSchedule(el.id)}
+								/>
 							</li>
 						);
 					})}

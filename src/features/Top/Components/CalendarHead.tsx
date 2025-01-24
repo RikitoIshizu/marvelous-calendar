@@ -55,8 +55,8 @@ export const CalendarHead = ({
 			<div className="w-[450px] flex">
 				<Button
 					text="予定を登録"
-					buttonColor="blue"
-					textColor="#fff"
+					buttonColor="bg-[blue]"
+					textColor="text-[#fff]"
 					onEventCallBack={() => {
 						setIsModalOpen(true);
 					}}
@@ -64,9 +64,9 @@ export const CalendarHead = ({
 				{!isNowMonth && (
 					<Button
 						text="月をリセット"
-						buttonColor="red"
-						underBarColor="#691"
-						textColor="#fff"
+						buttonColor="bg-[red]"
+						textColor="text-[#fff]"
+						otherClasses="ml-4"
 						onEventCallBack={() => {
 							changeMonth(0);
 						}}
