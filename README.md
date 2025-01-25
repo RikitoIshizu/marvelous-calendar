@@ -2,15 +2,6 @@
 
 React 開発の学習のために作ったカレンダーアプリ。
 
-## 使用ライブラリ
-
-TypeScript ver 5.7.3<br/>
-react-modal ver 3.16.3<br/>
-dayjs ver 1.11.13<br/>
-tailwindcss ver 3.4.17<br/>
-prettier ver 3.4.2<br/>
-supabase ver 2.47.13<br/>
-
 ## ページ
 
 PC で使う想定のため、SP のデザインはあまり対応していない。
