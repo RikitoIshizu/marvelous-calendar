@@ -16,7 +16,6 @@
 		"reset": "rm -rf .next node_modules && yarn && yarn build",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build",
-		"check-env": "env-cmd -f .env echo $SUPABASE_PROJECT_ID",
 		"generate:supabase-types": "env-cmd -f .env bash -c 'supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" > ./src/types/supabase-ganerated-types.ts 2>&1'"
 	},
 	"dependencies": {
