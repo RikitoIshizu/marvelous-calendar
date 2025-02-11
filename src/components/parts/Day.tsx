@@ -229,7 +229,7 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 									{props.schedules.map((el) => (
 										<li
 											key={el.id}
-											className={scheduleTextColor(el.scheduleTypes)}
+											className={scheduleTextColor(el.scheduleTypes!)}
 										>
 											{el.title}
 										</li>

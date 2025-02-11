@@ -45,7 +45,7 @@ export const Schedule = ({
 							<li className="mt-2 flex items-center" key={el.id}>
 								<p
 									className={
-										scheduleTextColor(el.scheduleTypes) + ' font-bold text-xl'
+										scheduleTextColor(el.scheduleTypes!) + ' font-bold text-xl'
 									}
 								>
 									{el.description}

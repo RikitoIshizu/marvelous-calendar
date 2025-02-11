@@ -1,3 +1,5 @@
+import { Database } from './supabase-ganerated-types';
+
 export type Button = {
 	text: string;
 	buttonColor?: string;
@@ -25,13 +27,4 @@ export type SchduleRegisterInput = {
 	title: string;
 };
 
-export type Schedule = {
-	id: number;
-	created_at?: string;
-	year: number;
-	month: number;
-	day: number;
-	scheduleTypes: number;
-	title: string;
-	description: string;
-};
+export type Schedule = Database['public']['Tables']['schedule']['Row'];

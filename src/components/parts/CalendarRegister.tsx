@@ -14,7 +14,7 @@ import { ScheduleTypes } from '@/components/parts/ScheduleTypes';
 import { amountOfDay } from '@/lib/calendar';
 import { registerScheduleDetail, updateSchedule } from '@/lib/supabase';
 import { InputDescription } from '@/components/parts/Input/InputDescription';
-import { Schedule } from 'types/types';
+import { Schedule } from '@/types/types';
 
 dayjs.extend(isLeapYear);
 
@@ -28,9 +28,9 @@ export const CalendarRegister = (props: {
 	const { schedule } = props;
 	const isDisplay = useRef<boolean>(false);
 	// 入力項目
-	const [year, setYear] = useState<string>(schedule.year.toString());
-	const [month, setMonth] = useState<string>(schedule.month.toString());
-	const [day, setDay] = useState<string>(schedule.day.toString());
+	const [year, setYear] = useState<string>(schedule.year!.toString());
+	const [month, setMonth] = useState<string>(schedule.month!.toString());
+	const [day, setDay] = useState<string>(schedule.day!.toString());
 	const [title, setTitle] = useState<Schedule['title']>(schedule.title || '');
 	const [description, setDescription] = useState<Schedule['description']>(
 		schedule.description || '',
@@ -267,12 +267,12 @@ export const CalendarRegister = (props: {
 				onEventCallBack={(e: string) => setType(Number(e))}
 			/>
 			<InputTitle
-				title={title}
+				title={title!}
 				titleError={titleError}
 				onChangeTitle={(text: string) => setTitle(text)}
 			/>
 			<InputDescription
-				description={description}
+				description={description!}
 				descriptionError={descriptionError}
 				onchangeDescription={(text: string) => setDescription(text)}
 			/>
