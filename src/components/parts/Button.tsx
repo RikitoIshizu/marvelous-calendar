@@ -1,5 +1,5 @@
 'use client';
-import { Button as Btn } from '@/lib/types';
+import { Button as Btn } from 'types/types';
 import { memo, NamedExoticComponent, useMemo } from 'react';
 
 export const Button: NamedExoticComponent<Btn> = memo(function Btn(props: Btn) {

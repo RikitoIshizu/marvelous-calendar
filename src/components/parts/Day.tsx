@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import dayjs from 'dayjs';
-import type { Schedule } from '@/lib/types';
+import type { Schedule } from 'types/types';
 import { scheduleTextColor } from '@/lib/calendar';
 
 import {
@@ -10,7 +10,7 @@ import {
 	specialDays,
 	dayTextCommmon,
 } from '@/lib/calendar';
-import { HolidayAndSpecialDayException } from '@/lib/types';
+import { HolidayAndSpecialDayException } from 'types/types';
 import { NamedExoticComponent, useCallback, memo } from 'react';
 
 type Props = {

@@ -12,7 +12,7 @@ import {
 import ReactModal from 'react-modal';
 import { specialDays } from '@/lib/calendar';
 import { deleteSchedule } from '@/lib/supabase';
-import type { Schedule } from '@/lib/types';
+import type { Schedule } from 'types/types';
 import { Schedule as ScheduleComponent } from './Components/Schedule';
 import { CalendarRegister } from '../../components/parts/CalendarRegister';
 import { useSchedule } from 'hooks/useSchedule';

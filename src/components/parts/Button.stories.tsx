@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
 import { Button } from './Button';
-import { Button as Btn } from '@/lib/types';
+import { Button as Btn } from 'types/types';
 
 export default {
 	title: 'Components/Button',
@@ -26,20 +26,14 @@ const Template: StoryFn<Btn> = (args) => <Button {...args} />;
 
 export const Primary = Template.bind({});
 Primary.args = {
-	text: 'Primary Button',
-	buttonColor: '#1ea7fd',
-	textColor: '#ffffff',
-	width: '150',
-	type: 'button',
-	disabled: false,
+	text: 'Default',
 };
 
 export const Secondary = Template.bind({});
 Secondary.args = {
 	text: 'Secondary Button',
-	buttonColor: '#e0e0e0',
-	textColor: '#000000',
-	width: '150',
+	buttonColor: 'bg-[#e0e0e0]',
+	textColor: 'text-[#000000]',
 	type: 'button',
 	disabled: false,
 };
@@ -47,9 +41,8 @@ Secondary.args = {
 export const Disabled = Template.bind({});
 Disabled.args = {
 	text: 'Disabled Button',
-	buttonColor: '#e0e0e0',
-	textColor: '#a0a0a0',
-	width: '150',
+	buttonColor: 'bg-[#e0e0e0]',
+	textColor: 'text-[#a0a0a0]',
 	type: 'button',
 	disabled: false,
 };
@@ -57,9 +50,9 @@ Disabled.args = {
 export const CustomWidth = Template.bind({});
 CustomWidth.args = {
 	text: 'Wide Button',
-	buttonColor: '#ff6347',
-	textColor: '#ffffff',
-	width: '200',
+	buttonColor: 'bg-[#ff6347]',
+	textColor: 'text-[#ffffff]',
+	width: 'w-[200px]',
 	type: 'button',
 	disabled: false,
 };
@@ -67,9 +60,8 @@ CustomWidth.args = {
 export const SubmitButton = Template.bind({});
 SubmitButton.args = {
 	text: 'Submit',
-	buttonColor: '#32cd32',
-	textColor: '#ffffff',
-	width: '150',
+	buttonColor: 'bg-[#32cd32]',
+	textColor: 'text-[#ffffff]',
 	type: 'submit',
 	disabled: false,
 };

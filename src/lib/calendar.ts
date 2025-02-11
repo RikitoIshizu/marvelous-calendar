@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
-import { HolidayAndSpecialDayException } from './types';
-import type { Schedule } from './types';
+import { HolidayAndSpecialDayException } from '../types/types';
+import type { Schedule } from '../types/types';
 
 export const holiday: Record<string, string> = {
 	'0101': '元日',

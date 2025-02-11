@@ -1,7 +1,7 @@
 'use client';
 import { amountOfDay, dayTextCommmon } from '@/lib/calendar';
 import { getSchedule } from '@/lib/supabase';
-import { Schedule } from '@/lib/types';
+import { Schedule } from 'types/types';
 import dayjs from 'dayjs';
 import { ComponentProps, useCallback, useMemo, useState } from 'react';
 import { Calendar } from '../features/Top/Components/Calendar';

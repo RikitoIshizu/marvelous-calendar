@@ -1,6 +1,6 @@
 'use client';
 import { Button } from '@/components/parts/Button';
-import { Schedule as TypeSchedule } from '@/lib/types';
+import { Schedule as TypeSchedule } from 'types/types';
 import { useMemo } from 'react';
 import dayjs from 'dayjs';
 import { scheduleTextColor } from '@/lib/calendar';

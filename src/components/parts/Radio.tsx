@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, memo, NamedExoticComponent } from 'react';
 
-type Props = {
+export type Props = {
 	name: string;
 	id: string;
 	inputName: string;

@@ -1,5 +1,5 @@
 import { getScheduleDetail } from '@/lib/supabase';
-import { Schedule } from '@/lib/types';
+import { Schedule } from 'types/types';
 import { useCallback, useState } from 'react';
 
 export const useSchedule = (date: string) => {

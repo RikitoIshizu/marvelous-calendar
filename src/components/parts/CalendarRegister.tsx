@@ -14,7 +14,7 @@ import { ScheduleTypes } from '@/components/parts/ScheduleTypes';
 import { amountOfDay } from '@/lib/calendar';
 import { registerScheduleDetail, updateSchedule } from '@/lib/supabase';
 import { InputDescription } from '@/components/parts/Input/InputDescription';
-import { Schedule } from '@/lib/types';
+import { Schedule } from 'types/types';
 
 dayjs.extend(isLeapYear);
 

@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import type { Schedule } from './types';
+import type { Schedule } from '../types/types';
 import dayjs from 'dayjs';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
