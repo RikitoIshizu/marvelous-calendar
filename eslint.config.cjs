@@ -7,6 +7,7 @@ module.exports = [
 			'next.config.js',
 			'postcss.config.js',
 			'**/*.test.{js,jsx,ts,tsx}',
+			'src/types/supabase-ganerated-types.ts',
 		],
 		files: ['**/*.{js,jsx,ts,tsx}'],
 		languageOptions: {
