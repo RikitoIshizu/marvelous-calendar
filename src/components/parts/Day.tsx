@@ -66,7 +66,7 @@ const holidayAndSpecialDayTextClass = (
 ): string => {
 	const checkDate = dayTextCommmon('MMDD', date);
 
-	if (specialDays[`${checkDate}`]) return 'overflow-y-scroll p-1 text-cyan-500';
+	if (specialDays[`${checkDate}`]) return 'p-1 text-cyan-500 text-xs';
 
 	const isHolidayAndSpecialDayException = holidayAndSpecialDayException.filter(
 		(el: HolidayAndSpecialDayException) => {
@@ -89,7 +89,7 @@ const holidayAndSpecialDayTextClass = (
 		isHolidayAndSpecialDayException.length ||
 		(holiday[`${yesterdayOnlyYearAndMonth}`] && dOfW === 0)
 	) {
-		return 'p-1 text-green-600';
+		return 'p-1 text-green-600 text-xs';
 	}
 
 	return '';
@@ -104,7 +104,7 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 			date: Props['date'],
 			order: Props['order'],
 		): string => {
-			let commonClass: string = 'align-text-top text-2xl ml-1';
+			let commonClass: string = 'flex items-center align-text-top text-xl ml-1';
 			const nowMonth = dayjs(
 				`${props.selectYear}-${props.selectMonth}`,
 			).month();
@@ -186,8 +186,8 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 		const today = dayjs();
 		const theDay = dayjs(props.date);
 
-		const tod = today.format('YYYYMMDD');
-		const the = theDay.format('YYYYMMDD');
+		const tod = dayTextCommmon('YYYYMMDD');
+		const the = dayTextCommmon('YYYYMMDD', props.date);
 
 		if (tod === the) commonClasses += ' bg-yellow-200';
 		else if (theDay.isBefore(today)) commonClasses += ' bg-neutral-300';
@@ -203,6 +203,19 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 						className={dayClass(props.keyOfdayOfWeek, props.date, props.order)}
 					>
 						{dayText(props.date)}
+						<span
+							className={holidayAndSpecialDayTextClass(
+								props.keyOfdayOfWeek,
+								props.date,
+								props.order,
+							)}
+						>
+							{holidayAndSpecialDayText(
+								props.keyOfdayOfWeek,
+								props.date,
+								props.order,
+							)}
+						</span>
 					</div>
 					{(holidayAndSpecialDayText(
 						props.keyOfdayOfWeek,
@@ -211,19 +224,6 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 					) ||
 						props.schedules) && (
 						<div className="h-[calc(((100vh-64px-75px)/7)-32px)] overflow-y-scroll">
-							<div
-								className={holidayAndSpecialDayTextClass(
-									props.keyOfdayOfWeek,
-									props.date,
-									props.order,
-								)}
-							>
-								{holidayAndSpecialDayText(
-									props.keyOfdayOfWeek,
-									props.date,
-									props.order,
-								)}
-							</div>
 							{props.schedules && (
 								<ul>
 									{props.schedules.map((el) => (
