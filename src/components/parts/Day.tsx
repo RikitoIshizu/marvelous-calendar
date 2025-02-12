@@ -120,7 +120,7 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 				if (checkDay === today) {
 					commonClass += 'text-lime-400';
 				} else {
-					commonClass += ' text-gray-300';
+					commonClass += ' text-gray-400';
 				}
 			} else if (keyOfdayOfWeek === 0) {
 				commonClass += ' text-sky-600';
@@ -161,7 +161,7 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 
 			return commonClass;
 		},
-		[props],
+		[props.selectYear, props.selectMonth],
 	);
 
 	const dayText = useCallback(
@@ -175,7 +175,7 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 				? dayTextCommmon('M/D', date)
 				: dayjs(date).date().toString();
 		},
-		[props],
+		[props.selectYear, props.selectMonth],
 	);
 
 	const classes = useCallback((): string => {
@@ -204,6 +204,7 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 					>
 						{dayText(props.date)}
 					</div>
+					あ
 					{(holidayAndSpecialDayText(
 						props.keyOfdayOfWeek,
 						props.date,
