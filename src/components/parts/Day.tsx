@@ -198,7 +198,7 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 	return (
 		<td className={classes()}>
 			<div className="items-center">
-				<Link href={`/date/${dayjs(props.date).format('YYYYMMDD')}`}>
+				<Link href={`/date/${dayTextCommmon('YYYYMMDD', props.date)}`}>
 					<div
 						className={dayClass(props.keyOfdayOfWeek, props.date, props.order)}
 					>
