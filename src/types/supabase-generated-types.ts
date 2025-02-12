@@ -35,9 +35,11 @@ export type Database = {
           created_at: string
           day: number | null
           description: string | null
+          end_hour: number
           id: number
           month: number | null
           scheduleTypes: number | null
+          start_hour: number
           title: string | null
           user_id: string | null
           year: number | null
@@ -46,9 +48,11 @@ export type Database = {
           created_at?: string
           day?: number | null
           description?: string | null
+          end_hour?: number
           id?: number
           month?: number | null
           scheduleTypes?: number | null
+          start_hour?: number
           title?: string | null
           user_id?: string | null
           year?: number | null
@@ -57,9 +61,11 @@ export type Database = {
           created_at?: string
           day?: number | null
           description?: string | null
+          end_hour?: number
           id?: number
           month?: number | null
           scheduleTypes?: number | null
+          start_hour?: number
           title?: string | null
           user_id?: string | null
           year?: number | null

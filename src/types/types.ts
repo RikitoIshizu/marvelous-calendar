@@ -1,4 +1,4 @@
-import { Database } from './supabase-ganerated-types';
+import { Database } from './supabase-generated-types';
 
 export type Button = {
 	text: string;

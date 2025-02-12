@@ -15,7 +15,7 @@
 		"lintfix": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
 		"reset": "rm -rf .next node_modules && yarn && yarn build",
 		"storybook": "storybook build && storybook dev -p 6006",
-		"generate:supabase-types": "env-cmd -f .env bash -c 'supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" > ./src/types/supabase-ganerated-types.ts 2>&1'"
+		"generate:supabase-types": "env-cmd -f .env bash -c 'supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" > ./src/types/supabase-generated-types.ts 2>&1'"
 	},
 	"dependencies": {
 		"@supabase/auth-ui-react": "^0.4.7",
