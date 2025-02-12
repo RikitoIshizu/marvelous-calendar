@@ -204,7 +204,6 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 					>
 						{dayText(props.date)}
 					</div>
-					あ
 					{(holidayAndSpecialDayText(
 						props.keyOfdayOfWeek,
 						props.date,
