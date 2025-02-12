@@ -1,6 +1,10 @@
-import { Schedule } from '@/types/types';
+import {
+	SchduleRegisterInput,
+	Schedule,
+	ScheduleUpdateInput,
+} from '@/types/types';
 import { createClient } from '@supabase/supabase-js';
-import dayjs from 'dayjs';
+import { dayTextCommmon } from './calendar';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -27,10 +31,9 @@ export const getSchedule = async (
 };
 
 export const getScheduleDetail = async (date: string): Promise<Schedule[]> => {
-	const dateParams = dayjs(date);
-	const year = dateParams.format('YYYY');
-	const month = dateParams.format('M');
-	const day = dateParams.format('D');
+	const year = dayTextCommmon('YYYY', date);
+	const month = dayTextCommmon('M', date);
+	const day = dayTextCommmon('D', date);
 
 	const { data, error, status } = await supabase
 		.from('schedule')
@@ -44,10 +47,7 @@ export const getScheduleDetail = async (date: string): Promise<Schedule[]> => {
 };
 
 export const registerScheduleDetail = async (
-	registerParams: Pick<
-		Schedule,
-		'year' | 'month' | 'day' | 'scheduleTypes' | 'title' | 'description'
-	>,
+	registerParams: SchduleRegisterInput,
 ): Promise<null> => {
 	const { year, month, day, scheduleTypes, title, description } =
 		registerParams;
@@ -75,7 +75,7 @@ export const deleteSchedule = async (id: Schedule['id']): Promise<null> => {
 };
 
 export const updateSchedule = async (
-	params: Pick<Schedule, 'id' | 'title' | 'description' | 'scheduleTypes'>,
+	params: ScheduleUpdateInput,
 ): Promise<null> => {
 	const { id, title, description, scheduleTypes } = params;
 	const { error } = await supabase

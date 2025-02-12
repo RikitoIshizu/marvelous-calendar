@@ -18,16 +18,17 @@ export type HolidayAndSpecialDayException = {
 	name: string;
 };
 
-export type SchduleRegisterInput = {
-	selectYear: string;
-	selectMonth: string;
-	selectDay: string;
-	type: number;
-	description: string;
-	title: string;
-};
-
 export type Schedule = Pick<
 	Database['public']['Tables']['schedule']['Row'],
 	'day' | 'description' | 'id' | 'month' | 'scheduleTypes' | 'title' | 'year'
+>;
+
+export type SchduleRegisterInput = Pick<
+	Database['public']['Tables']['schedule']['Insert'],
+	'year' | 'month' | 'day' | 'description' | 'scheduleTypes' | 'title'
+>;
+
+export type ScheduleUpdateInput = Pick<
+	Database['public']['Tables']['schedule']['Update'],
+	'id' | 'title' | 'description' | 'scheduleTypes'
 >;
