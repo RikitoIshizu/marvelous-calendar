@@ -2,8 +2,8 @@ import { getScheduleDetail } from '@/lib/supabase';
 import { Schedule } from 'types/types';
 import { useCallback, useState } from 'react';
 
-export const useSchedule = (date: string) => {
-	const [schedules, setSchedules] = useState<Schedule[]>([]);
+export const useSchedule = (date: string, initSchedules: Schedule[]) => {
+	const [schedules, setSchedules] = useState<Schedule[]>(initSchedules);
 
 	// 編集用パラメータ
 	const [scheduleId, setScheduleId] = useState<Schedule['id'] | ''>('');

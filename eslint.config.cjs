@@ -8,6 +8,7 @@ module.exports = [
 			'postcss.config.js',
 			'**/*.test.{js,jsx,ts,tsx}',
 			'src/types/supabase-ganerated-types.ts',
+			'storybook-static/**/*.js',
 		],
 		files: ['**/*.{js,jsx,ts,tsx}'],
 		languageOptions: {

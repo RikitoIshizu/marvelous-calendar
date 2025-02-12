@@ -1,14 +1,12 @@
+import { Schedule } from '@/types/types';
 import { createClient } from '@supabase/supabase-js';
 import dayjs from 'dayjs';
-import { Database } from 'types/supabase-ganerated-types';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl!, supabaseAnonKey!);
 
 const GET_COLUMN = 'id, year, month, day, scheduleTypes, title, description';
-
-type Schedule = Database['public']['Tables']['schedule']['Row'];
 
 export const getSchedule = async (
 	year?: Schedule['year'],

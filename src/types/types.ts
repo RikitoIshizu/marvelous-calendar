@@ -27,4 +27,7 @@ export type SchduleRegisterInput = {
 	title: string;
 };
 
-export type Schedule = Database['public']['Tables']['schedule']['Row'];
+export type Schedule = Pick<
+	Database['public']['Tables']['schedule']['Row'],
+	'day' | 'description' | 'id' | 'month' | 'scheduleTypes' | 'title' | 'year'
+>;

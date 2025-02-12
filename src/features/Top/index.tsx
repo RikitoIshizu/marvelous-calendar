@@ -1,19 +1,15 @@
-import {
-	useRef,
-	useEffect,
-	useState,
-	ComponentType,
-	ComponentProps,
-} from 'react';
+'use client';
+import { useState, ComponentType, ComponentProps } from 'react';
 import ReactModal from 'react-modal';
 
 const Modal = ReactModal as unknown as ComponentType<any>;
 
 import { yearAndMonthAndDateList } from '@/lib/calendar';
 import { useCalandar } from 'hooks/useCalendar';
-import { Calendar } from '@/features/Top/Components/Calendar';
+import { CalendarBody } from '@/features/Top/Components/CalendarBody';
 import { CalendarRegister } from '@/components/parts/CalendarRegister';
 import { CalendarHead } from '@/features/Top/Components/CalendarHead';
+import { Schedule } from '@/types/types';
 
 const customStyles = {
 	content: {
@@ -27,9 +23,8 @@ const customStyles = {
 	},
 };
 
-export const Top = () => {
+export const Top = ({ schedules }: { schedules: Schedule[] }) => {
 	// 共通の処理はこのコンポーネントでまとめる
-	const isDisplay = useRef(false);
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
 	const {
@@ -43,7 +38,7 @@ export const Top = () => {
 		onChangeYearAndMonth,
 		getScheduleOnTheDate,
 		onGetSchedules,
-	} = useCalandar();
+	} = useCalandar(schedules);
 
 	const onResetSchedule: ComponentProps<
 		typeof CalendarRegister
@@ -51,13 +46,6 @@ export const Top = () => {
 		onGetSchedules(Number(year), Number(month));
 		setIsModalOpen(false);
 	};
-
-	useEffect(() => {
-		if (!isDisplay.current) {
-			isDisplay.current = true;
-			changeMonth(0);
-		}
-	}, [changeMonth]);
 
 	return (
 		<main className="w-full relative">
@@ -71,7 +59,7 @@ export const Top = () => {
 				onChangeYearAndMonth={onChangeYearAndMonth}
 				setIsModalOpen={setIsModalOpen}
 			/>
-			<Calendar
+			<CalendarBody
 				days={days}
 				month={month}
 				year={year}

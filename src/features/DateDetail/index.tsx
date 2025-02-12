@@ -1,8 +1,7 @@
+'use client';
 import dayjs from 'dayjs';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import {
-	useEffect,
 	useState,
 	useCallback,
 	ComponentType,
@@ -48,14 +47,18 @@ const titleText = (date: string): string => {
 	return `${selectedDay.format('YYYY年M月D日')}の予定`;
 };
 
-export const DateDetail = () => {
-	const router = useRouter();
+export const DateDetail = ({
+	initSchedules,
+	date,
+}: {
+	initSchedules: Schedule[];
+	date: string;
+}) => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [modalMode, setModalMode] = useState<'register' | 'edit'>('register');
 	const [isNewScheduleLoading, setIsNewScheduleLoading] =
 		useState<boolean>(false);
 
-	const date = useRouter().query.id as string;
 	const year = useMemo(() => dayjs(date).format('YYYY'), [date]);
 	const month = useMemo(() => dayjs(date).format('MM'), [date]);
 	const day = useMemo(() => dayjs(date).format('DD'), [date]);
@@ -76,7 +79,7 @@ export const DateDetail = () => {
 		scheduleType,
 		setScheduleType,
 		loadSchedules,
-	} = useSchedule(date);
+	} = useSchedule(date, initSchedules);
 
 	const updSchedule: ComponentProps<
 		typeof CalendarRegister
@@ -134,10 +137,6 @@ export const DateDetail = () => {
 		},
 		[loadSchedules],
 	);
-
-	useEffect(() => {
-		router.isReady && loadSchedules();
-	}, [router, loadSchedules]);
 
 	return (
 		<main>

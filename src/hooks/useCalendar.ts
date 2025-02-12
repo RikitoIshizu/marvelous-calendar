@@ -4,7 +4,7 @@ import { getSchedule } from '@/lib/supabase';
 import { Schedule } from 'types/types';
 import dayjs from 'dayjs';
 import { ComponentProps, useCallback, useMemo, useState } from 'react';
-import { Calendar } from '../features/Top/Components/Calendar';
+import { CalendarBody } from '../features/Top/Components/CalendarBody';
 import { Select } from '@/components/parts/Select';
 
 type Calendar = {
@@ -18,13 +18,97 @@ type WeeklyDay = {
 	week: number;
 };
 
-export const useCalandar = () => {
+const getCalendarDays = (val: number) => {
+	const setYandM = dayjs().add(val, 'month').format('YYYY-MM');
+
+	// カレンダーを取得する
+	// その月の全日付を取得
+	let nowCalendar: Calendar[] = [];
+
+	// まずは現在見ている月のカレンダーの日付を取得する
+	for (var i = 1; i <= amountOfDay(setYandM); i++) {
+		const day = i.toString().padStart(2, '0');
+		const yearAndMonth = dayTextCommmon('YYYY-MM', setYandM);
+		const date = dayTextCommmon('YYYY-MM-DD', `${yearAndMonth}-${day}`);
+		const keyOfdayOfWeek = dayjs(date).day();
+		const order =
+			nowCalendar.filter((el: Calendar) => el.keyOfdayOfWeek === keyOfdayOfWeek)
+				.length + 1;
+
+		const setData: Calendar = { date, keyOfdayOfWeek, order };
+		nowCalendar = [...nowCalendar, setData];
+	}
+
+	// 足りない前後の月の日付を取得する。
+	let prevMonthDate: Calendar[] = [];
+	let nextMonthDate: Calendar[] = [];
+
+	nowCalendar.forEach((date) => {
+		const d = dayjs(date.date);
+		const day: number = d.date();
+
+		if (day === 1) {
+			// 月初の場合、前月の足りない日数を追加する
+			if (date.keyOfdayOfWeek) {
+				for (var i = date.keyOfdayOfWeek; i > 0; i--) {
+					const addPrevMonthDate = d.add(-i, 'day');
+					prevMonthDate = [
+						...prevMonthDate,
+						{
+							date: addPrevMonthDate.format('YYYY-MM-DD'),
+							keyOfdayOfWeek: addPrevMonthDate.day(),
+							order: 1,
+						},
+					];
+				}
+			}
+		} else if (day === nowCalendar.length) {
+			// 月末の場合、次月の足りない日数を追加する
+			if (date.keyOfdayOfWeek !== 6) {
+				for (var n = 1; n <= 6 - date.keyOfdayOfWeek; n++) {
+					const addPrevMonthDate = d.add(n, 'day');
+					nextMonthDate = [
+						...nextMonthDate,
+						{
+							date: addPrevMonthDate.format('YYYY-MM-DD'),
+							keyOfdayOfWeek: addPrevMonthDate.day(),
+							order: 6,
+						},
+					];
+				}
+			}
+		}
+	});
+
+	const displayCalendar = [...prevMonthDate, ...nowCalendar, ...nextMonthDate];
+
+	let datePerWeek: WeeklyDay[] = [];
+	let oneWeek: Calendar[] = [];
+	let week = 1;
+
+	// 週ごとに分ける
+	displayCalendar.forEach((date: Calendar) => {
+		oneWeek = [...oneWeek, date];
+
+		if (date.keyOfdayOfWeek === 6) {
+			const addData: WeeklyDay[] = [{ week, days: oneWeek }];
+
+			datePerWeek = [...datePerWeek, ...addData];
+			oneWeek = [];
+			week++;
+		}
+	});
+
+	return datePerWeek;
+};
+
+export const useCalandar = (initSchedules: Schedule[]) => {
 	const [count, setCount] = useState<number>(0);
-	const [days, setDays] = useState<WeeklyDay[]>([]);
+	const [days, setDays] = useState<WeeklyDay[]>(getCalendarDays(0)); //初期値を設定する
 	const [year, setYear] = useState<string>(dayTextCommmon('YYYY'));
 	const [month, setMonth] = useState<string>(dayTextCommmon('MM'));
 	const [day, setDay] = useState<string>(dayTextCommmon('DD'));
-	const [schedules, setSchedules] = useState<Schedule[]>([]);
+	const [schedules, setSchedules] = useState<Schedule[]>(initSchedules);
 
 	const onGetSchedules = useCallback(async (y: number, m: number) => {
 		const schedule = await getSchedule(y, m);
@@ -44,104 +128,14 @@ export const useCalandar = () => {
 		[onGetSchedules],
 	);
 
-	// カレンダーの日付を取得
-	const setCalendar = useCallback((val: number) => {
-		const setYandM = dayjs().add(val, 'month').format('YYYY-MM');
-
-		// カレンダーを取得する
-		// その月の全日付を取得
-		let nowCalendar: Calendar[] = [];
-
-		// まずは現在見ている月のカレンダーの日付を取得する
-		for (var i = 1; i <= amountOfDay(setYandM); i++) {
-			const day = i.toString().padStart(2, '0');
-			const yearAndMonth = dayTextCommmon('YYYY-MM', setYandM);
-			const date = dayTextCommmon('YYYY-MM-DD', `${yearAndMonth}-${day}`);
-			const keyOfdayOfWeek = dayjs(date).day();
-			const order =
-				nowCalendar.filter(
-					(el: Calendar) => el.keyOfdayOfWeek === keyOfdayOfWeek,
-				).length + 1;
-
-			const setData: Calendar = { date, keyOfdayOfWeek, order };
-			nowCalendar = [...nowCalendar, setData];
-		}
-
-		// 足りない前後の月の日付を取得する。
-		let prevMonthDate: Calendar[] = [];
-		let nextMonthDate: Calendar[] = [];
-
-		nowCalendar.forEach((date) => {
-			const d = dayjs(date.date);
-			const day: number = d.date();
-
-			if (day === 1) {
-				// 月初の場合、前月の足りない日数を追加する
-				if (date.keyOfdayOfWeek) {
-					for (var i = date.keyOfdayOfWeek; i > 0; i--) {
-						const addPrevMonthDate = d.add(-i, 'day');
-						prevMonthDate = [
-							...prevMonthDate,
-							{
-								date: addPrevMonthDate.format('YYYY-MM-DD'),
-								keyOfdayOfWeek: addPrevMonthDate.day(),
-								order: 1,
-							},
-						];
-					}
-				}
-			} else if (day === nowCalendar.length) {
-				// 月末の場合、次月の足りない日数を追加する
-				if (date.keyOfdayOfWeek !== 6) {
-					for (var n = 1; n <= 6 - date.keyOfdayOfWeek; n++) {
-						const addPrevMonthDate = d.add(n, 'day');
-						nextMonthDate = [
-							...nextMonthDate,
-							{
-								date: addPrevMonthDate.format('YYYY-MM-DD'),
-								keyOfdayOfWeek: addPrevMonthDate.day(),
-								order: 6,
-							},
-						];
-					}
-				}
-			}
-		});
-
-		const displayCalendar = [
-			...prevMonthDate,
-			...nowCalendar,
-			...nextMonthDate,
-		];
-
-		let datePerWeek: WeeklyDay[] = [];
-		let oneWeek: Calendar[] = [];
-		let week = 1;
-
-		// 週ごとに分ける
-		displayCalendar.forEach((date: Calendar) => {
-			oneWeek = [...oneWeek, date];
-
-			if (date.keyOfdayOfWeek === 6) {
-				const addData: WeeklyDay[] = [{ week, days: oneWeek }];
-
-				datePerWeek = [...datePerWeek, ...addData];
-				oneWeek = [];
-				week++;
-			}
-		});
-
-		setDays(datePerWeek);
-	}, []);
-
 	// 月を変える
 	const changeMonth = useCallback(
 		(c: number) => {
 			setCount(c);
 			setNowYearAndMonth(c);
-			setCalendar(c);
+			setDays(getCalendarDays(c));
 		},
-		[setCount, setNowYearAndMonth, setCalendar],
+		[setCount, setNowYearAndMonth],
 	);
 
 	// 年と月を変える
@@ -160,7 +154,7 @@ export const useCalandar = () => {
 	const isNowMonth = useMemo(() => count === 0, [count]);
 
 	const getScheduleOnTheDate: ComponentProps<
-		typeof Calendar
+		typeof CalendarBody
 	>['getScheduleOnTheDate'] = (
 		day: string,
 	): Pick<Schedule, 'id' | 'title' | 'scheduleTypes'>[] => {
