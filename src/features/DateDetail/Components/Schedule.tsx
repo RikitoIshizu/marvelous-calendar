@@ -29,7 +29,7 @@ export const Schedule = ({
 	return (
 		<section className="mt-4">
 			<div className="flex">
-				<h2 className="text-2xl font-bold mr-4">スケジュール</h2>
+				<h2 className="text-3xl font-bold mr-4">スケジュール</h2>
 				{shouldShowScheduleRegisterBtn && (
 					<Button
 						text="登録"
@@ -40,16 +40,24 @@ export const Schedule = ({
 			</div>
 			{schedules.length ? (
 				<ul className="mt-4">
+					{/* <li className="flex">
+						<div className="mr-4 font-bold w-8">時間</div>
+						<div className="mr-4 font-bold">予定名</div>
+						<div className="font-bold">予定の詳細</div>
+					</li> */}
 					{schedules.map((el) => {
 						return (
 							<li className="mt-2 flex items-center" key={el.id}>
-								<p
-									className={
-										scheduleTextColor(el.scheduleTypes!) + ' font-bold text-xl'
-									}
+								<div className="mr-4">
+									{el.start_hour}:{el.start_minute}~{el.end_hour}:
+									{el.end_minute}
+								</div>
+								<h3
+									className={`text-2xl mr-4 font-bold ${scheduleTextColor(el.scheduleTypes!)}`}
 								>
-									{el.description}
-								</p>
+									{el.title}
+								</h3>
+								<div className="text-md">{el.description}</div>
 								{shouldShowScheduleRegisterBtn && (
 									<Button
 										text="編集"

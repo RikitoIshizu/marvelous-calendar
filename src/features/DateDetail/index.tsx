@@ -2,12 +2,10 @@
 import Link from 'next/link';
 import { useState, useCallback, ComponentProps, useMemo } from 'react';
 import { dayTextCommmon, specialDays } from 'shared/calendar';
-import { deleteSchedule } from 'shared/supabase';
+import { deleteSchedule, getScheduleDetail } from 'shared/supabase';
 import { Schedule } from 'types/types';
 import { Schedule as ScheduleComponent } from './Components/Schedule';
 import { CalendarRegister } from '../../shared/CalendarRegister';
-import { useSchedule } from 'hooks/useSchedule';
-import { Hour, Minute } from 'shared/time';
 import { CalendarRegisterModal } from 'shared/CalendarRegisterModal';
 import dayjs from 'dayjs';
 
@@ -18,14 +16,12 @@ export const DateDetail = ({
 	initSchedules: Schedule[];
 	date: string;
 }) => {
+	const [schedules, setSchedules] = useState<Schedule[]>(initSchedules);
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [modalMode, setModalMode] = useState<'register' | 'edit'>('register');
 	const [isNewScheduleLoading, setIsNewScheduleLoading] =
 		useState<boolean>(false);
-
-	const year = useMemo(() => dayTextCommmon('YYYY', date), [date]);
-	const month = useMemo(() => dayTextCommmon('MM', date), [date]);
-	const day = useMemo(() => dayTextCommmon('DD', date), [date]);
+	const [selectedSchedule, setSelectedSchdeuld] = useState<Schedule | {}>({});
 
 	const specialDay = useMemo(() => {
 		const md = dayTextCommmon('MMDD', date);
@@ -33,26 +29,10 @@ export const DateDetail = ({
 		return specialDays[md] ? specialDays[md] : '';
 	}, [date]);
 
-	const {
-		schedules,
-		scheduleId,
-		setScheduleId,
-		scheduleTitle,
-		setScheduleTitle,
-		scheduleDescription,
-		setScheduletDescription,
-		scheduleType,
-		setScheduleType,
-		loadSchedules,
-		startHour,
-		setStartHour,
-		startMinute,
-		setStartMinute,
-		endHour,
-		setEndHour,
-		endMinute,
-		setEndMinute,
-	} = useSchedule(date, initSchedules);
+	const loadSchedules = useCallback(async () => {
+		const schedules = await getScheduleDetail(date);
+		setSchedules(schedules);
+	}, [date]);
 
 	const updSchedule: ComponentProps<
 		typeof CalendarRegister
@@ -70,27 +50,10 @@ export const DateDetail = ({
 
 				if (!editSchedule?.length) return;
 
-				setScheduleId(editSchedule[0].id);
-				setScheduleTitle(editSchedule[0].title);
-				setScheduletDescription(editSchedule[0].description);
-				setScheduleType(editSchedule[0].scheduleTypes);
-				setStartHour(editSchedule[0].start_hour as Hour);
-				setEndHour(editSchedule[0].end_hour as Hour);
-				setStartMinute(editSchedule[0].start_minute as Minute);
-				setEndMinute(editSchedule[0].end_minute as Minute);
+				setSelectedSchdeuld(editSchedule[0]);
 				setIsModalOpen(true);
 			},
-			[
-				schedules,
-				setScheduleId,
-				setScheduleTitle,
-				setScheduletDescription,
-				setScheduleType,
-				setStartHour,
-				setEndHour,
-				setStartMinute,
-				setEndMinute,
-			],
+			[schedules],
 		);
 
 	// 登録
@@ -99,10 +62,7 @@ export const DateDetail = ({
 	>['onOpenRegisterScheduleModal'] = useCallback(() => {
 		setIsModalOpen(true);
 		setModalMode('register');
-		setScheduleId('');
-		setScheduleTitle('');
-		setScheduletDescription('');
-	}, [setScheduleId, setScheduleTitle, setScheduletDescription]);
+	}, []);
 
 	const confirmShouldDeleteSchedule: ComponentProps<
 		typeof ScheduleComponent
@@ -146,7 +106,7 @@ export const DateDetail = ({
 				<div className="w-[1000px] mx-auto">
 					{specialDay && (
 						<section>
-							<h2 className="text-2xl font-bold">今日は何の日？</h2>
+							<h2 className="text-3xl font-bold">今日は何の日？</h2>
 							<div className="mt-1">{specialDay}</div>
 						</section>
 					)}
@@ -168,21 +128,8 @@ export const DateDetail = ({
 					type={modalMode}
 					shouldHideDateArea={true}
 					onOpenModal={updSchedule}
-					year={Number(year)}
-					month={Number(month)}
-					day={Number(day)}
-					startHour={startHour}
-					startMinute={startMinute}
-					endHour={endHour}
-					endMinute={endMinute}
-					id={Number(scheduleId)}
-					title={scheduleTitle}
-					description={scheduleDescription}
-					scheduleTypes={scheduleType}
-					onChangeStartHour={setStartHour}
-					onChangeStartMinute={setStartMinute}
-					onChangeEndhour={setEndHour}
-					onChangeEndMiute={setEndMinute}
+					schedule={selectedSchedule as Schedule}
+					date={date}
 				/>
 			</section>
 			{isNewScheduleLoading && (

@@ -66,7 +66,8 @@ const holidayAndSpecialDayTextClass = (
 ): string => {
 	const checkDate = dayTextCommmon('MMDD', date);
 
-	if (specialDays[`${checkDate}`]) return 'p-1 text-cyan-500 text-xs';
+	if (specialDays[`${checkDate}`])
+		return 'p-1 text-cyan-500 text-xs whitespace-nowrap truncate';
 
 	const isHolidayAndSpecialDayException = holidayAndSpecialDayException.filter(
 		(el: HolidayAndSpecialDayException) => {
@@ -120,7 +121,7 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 				if (checkDay === today) {
 					commonClass += 'text-lime-400';
 				} else {
-					commonClass += ' text-gray-400';
+					commonClass += ' text-gray-300';
 				}
 			} else if (keyOfdayOfWeek === 0) {
 				commonClass += ' text-sky-600';
@@ -190,7 +191,7 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 		const the = dayTextCommmon('YYYYMMDD', props.date);
 
 		if (tod === the) commonClasses += ' bg-yellow-200';
-		else if (theDay.isBefore(today)) commonClasses += ' bg-neutral-300';
+		else if (theDay.isBefore(today)) commonClasses += ' bg-neutral-400';
 		return commonClasses;
 	}, [props]);
 

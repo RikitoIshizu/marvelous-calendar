@@ -1,6 +1,6 @@
 'use client';
 import { useState, ComponentProps } from 'react';
-import { yearAndMonthAndDateList } from 'shared/calendar';
+import { dayTextCommmon, yearAndMonthAndDateList } from 'shared/calendar';
 import { useCalandar } from 'hooks/useCalendar';
 import { CalendarBody } from 'features/Top/Components/CalendarBody';
 import { CalendarHead } from 'features/Top/Components/CalendarHead';
@@ -52,11 +52,18 @@ export const Top = ({ schedules }: { schedules: Schedule[] }) => {
 			<CalendarRegisterModal
 				type="register"
 				shouldHideDateArea={false}
-				year={Number(year)}
-				month={Number(month)}
-				day={Number(day)}
+				schedule={{
+					year: Number(year),
+					month: Number(month),
+					day: Number(day),
+					start_hour: '00',
+					start_minute: '00',
+					end_hour: '00',
+					end_minute: '00',
+				}}
 				onOpenModal={onResetSchedule}
 				isModalOpen={isModalOpen}
+				date={dayTextCommmon('YYYYMMDD')}
 			/>
 		</main>
 	);

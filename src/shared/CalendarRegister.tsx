@@ -25,46 +25,54 @@ type Props = {
 	onEventCallBack: () => void; // TODO: 命名がよくないから後で変えたい
 	type: 'register' | 'edit';
 	shouldHideDateArea: boolean;
-	schedule: Pick<Schedule, 'year' | 'month' | 'day'> &
-		Partial<
-			Pick<
-				Schedule,
-				| 'id'
-				| 'title'
-				| 'description'
-				| 'scheduleTypes'
-				| 'start_hour'
-				| 'start_minute'
-				| 'end_hour'
-				| 'end_minute'
-			>
-		>;
-	onChangeStartHour: (_start_hour: Hour) => void;
-	onChangeStartMinute: (_start_minute: Minute) => void;
-	onChangeEndhour: (_start_hour: Hour) => void;
-	onChangeEndMiute: (_start_minute: Minute) => void;
+	schedule: Pick<
+		Schedule,
+		| 'year'
+		| 'month'
+		| 'day'
+		| 'start_hour'
+		| 'start_minute'
+		| 'end_hour'
+		| 'end_minute'
+	> &
+		Partial<Pick<Schedule, 'id' | 'title' | 'description' | 'scheduleTypes'>>;
 };
 
+// TODO: ここの入力項目が引用元に依存してるので、修正予定
 export const CalendarRegister = (props: Props) => {
 	const { schedule } = props;
 	const isDisplay = useRef<boolean>(false);
 
 	// TODO: hooksにまとめる
 	// 入力項目
-	const [year, setYear] = useState<string>(schedule.year!.toString());
-	const [month, setMonth] = useState<string>(schedule.month!.toString());
-	const [day, setDay] = useState<string>(schedule.day!.toString());
+	const [year, setYear] = useState<string>(
+		schedule.year?.toString() || dayTextCommmon('YYYY'),
+	);
+	const [month, setMonth] = useState<string>(
+		schedule.month?.toString() || dayTextCommmon('MM'),
+	);
+	const [day, setDay] = useState<string>(
+		schedule.day?.toString() || dayTextCommmon('DD'),
+	);
 	const [title, setTitle] = useState<Schedule['title']>(schedule.title || '');
+	const [startHour, setStartHour] = useState<Hour>(
+		(schedule.start_hour as Hour) || '00',
+	);
+	const [startMinute, setStartMinute] = useState<Minute>(
+		(schedule.start_minute as Minute) || '00',
+	);
+	const [endHour, setEndHour] = useState<Hour>(
+		(schedule.end_hour as Hour) || '00',
+	);
+	const [endMinute, setEndMinute] = useState<Minute>(
+		(schedule.end_minute as Minute) || '00',
+	);
 	const [description, setDescription] = useState<Schedule['description']>(
 		schedule.description || '',
 	);
 	const [type, setType] = useState<Schedule['scheduleTypes']>(
 		schedule.scheduleTypes || 1,
 	);
-	// const [startHour, setStartHour] = useState<Hour>('00');
-	// const [startMinute, setStartMinute] = useState<Minute>('00');
-	// const [endHour, setEndHour] = useState<Hour>('00');
-	// const [endMinute, setEndMinute] = useState<Minute>('00');
 
 	// カレンダーの年月日のリスト
 	const [nowYearList, setYearList] = useState<string[]>([]);
@@ -165,7 +173,7 @@ export const CalendarRegister = (props: Props) => {
 			setMonthList(monthList);
 			setDayList(dayList);
 		},
-		[],
+		[setDay],
 	);
 
 	const onChangeMonth = useCallback(
@@ -206,7 +214,7 @@ export const CalendarRegister = (props: Props) => {
 
 			setDayList(dayList);
 		},
-		[],
+		[setDay],
 	);
 
 	const registerSchedule = useCallback(
@@ -216,12 +224,9 @@ export const CalendarRegister = (props: Props) => {
 			setDescriptionError(
 				!description ? 'スケジュールの詳細を入力してください。' : '',
 			);
-			const isStartAfterEnd =
-				Number(props.schedule.start_hour) >= Number(props.schedule.end_hour);
+			const isStartAfterEnd = Number(startHour) >= Number(endHour);
 			setTimeError(isStartAfterEnd ? 'スケジュールの時間が不適切です。' : '');
 			if (!title && !description && isStartAfterEnd) return;
-
-			console.log(schedule);
 
 			const response =
 				props.type === 'register'
@@ -232,20 +237,20 @@ export const CalendarRegister = (props: Props) => {
 							title,
 							description,
 							scheduleTypes: type,
-							start_hour: schedule.start_hour || '00',
-							start_minute: schedule.start_minute || '00',
-							end_hour: schedule.end_hour || '00',
-							end_minute: schedule.end_minute || '00',
+							start_hour: startHour,
+							start_minute: startMinute,
+							end_hour: endHour,
+							end_minute: endMinute,
 						})
 					: await updateSchedule({
 							id: Number(schedule?.id),
 							title,
 							description,
 							scheduleTypes: type,
-							start_hour: schedule.start_hour || '00',
-							start_minute: schedule.start_minute || '00',
-							end_hour: schedule.end_hour || '00',
-							end_minute: schedule.end_minute || '00',
+							start_hour: startHour,
+							start_minute: startMinute,
+							end_hour: endHour,
+							end_minute: endMinute,
 						});
 			if (!response) {
 				alert('スケジュール登録完了！');
@@ -262,11 +267,11 @@ export const CalendarRegister = (props: Props) => {
 			type,
 			title,
 			props,
+			startHour,
+			startMinute,
+			endHour,
+			endMinute,
 			schedule.id,
-			schedule.start_hour,
-			schedule.start_minute,
-			schedule.end_hour,
-			schedule.end_minute,
 		],
 	);
 
@@ -315,20 +320,14 @@ export const CalendarRegister = (props: Props) => {
 				</div>
 			)}
 			<ScheduleTime
-				startHour={(schedule.start_hour as Hour) || '00'}
-				startMinute={(schedule.start_minute as Minute) || '00'}
-				endHour={(schedule.end_hour as Hour) || '00'}
-				endMinute={(schedule.end_minute as Minute) || '00'}
-				onChangeStartHour={(startHour: Hour) =>
-					props.onChangeStartHour(startHour)
-				}
-				onChangeStartMinute={(startMinute: Minute) =>
-					props.onChangeEndMiute(startMinute)
-				}
-				onChangeEndHour={(endHour: Hour) => props.onChangeEndhour(endHour)}
-				onChangeEndMinute={(endMinute: Minute) =>
-					props.onChangeEndMiute(endMinute)
-				}
+				startHour={startHour}
+				startMinute={startMinute}
+				endHour={endHour}
+				endMinute={endMinute}
+				onChangeStartHour={setStartHour}
+				onChangeStartMinute={setStartMinute}
+				onChangeEndHour={setEndHour}
+				onChangeEndMinute={setEndMinute}
 			/>
 			{timeError && <p className="text-xs text-[red]">{timeError}</p>}
 			<ScheduleTypes

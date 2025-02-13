@@ -1,9 +1,8 @@
 'use client';
 import ReactModal from 'react-modal';
 import { CalendarRegister } from './CalendarRegister';
-import { ComponentType } from 'react';
-import { Schedule } from 'types/types';
-import { Hour, Minute } from './time';
+import { ComponentProps, ComponentType } from 'react';
+import { dayTextCommmon } from './calendar';
 
 const Modal = ReactModal as unknown as ComponentType<any>;
 
@@ -24,21 +23,8 @@ type Props = {
 	type: 'register' | 'edit';
 	shouldHideDateArea: boolean;
 	onOpenModal: (_isOpen: boolean) => void;
-	year: number;
-	month: number;
-	day: number;
-	startHour?: Schedule['start_hour'];
-	startMinute?: Schedule['start_minute'];
-	endHour?: Schedule['end_hour'];
-	endMinute?: Schedule['end_minute'];
-	id?: Schedule['id'];
-	title?: Schedule['title'];
-	description?: Schedule['description'];
-	scheduleTypes?: Schedule['scheduleTypes'];
-	onChangeStartHour: (_start_hour: Hour) => void;
-	onChangeStartMinute: (_start_minute: Minute) => void;
-	onChangeEndhour: (_start_hour: Hour) => void;
-	onChangeEndMiute: (_start_minute: Minute) => void;
+	schedule: ComponentProps<typeof CalendarRegister>['schedule'];
+	date: string;
 };
 
 export const CalendarRegisterModal = ({
@@ -46,21 +32,8 @@ export const CalendarRegisterModal = ({
 	type,
 	shouldHideDateArea,
 	onOpenModal,
-	year,
-	month,
-	day,
-	startHour,
-	startMinute,
-	endHour,
-	endMinute,
-	id,
-	title,
-	description,
-	scheduleTypes,
-	onChangeStartHour,
-	onChangeStartMinute,
-	onChangeEndhour,
-	onChangeEndMiute,
+	schedule,
+	date,
 }: Props) => {
 	return (
 		<Modal
@@ -76,24 +49,27 @@ export const CalendarRegisterModal = ({
 				type={type}
 				shouldHideDateArea={shouldHideDateArea}
 				schedule={{
-					year,
-					month,
-					day,
-					...(startHour && { start_hour: startHour }),
-					...(startMinute && { start_minute: startMinute }),
-					...(endHour && { end_hour: endHour }),
-					...(endMinute && { end_minute: endMinute }),
+					year:
+						type === 'edit'
+							? schedule.year
+							: Number(dayTextCommmon('YYYY', date)),
+					month:
+						type === 'edit'
+							? schedule.month
+							: Number(dayTextCommmon('MM', date)),
+					day:
+						type === 'edit' ? schedule.day : Number(dayTextCommmon('DD', date)),
+					start_hour: schedule.start_hour,
+					start_minute: schedule.start_minute,
+					end_hour: schedule.end_hour,
+					end_minute: schedule.end_minute,
 					...(type === 'edit' && {
-						id,
-						title,
-						description,
-						scheduleTypes,
+						id: schedule.id,
+						title: schedule.title,
+						description: schedule.description,
+						scheduleTypes: schedule.scheduleTypes,
 					}),
 				}}
-				onChangeStartHour={onChangeStartHour}
-				onChangeStartMinute={onChangeStartMinute}
-				onChangeEndhour={onChangeEndhour}
-				onChangeEndMiute={onChangeEndMiute}
 			/>
 		</Modal>
 	);
