@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
-import { DateDetail } from '@/features/DateDetail';
-import { getScheduleDetail } from '@/lib/supabase';
+import { DateDetail } from 'features/DateDetail';
+import { getScheduleDetail } from 'shared/supabase';
 
 export default async function Date({
 	params,

@@ -1,6 +1,6 @@
-import { Top } from '@/features/Top';
-import { dayTextCommmon } from '@/lib/calendar';
-import { getSchedule } from '@/lib/supabase';
+import { Top } from 'features/Top';
+import { dayTextCommmon } from 'shared/calendar';
+import { getSchedule } from 'shared/supabase';
 import { Suspense } from 'react';
 
 export default async function Index() {

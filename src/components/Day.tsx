@@ -2,14 +2,14 @@
 import Link from 'next/link';
 import dayjs from 'dayjs';
 import type { Schedule } from 'types/types';
-import { scheduleTextColor } from '@/lib/calendar';
+import { scheduleTextColor } from 'shared/calendar';
 
 import {
 	holiday,
 	holidayAndSpecialDayException,
 	specialDays,
 	dayTextCommmon,
-} from '@/lib/calendar';
+} from 'shared/calendar';
 import { HolidayAndSpecialDayException } from 'types/types';
 import { NamedExoticComponent, useCallback, memo } from 'react';
 
@@ -191,7 +191,6 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 
 		if (tod === the) commonClasses += ' bg-yellow-200';
 		else if (theDay.isBefore(today)) commonClasses += ' bg-neutral-300';
-
 		return commonClasses;
 	}, [props]);
 

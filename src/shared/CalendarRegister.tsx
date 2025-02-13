@@ -7,14 +7,16 @@ import React, {
 	useState,
 	useRef,
 } from 'react';
-import { Select } from '@/components/parts/Select';
-import { Button } from '@/components/parts/Button';
-import { InputTitle } from '@/components/parts/Input/InputTitle';
-import { ScheduleTypes } from '@/components/parts/ScheduleTypes';
-import { amountOfDay } from '@/lib/calendar';
-import { registerScheduleDetail, updateSchedule } from '@/lib/supabase';
-import { InputDescription } from '@/components/parts/Input/InputDescription';
-import { Schedule } from '@/types/types';
+import { Select } from 'components/Select';
+import { Button } from 'components/Button';
+import { InputTitle } from 'components/Input/InputTitle';
+import { ScheduleTypes } from 'components/ScheduleTypes';
+import { amountOfDay, dayTextCommmon } from 'shared/calendar';
+import { registerScheduleDetail, updateSchedule } from 'shared/supabase';
+import { InputDescription } from 'components/Input/InputDescription';
+import { Schedule } from 'types/types';
+import { ScheduleTime } from '../components/ScheduleTime';
+import { Hour, Minute } from 'shared/time';
 
 dayjs.extend(isLeapYear);
 
@@ -23,10 +25,24 @@ export const CalendarRegister = (props: {
 	type: 'register' | 'edit';
 	shouldHideDateArea: boolean;
 	schedule: Pick<Schedule, 'year' | 'month' | 'day'> &
-		Partial<Pick<Schedule, 'id' | 'title' | 'description' | 'scheduleTypes'>>;
+		Partial<
+			Pick<
+				Schedule,
+				| 'id'
+				| 'title'
+				| 'description'
+				| 'scheduleTypes'
+				| 'start_hour'
+				| 'start_minute'
+				| 'end_hour'
+				| 'end_minute'
+			>
+		>;
 }) => {
 	const { schedule } = props;
 	const isDisplay = useRef<boolean>(false);
+
+	// TODO: hooksにまとめる
 	// 入力項目
 	const [year, setYear] = useState<string>(schedule.year!.toString());
 	const [month, setMonth] = useState<string>(schedule.month!.toString());
@@ -38,6 +54,10 @@ export const CalendarRegister = (props: {
 	const [type, setType] = useState<Schedule['scheduleTypes']>(
 		schedule.scheduleTypes || 1,
 	);
+	const [startHour, setStartHour] = useState<Hour>('00');
+	const [startMinute, setStartMinute] = useState<Minute>('00');
+	const [endHour, setEndHour] = useState<Hour>('00');
+	const [endMinute, setEndMinute] = useState<Minute>('00');
 
 	// カレンダーの年月日のリスト
 	const [nowYearList, setYearList] = useState<string[]>([]);
@@ -47,6 +67,7 @@ export const CalendarRegister = (props: {
 	// バリデーション
 	const [titleError, setTitleError] = useState<string>('');
 	const [descriptionError, setDescriptionError] = useState<string>('');
+	const [timeError, setTimeError] = useState<string>('');
 
 	// カレンダーを読み込んだ時に選択できる年月日を設定する
 	const firstSetCalendar = useCallback(() => {
@@ -91,13 +112,13 @@ export const CalendarRegister = (props: {
 				.toString()
 				.padStart(2, '0')}-${selectedDay.toString().padStart(2, '0')}`;
 
-			const today = dayjs().format('YYYY-MM-DD');
+			const today = dayTextCommmon('YYYY-MM-DD');
 
 			let monthList: string[] = [];
 			let dayList: string[] = [];
 
-			const thisMonthAmount = amountOfDay(dayjs().format('YYYY-MM'));
-			const thisYear = dayjs().year();
+			const thisMonthAmount = amountOfDay(dayTextCommmon('YYYY-MM'));
+			const thisYear = Number(dayTextCommmon('YYYY'));
 
 			// 選択した年が過去の日になっちゃった時
 			if (
@@ -149,7 +170,7 @@ export const CalendarRegister = (props: {
 			const selectedYearAndMonth = `${selectedYear}-${selectedMonth
 				.toString()
 				.padStart(2, '0')}`;
-			const nowMonth = dayjs().format('YYYY-MM');
+			const nowMonth = dayTextCommmon('YYYY-MM');
 
 			const amountOfMonth = amountOfDay(selectedYearAndMonth);
 
@@ -184,13 +205,13 @@ export const CalendarRegister = (props: {
 	const registerSchedule = useCallback(
 		async (e: FormEvent<Element>) => {
 			e.preventDefault();
-
 			setTitleError(!title ? 'タイトルを入力してください。' : '');
 			setDescriptionError(
 				!description ? 'スケジュールの詳細を入力してください。' : '',
 			);
-
-			if (!title && !description) return;
+			const isStartAfterEnd = Number(startHour) >= Number(endHour);
+			setTimeError(isStartAfterEnd ? 'スケジュールの時間が不適切です。' : '');
+			if (!title && !description && isStartAfterEnd) return;
 
 			const response =
 				props.type === 'register'
@@ -201,14 +222,21 @@ export const CalendarRegister = (props: {
 							title,
 							description,
 							scheduleTypes: type,
+							start_hour: startHour,
+							start_minute: startMinute,
+							end_hour: endHour,
+							end_minute: endMinute,
 						})
 					: await updateSchedule({
 							id: Number(props.schedule?.id),
 							title,
 							description,
 							scheduleTypes: type,
+							start_hour: startHour,
+							start_minute: startMinute,
+							end_hour: endHour,
+							end_minute: endMinute,
 						});
-
 			if (!response) {
 				alert('スケジュール登録完了！');
 				setTitleError('');
@@ -216,9 +244,22 @@ export const CalendarRegister = (props: {
 				return props.onEventCallBack();
 			}
 		},
-		[day, description, month, year, type, title, props],
+		[
+			day,
+			description,
+			month,
+			year,
+			type,
+			title,
+			endHour,
+			startHour,
+			props,
+			endMinute,
+			startMinute,
+		],
 	);
 
+	// TODO: stateの更新はuseEffectでやるべきじゃないので、のちに修正予定
 	useEffect(() => {
 		if (!isDisplay.current) {
 			isDisplay.current = true;
@@ -262,6 +303,19 @@ export const CalendarRegister = (props: {
 					/>
 				</div>
 			)}
+			<ScheduleTime
+				startHour={startHour}
+				startMinute={startMinute}
+				endHour={endHour}
+				endMinute={endMinute}
+				onChangeStartHour={(startHour: Hour) => setStartHour(startHour)}
+				onChangeStartMinute={(startMinute: Minute) =>
+					setStartMinute(startMinute)
+				}
+				onChangeEndHour={(endHour: Hour) => setEndHour(endHour)}
+				onChangeEndMinute={(endMinute: Minute) => setEndMinute(endMinute)}
+			/>
+			{timeError && <p className="text-xs text-[red]">{timeError}</p>}
 			<ScheduleTypes
 				type={type}
 				onEventCallBack={(e: string) => setType(Number(e))}

@@ -1,5 +1,5 @@
-import { Button } from '@/components/parts/Button';
-import { Select } from '@/components/parts/Select';
+import { Button } from 'components/Button';
+import { Select } from 'components/Select';
 
 export const CalendarHead = ({
 	count,

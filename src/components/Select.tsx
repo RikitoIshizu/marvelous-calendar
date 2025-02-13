@@ -33,7 +33,7 @@ export const Select: NamedExoticComponent<Props> = memo(function Select(
 				{props.selectList?.map((el) => {
 					return (
 						<option key={el} value={el}>
-							{Number(el)}
+							{el}
 						</option>
 					);
 				})}

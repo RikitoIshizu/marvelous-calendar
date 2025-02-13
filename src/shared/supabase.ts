@@ -2,7 +2,7 @@ import {
 	SchduleRegisterInput,
 	Schedule,
 	ScheduleUpdateInput,
-} from '@/types/types';
+} from 'types/types';
 import { createClient } from '@supabase/supabase-js';
 import { dayTextCommmon } from './calendar';
 
@@ -10,7 +10,8 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl!, supabaseAnonKey!);
 
-const GET_COLUMN = 'id, year, month, day, scheduleTypes, title, description';
+const GET_COLUMN =
+	'id, year, month, day, scheduleTypes, title, description, start_hour, start_minute, end_hour, end_minute';
 
 export const getSchedule = async (
 	year?: Schedule['year'],
@@ -49,12 +50,31 @@ export const getScheduleDetail = async (date: string): Promise<Schedule[]> => {
 export const registerScheduleDetail = async (
 	registerParams: SchduleRegisterInput,
 ): Promise<null> => {
-	const { year, month, day, scheduleTypes, title, description } =
-		registerParams;
+	const {
+		year,
+		month,
+		day,
+		scheduleTypes,
+		title,
+		description,
+		start_hour,
+		start_minute,
+		end_hour,
+		end_minute,
+	} = registerParams;
 
-	const { error, status } = await supabase
-		.from('schedule')
-		.insert({ year, month, day, scheduleTypes, title, description });
+	const { error, status } = await supabase.from('schedule').insert({
+		year,
+		month,
+		day,
+		scheduleTypes,
+		title,
+		description,
+		start_hour,
+		start_minute,
+		end_hour,
+		end_minute,
+	});
 
 	if (error && status !== 406) {
 		throw error;

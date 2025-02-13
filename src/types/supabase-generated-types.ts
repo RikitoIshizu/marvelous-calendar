@@ -35,11 +35,13 @@ export type Database = {
           created_at: string
           day: number | null
           description: string | null
-          end_hour: number
+          end_hour: string
+          end_minute: string
           id: number
           month: number | null
           scheduleTypes: number | null
-          start_hour: number
+          start_hour: string
+          start_minute: string
           title: string | null
           user_id: string | null
           year: number | null
@@ -48,11 +50,13 @@ export type Database = {
           created_at?: string
           day?: number | null
           description?: string | null
-          end_hour?: number
+          end_hour: string
+          end_minute: string
           id?: number
           month?: number | null
           scheduleTypes?: number | null
-          start_hour?: number
+          start_hour: string
+          start_minute: string
           title?: string | null
           user_id?: string | null
           year?: number | null
@@ -61,11 +65,13 @@ export type Database = {
           created_at?: string
           day?: number | null
           description?: string | null
-          end_hour?: number
+          end_hour?: string
+          end_minute?: string
           id?: number
           month?: number | null
           scheduleTypes?: number | null
-          start_hour?: number
+          start_hour?: string
+          start_minute?: string
           title?: string | null
           user_id?: string | null
           year?: number | null

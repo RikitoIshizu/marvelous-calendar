@@ -1,27 +1,11 @@
 'use client';
-import { useState, ComponentType, ComponentProps } from 'react';
-import ReactModal from 'react-modal';
-
-const Modal = ReactModal as unknown as ComponentType<any>;
-
-import { yearAndMonthAndDateList } from '@/lib/calendar';
+import { useState, ComponentProps } from 'react';
+import { yearAndMonthAndDateList } from 'shared/calendar';
 import { useCalandar } from 'hooks/useCalendar';
-import { CalendarBody } from '@/features/Top/Components/CalendarBody';
-import { CalendarRegister } from '@/components/parts/CalendarRegister';
-import { CalendarHead } from '@/features/Top/Components/CalendarHead';
-import { Schedule } from '@/types/types';
-
-const customStyles = {
-	content: {
-		top: '50%',
-		left: '50%',
-		right: 'auto',
-		bottom: 'auto',
-		marginRight: '-50%',
-		transform: 'translate(-50%, -50%)',
-		width: '62.5rem',
-	},
-};
+import { CalendarBody } from 'features/Top/Components/CalendarBody';
+import { CalendarHead } from 'features/Top/Components/CalendarHead';
+import { Schedule } from 'types/types';
+import { CalendarRegisterModal } from 'shared/CalendarRegisterModal';
 
 export const Top = ({ schedules }: { schedules: Schedule[] }) => {
 	// 共通の処理はこのコンポーネントでまとめる
@@ -41,8 +25,8 @@ export const Top = ({ schedules }: { schedules: Schedule[] }) => {
 	} = useCalandar(schedules);
 
 	const onResetSchedule: ComponentProps<
-		typeof CalendarRegister
-	>['onEventCallBack'] = () => {
+		typeof CalendarRegisterModal
+	>['onOpenModal'] = () => {
 		onGetSchedules(Number(year), Number(month));
 		setIsModalOpen(false);
 	};
@@ -65,25 +49,15 @@ export const Top = ({ schedules }: { schedules: Schedule[] }) => {
 				year={year}
 				getScheduleOnTheDate={getScheduleOnTheDate}
 			/>
-			<Modal
-				isOpen={isModalOpen}
-				ariaHideApp={false}
-				onRequestClose={() => setIsModalOpen(false)}
-				style={customStyles}
-				contentLabel="Example Modal"
-			>
-				<div>予定を登録</div>
-				<CalendarRegister
-					onEventCallBack={() => onResetSchedule()}
-					type="register"
-					shouldHideDateArea={false}
-					schedule={{
-						year: Number(year),
-						month: Number(month),
-						day: Number(day),
-					}}
-				/>
-			</Modal>
+			<CalendarRegisterModal
+				type="register"
+				shouldHideDateArea={false}
+				year={Number(year)}
+				month={Number(month)}
+				day={Number(day)}
+				onOpenModal={onResetSchedule}
+				isModalOpen={isModalOpen}
+			/>
 		</main>
 	);
 };

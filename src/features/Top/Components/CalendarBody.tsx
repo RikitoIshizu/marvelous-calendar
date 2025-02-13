@@ -1,4 +1,4 @@
-import { Day } from '@/components/parts/Day';
+import { Day } from 'components/Day';
 
 type Calendar = {
 	keyOfdayOfWeek: number;
@@ -59,6 +59,7 @@ export const CalendarBody = ({
 	year: string;
 	getScheduleOnTheDate: Function;
 }) => {
+	// console.log(days);
 	return (
 		<table
 			id="calender-main-area"

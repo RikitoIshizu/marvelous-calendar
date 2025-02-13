@@ -1,11 +1,11 @@
 'use client';
-import { amountOfDay, dayTextCommmon } from '@/lib/calendar';
-import { getSchedule } from '@/lib/supabase';
+import { amountOfDay, dayTextCommmon } from 'shared/calendar';
+import { getSchedule } from 'shared/supabase';
 import { Schedule } from 'types/types';
 import dayjs from 'dayjs';
 import { ComponentProps, useCallback, useMemo, useState } from 'react';
 import { CalendarBody } from '../features/Top/Components/CalendarBody';
-import { Select } from '@/components/parts/Select';
+import { Select } from 'components/Select';
 
 type Calendar = {
 	keyOfdayOfWeek: number;

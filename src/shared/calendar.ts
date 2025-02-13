@@ -2,6 +2,17 @@ import dayjs from 'dayjs';
 import { HolidayAndSpecialDayException } from '../types/types';
 import type { Schedule } from '../types/types';
 
+type Calendar = {
+	keyOfdayOfWeek: number;
+	order: number;
+	date: string;
+};
+
+type WeeklyDay = {
+	days: Calendar[];
+	week: number;
+};
+
 export const holiday: Record<string, string> = {
 	'0101': '元日',
 	'0211': '建国記念日',
@@ -214,4 +225,88 @@ export const scheduleTextColor = (id: Schedule['id']): string => {
 		default:
 			return 'text-gray-500';
 	}
+};
+
+export const getCalendarDays = (val: number) => {
+	const setYandM = dayjs().add(val, 'month').format('YYYY-MM');
+
+	// カレンダーを取得する
+	// その月の全日付を取得
+	let nowCalendar: Calendar[] = [];
+
+	// まずは現在見ている月のカレンダーの日付を取得する
+	for (var i = 1; i <= amountOfDay(setYandM); i++) {
+		const day = i.toString().padStart(2, '0');
+		const yearAndMonth = dayTextCommmon('YYYY-MM', setYandM);
+		const date = dayTextCommmon('YYYY-MM-DD', `${yearAndMonth}-${day}`);
+		const keyOfdayOfWeek = dayjs(date).day();
+		const order =
+			nowCalendar.filter((el: Calendar) => el.keyOfdayOfWeek === keyOfdayOfWeek)
+				.length + 1;
+
+		const setData: Calendar = { date, keyOfdayOfWeek, order };
+		nowCalendar = [...nowCalendar, setData];
+	}
+
+	// 足りない前後の月の日付を取得する。
+	let prevMonthDate: Calendar[] = [];
+	let nextMonthDate: Calendar[] = [];
+
+	nowCalendar.forEach((date) => {
+		const d = dayjs(date.date);
+		const day: number = d.date();
+
+		if (day === 1) {
+			// 月初の場合、前月の足りない日数を追加する
+			if (date.keyOfdayOfWeek) {
+				for (var i = date.keyOfdayOfWeek; i > 0; i--) {
+					const addPrevMonthDate = d.add(-i, 'day');
+					prevMonthDate = [
+						...prevMonthDate,
+						{
+							date: addPrevMonthDate.format('YYYY-MM-DD'),
+							keyOfdayOfWeek: addPrevMonthDate.day(),
+							order: 1,
+						},
+					];
+				}
+			}
+		} else if (day === nowCalendar.length) {
+			// 月末の場合、次月の足りない日数を追加する
+			if (date.keyOfdayOfWeek !== 6) {
+				for (var n = 1; n <= 6 - date.keyOfdayOfWeek; n++) {
+					const addPrevMonthDate = d.add(n, 'day');
+					nextMonthDate = [
+						...nextMonthDate,
+						{
+							date: addPrevMonthDate.format('YYYY-MM-DD'),
+							keyOfdayOfWeek: addPrevMonthDate.day(),
+							order: 6,
+						},
+					];
+				}
+			}
+		}
+	});
+
+	const displayCalendar = [...prevMonthDate, ...nowCalendar, ...nextMonthDate];
+
+	let datePerWeek: WeeklyDay[] = [];
+	let oneWeek: Calendar[] = [];
+	let week = 1;
+
+	// 週ごとに分ける
+	displayCalendar.forEach((date: Calendar) => {
+		oneWeek = [...oneWeek, date];
+
+		if (date.keyOfdayOfWeek === 6) {
+			const addData: WeeklyDay[] = [{ week, days: oneWeek }];
+
+			datePerWeek = [...datePerWeek, ...addData];
+			oneWeek = [];
+			week++;
+		}
+	});
+
+	return datePerWeek;
 };

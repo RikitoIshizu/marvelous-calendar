@@ -1,9 +1,9 @@
 'use client';
-import { Button } from '@/components/parts/Button';
+import { Button } from 'components/Button';
 import { Schedule as TypeSchedule } from 'types/types';
 import { useMemo } from 'react';
 import dayjs from 'dayjs';
-import { scheduleTextColor } from '@/lib/calendar';
+import { scheduleTextColor } from 'shared/calendar';
 
 export const Schedule = ({
 	schedules,
@@ -50,16 +50,18 @@ export const Schedule = ({
 								>
 									{el.description}
 								</p>
+								{shouldShowScheduleRegisterBtn && (
+									<Button
+										text="編集"
+										width="w-[80px]"
+										textColor="text-[#fff]"
+										buttonColor="bg-[blue]"
+										otherClasses="ml-4"
+										onEventCallBack={() => onOpenModal(el.id)}
+									/>
+								)}
 								<Button
-									text="編集"
-									width="w-[80px]"
-									textColor="text-[#fff]"
-									buttonColor="bg-[blue]"
-									otherClasses="ml-4"
-									onEventCallBack={() => onOpenModal(el.id)}
-								/>
-								<Button
-									text="編集"
+									text="削除"
 									width="w-[80px]"
 									textColor="text-[#fff]"
 									buttonColor="bg-[red]"

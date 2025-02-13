@@ -1,51 +1,15 @@
 'use client';
-import dayjs from 'dayjs';
 import Link from 'next/link';
-import {
-	useState,
-	useCallback,
-	ComponentType,
-	ComponentProps,
-	useMemo,
-} from 'react';
-import ReactModal from 'react-modal';
-import { specialDays } from '@/lib/calendar';
-import { deleteSchedule } from '@/lib/supabase';
-import type { Schedule } from 'types/types';
+import { useState, useCallback, ComponentProps, useMemo } from 'react';
+import { dayTextCommmon, specialDays } from 'shared/calendar';
+import { deleteSchedule } from 'shared/supabase';
+import { Schedule } from 'types/types';
 import { Schedule as ScheduleComponent } from './Components/Schedule';
-import { CalendarRegister } from '../../components/parts/CalendarRegister';
+import { CalendarRegister } from '../../shared/CalendarRegister';
 import { useSchedule } from 'hooks/useSchedule';
-
-const Modal = ReactModal as unknown as ComponentType<any>;
-
-const modalContentStyles = {
-	content: {
-		top: '50%',
-		left: '50%',
-		right: 'auto',
-		bottom: 'auto',
-		marginRight: '-50%',
-		transform: 'translate(-50%, -50%)',
-		width: '62.5rem',
-	},
-};
-
-const titleText = (date: string): string => {
-	const today = dayjs();
-	const selectedDay = dayjs(date);
-	const selectedDayWithFormat = selectedDay.format('YYYYMMDD');
-
-	if (today.format('YYYYMMDD') === selectedDayWithFormat) return '今日の予定';
-	if (today.add(1, 'day').format('YYYYMMDD') === selectedDayWithFormat)
-		return '明日の予定';
-	if (today.add(-1, 'day').format('YYYYMMDD') === selectedDayWithFormat)
-		return '昨日の予定';
-
-	if (selectedDay.isBefore(today))
-		return `${selectedDay.format('YYYY年M月D日')}に追加された予定`;
-
-	return `${selectedDay.format('YYYY年M月D日')}の予定`;
-};
+import { Hour, Minute } from 'shared/time';
+import { CalendarRegisterModal } from 'shared/CalendarRegisterModal';
+import dayjs from 'dayjs';
 
 export const DateDetail = ({
 	initSchedules,
@@ -59,11 +23,12 @@ export const DateDetail = ({
 	const [isNewScheduleLoading, setIsNewScheduleLoading] =
 		useState<boolean>(false);
 
-	const year = useMemo(() => dayjs(date).format('YYYY'), [date]);
-	const month = useMemo(() => dayjs(date).format('MM'), [date]);
-	const day = useMemo(() => dayjs(date).format('DD'), [date]);
+	const year = useMemo(() => dayTextCommmon('YYYY', date), [date]);
+	const month = useMemo(() => dayTextCommmon('MM', date), [date]);
+	const day = useMemo(() => dayTextCommmon('DD', date), [date]);
+
 	const specialDay = useMemo(() => {
-		const md = dayjs(date).format('MMDD');
+		const md = dayTextCommmon('MMDD', date);
 
 		return specialDays[md] ? specialDays[md] : '';
 	}, [date]);
@@ -79,6 +44,14 @@ export const DateDetail = ({
 		scheduleType,
 		setScheduleType,
 		loadSchedules,
+		startHour,
+		setStartHour,
+		startMinute,
+		setStartMinute,
+		endHour,
+		setEndHour,
+		endMinute,
+		setEndMinute,
 	} = useSchedule(date, initSchedules);
 
 	const updSchedule: ComponentProps<
@@ -101,6 +74,10 @@ export const DateDetail = ({
 				setScheduleTitle(editSchedule[0].title);
 				setScheduletDescription(editSchedule[0].description);
 				setScheduleType(editSchedule[0].scheduleTypes);
+				setStartHour(editSchedule[0].start_hour as Hour);
+				setEndHour(editSchedule[0].end_hour as Hour);
+				setStartMinute(editSchedule[0].start_minute as Minute);
+				setEndMinute(editSchedule[0].end_minute as Minute);
 				setIsModalOpen(true);
 			},
 			[
@@ -109,6 +86,10 @@ export const DateDetail = ({
 				setScheduleTitle,
 				setScheduletDescription,
 				setScheduleType,
+				setStartHour,
+				setEndHour,
+				setStartMinute,
+				setEndMinute,
 			],
 		);
 
@@ -138,11 +119,29 @@ export const DateDetail = ({
 		[loadSchedules],
 	);
 
+	const titleText = useCallback((): string => {
+		const today = dayjs();
+		const selectedDay = dayjs(date);
+		const todayText = dayTextCommmon('YYYYMMDD');
+		const selectedDayWithFormat = dayTextCommmon('YYYYMMDD', date);
+
+		if (todayText === selectedDayWithFormat) return '今日の予定';
+		if (today.add(1, 'day').format('YYYYMMDD') === selectedDayWithFormat)
+			return '明日の予定';
+		if (today.add(-1, 'day').format('YYYYMMDD') === selectedDayWithFormat)
+			return '昨日の予定';
+
+		if (selectedDay.isBefore(dayjs()))
+			return `${selectedDay.format('YYYY年M月D日')}に追加された予定`;
+
+		return `${selectedDay.format('YYYY年M月D日')}の予定`;
+	}, [date]);
+
 	return (
 		<main>
 			<section className="my-2 relative">
 				{typeof date === 'string' && !!date && (
-					<h1 className="text-4xl font-bold text-center">{titleText(date)}</h1>
+					<h1 className="text-4xl font-bold text-center">{titleText()}</h1>
 				)}
 				<div className="w-[1000px] mx-auto">
 					{specialDay && (
@@ -164,32 +163,24 @@ export const DateDetail = ({
 						</Link>
 					</div>
 				</div>
-			</section>
-			<Modal
-				isOpen={isModalOpen}
-				ariaHideApp={false}
-				onRequestClose={() => setIsModalOpen(false)}
-				style={modalContentStyles}
-				contentLabel="Example Modal"
-			>
-				<div>予定を登録</div>
-				<CalendarRegister
-					onEventCallBack={() => updSchedule()}
+				<CalendarRegisterModal
+					isModalOpen={isModalOpen}
 					type={modalMode}
 					shouldHideDateArea={true}
-					schedule={{
-						year: Number(year),
-						month: Number(month),
-						day: Number(day),
-						...(modalMode === 'edit' && {
-							id: Number(scheduleId),
-							title: scheduleTitle,
-							description: scheduleDescription,
-							scheduleTypes: scheduleType,
-						}),
-					}}
+					onOpenModal={updSchedule}
+					year={Number(year)}
+					month={Number(month)}
+					day={Number(day)}
+					startHour={startHour}
+					startMinute={startMinute}
+					endHour={endHour}
+					endMinute={endMinute}
+					id={Number(scheduleId)}
+					title={scheduleTitle}
+					description={scheduleDescription}
+					scheduleTypes={scheduleType}
 				/>
-			</Modal>
+			</section>
 			{isNewScheduleLoading && (
 				<div className="fixed bg-white w-full h-full">読み込み中</div>
 			)}

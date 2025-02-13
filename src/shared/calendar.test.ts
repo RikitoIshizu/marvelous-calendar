@@ -1,5 +1,9 @@
 import { describe, expect, it, test } from 'vitest';
-import { amountOfDay, dayTextCommmon, scheduleTextColor } from './calendar';
+import {
+	amountOfDay,
+	dayTextCommmon,
+	scheduleTextColor,
+} from '../shared/calendar';
 
 describe('calendar.tsのテスト', () => {
 	describe('scheduleTextColor', () => {
