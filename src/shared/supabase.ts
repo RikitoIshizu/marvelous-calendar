@@ -97,10 +97,27 @@ export const deleteSchedule = async (id: Schedule['id']): Promise<null> => {
 export const updateSchedule = async (
 	params: ScheduleUpdateInput,
 ): Promise<null> => {
-	const { id, title, description, scheduleTypes } = params;
+	const {
+		id,
+		title,
+		description,
+		scheduleTypes,
+		start_hour,
+		start_minute,
+		end_hour,
+		end_minute,
+	} = params;
 	const { error } = await supabase
 		.from('schedule')
-		.update({ title, description, scheduleTypes })
+		.update({
+			title,
+			description,
+			scheduleTypes,
+			start_hour,
+			start_minute,
+			end_hour,
+			end_minute,
+		})
 		.eq('id', id);
 
 	if (error) {

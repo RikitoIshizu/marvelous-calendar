@@ -3,6 +3,7 @@ import ReactModal from 'react-modal';
 import { CalendarRegister } from './CalendarRegister';
 import { ComponentType } from 'react';
 import { Schedule } from 'types/types';
+import { Hour, Minute } from './time';
 
 const Modal = ReactModal as unknown as ComponentType<any>;
 
@@ -34,6 +35,10 @@ type Props = {
 	title?: Schedule['title'];
 	description?: Schedule['description'];
 	scheduleTypes?: Schedule['scheduleTypes'];
+	onChangeStartHour: (_start_hour: Hour) => void;
+	onChangeStartMinute: (_start_minute: Minute) => void;
+	onChangeEndhour: (_start_hour: Hour) => void;
+	onChangeEndMiute: (_start_minute: Minute) => void;
 };
 
 export const CalendarRegisterModal = ({
@@ -52,6 +57,10 @@ export const CalendarRegisterModal = ({
 	title,
 	description,
 	scheduleTypes,
+	onChangeStartHour,
+	onChangeStartMinute,
+	onChangeEndhour,
+	onChangeEndMiute,
 }: Props) => {
 	return (
 		<Modal
@@ -81,6 +90,10 @@ export const CalendarRegisterModal = ({
 						scheduleTypes,
 					}),
 				}}
+				onChangeStartHour={onChangeStartHour}
+				onChangeStartMinute={onChangeStartMinute}
+				onChangeEndhour={onChangeEndhour}
+				onChangeEndMiute={onChangeEndMiute}
 			/>
 		</Modal>
 	);

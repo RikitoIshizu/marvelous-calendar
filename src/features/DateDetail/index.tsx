@@ -179,6 +179,10 @@ export const DateDetail = ({
 					title={scheduleTitle}
 					description={scheduleDescription}
 					scheduleTypes={scheduleType}
+					onChangeStartHour={setStartHour}
+					onChangeStartMinute={setStartMinute}
+					onChangeEndhour={setEndHour}
+					onChangeEndMiute={setEndMinute}
 				/>
 			</section>
 			{isNewScheduleLoading && (

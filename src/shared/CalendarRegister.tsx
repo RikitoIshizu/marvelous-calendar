@@ -1,3 +1,4 @@
+'use client';
 import dayjs from 'dayjs';
 import isLeapYear from 'dayjs/plugin/isLeapYear';
 import React, {
@@ -20,8 +21,8 @@ import { Hour, Minute } from 'shared/time';
 
 dayjs.extend(isLeapYear);
 
-export const CalendarRegister = (props: {
-	onEventCallBack: () => void;
+type Props = {
+	onEventCallBack: () => void; // TODO: 命名がよくないから後で変えたい
 	type: 'register' | 'edit';
 	shouldHideDateArea: boolean;
 	schedule: Pick<Schedule, 'year' | 'month' | 'day'> &
@@ -38,7 +39,13 @@ export const CalendarRegister = (props: {
 				| 'end_minute'
 			>
 		>;
-}) => {
+	onChangeStartHour: (_start_hour: Hour) => void;
+	onChangeStartMinute: (_start_minute: Minute) => void;
+	onChangeEndhour: (_start_hour: Hour) => void;
+	onChangeEndMiute: (_start_minute: Minute) => void;
+};
+
+export const CalendarRegister = (props: Props) => {
 	const { schedule } = props;
 	const isDisplay = useRef<boolean>(false);
 
@@ -54,10 +61,10 @@ export const CalendarRegister = (props: {
 	const [type, setType] = useState<Schedule['scheduleTypes']>(
 		schedule.scheduleTypes || 1,
 	);
-	const [startHour, setStartHour] = useState<Hour>('00');
-	const [startMinute, setStartMinute] = useState<Minute>('00');
-	const [endHour, setEndHour] = useState<Hour>('00');
-	const [endMinute, setEndMinute] = useState<Minute>('00');
+	// const [startHour, setStartHour] = useState<Hour>('00');
+	// const [startMinute, setStartMinute] = useState<Minute>('00');
+	// const [endHour, setEndHour] = useState<Hour>('00');
+	// const [endMinute, setEndMinute] = useState<Minute>('00');
 
 	// カレンダーの年月日のリスト
 	const [nowYearList, setYearList] = useState<string[]>([]);
@@ -209,9 +216,12 @@ export const CalendarRegister = (props: {
 			setDescriptionError(
 				!description ? 'スケジュールの詳細を入力してください。' : '',
 			);
-			const isStartAfterEnd = Number(startHour) >= Number(endHour);
+			const isStartAfterEnd =
+				Number(props.schedule.start_hour) >= Number(props.schedule.end_hour);
 			setTimeError(isStartAfterEnd ? 'スケジュールの時間が不適切です。' : '');
 			if (!title && !description && isStartAfterEnd) return;
+
+			console.log(schedule);
 
 			const response =
 				props.type === 'register'
@@ -222,20 +232,20 @@ export const CalendarRegister = (props: {
 							title,
 							description,
 							scheduleTypes: type,
-							start_hour: startHour,
-							start_minute: startMinute,
-							end_hour: endHour,
-							end_minute: endMinute,
+							start_hour: schedule.start_hour || '00',
+							start_minute: schedule.start_minute || '00',
+							end_hour: schedule.end_hour || '00',
+							end_minute: schedule.end_minute || '00',
 						})
 					: await updateSchedule({
-							id: Number(props.schedule?.id),
+							id: Number(schedule?.id),
 							title,
 							description,
 							scheduleTypes: type,
-							start_hour: startHour,
-							start_minute: startMinute,
-							end_hour: endHour,
-							end_minute: endMinute,
+							start_hour: schedule.start_hour || '00',
+							start_minute: schedule.start_minute || '00',
+							end_hour: schedule.end_hour || '00',
+							end_minute: schedule.end_minute || '00',
 						});
 			if (!response) {
 				alert('スケジュール登録完了！');
@@ -251,11 +261,12 @@ export const CalendarRegister = (props: {
 			year,
 			type,
 			title,
-			endHour,
-			startHour,
 			props,
-			endMinute,
-			startMinute,
+			schedule.id,
+			schedule.start_hour,
+			schedule.start_minute,
+			schedule.end_hour,
+			schedule.end_minute,
 		],
 	);
 
@@ -304,16 +315,20 @@ export const CalendarRegister = (props: {
 				</div>
 			)}
 			<ScheduleTime
-				startHour={startHour}
-				startMinute={startMinute}
-				endHour={endHour}
-				endMinute={endMinute}
-				onChangeStartHour={(startHour: Hour) => setStartHour(startHour)}
-				onChangeStartMinute={(startMinute: Minute) =>
-					setStartMinute(startMinute)
+				startHour={(schedule.start_hour as Hour) || '00'}
+				startMinute={(schedule.start_minute as Minute) || '00'}
+				endHour={(schedule.end_hour as Hour) || '00'}
+				endMinute={(schedule.end_minute as Minute) || '00'}
+				onChangeStartHour={(startHour: Hour) =>
+					props.onChangeStartHour(startHour)
 				}
-				onChangeEndHour={(endHour: Hour) => setEndHour(endHour)}
-				onChangeEndMinute={(endMinute: Minute) => setEndMinute(endMinute)}
+				onChangeStartMinute={(startMinute: Minute) =>
+					props.onChangeEndMiute(startMinute)
+				}
+				onChangeEndHour={(endHour: Hour) => props.onChangeEndhour(endHour)}
+				onChangeEndMinute={(endMinute: Minute) =>
+					props.onChangeEndMiute(endMinute)
+				}
 			/>
 			{timeError && <p className="text-xs text-[red]">{timeError}</p>}
 			<ScheduleTypes
