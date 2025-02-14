@@ -1,4 +1,3 @@
-// src/app/layout.tsx
 import 'styles/globals.css';
 import 'tailwindcss/tailwind.css';
 import { ReactNode } from 'react';
