@@ -116,7 +116,7 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 
 			if (checkDay === today) {
 				commonClass +=
-					' w-[35px] rounded-full bg-[red] text-center leading-9 text-white';
+					' justify-center w-[35px] rounded-full bg-[red] text-center leading-9 text-white';
 			} else if (nowMonth !== checkMonth) {
 				if (checkDay === today) {
 					commonClass += 'text-lime-400';
@@ -199,10 +199,16 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 		<td className={classes()}>
 			<div className="items-center">
 				<Link href={`/date/${dayTextCommmon('YYYYMMDD', props.date)}`}>
-					<div
-						className={dayClass(props.keyOfdayOfWeek, props.date, props.order)}
-					>
-						{dayText(props.date)}
+					<div className="flex items-center justify-items-start">
+						<div
+							className={dayClass(
+								props.keyOfdayOfWeek,
+								props.date,
+								props.order,
+							)}
+						>
+							{dayText(props.date)}
+						</div>
 						<span
 							className={holidayAndSpecialDayTextClass(
 								props.keyOfdayOfWeek,
