@@ -1,11 +1,10 @@
 'use client';
-import { amountOfDay, dayTextCommmon } from 'shared/calendar';
-import { getSchedule } from 'shared/supabase';
-import { Schedule } from 'types/types';
+import { Select } from 'components/Select';
 import dayjs from 'dayjs';
 import { ComponentProps, useCallback, useMemo, useState } from 'react';
-import { CalendarBody } from '../features/Top/Components/CalendarBody';
-import { Select } from 'components/Select';
+import { amountOfDay, dayTextCommmon } from 'shared/calendar';
+import { getSchedule } from 'shared/supabase';
+import { DayString, MonthString, Schedule } from 'types/types';
 
 type Calendar = {
 	keyOfdayOfWeek: number;
@@ -106,8 +105,10 @@ export const useCalandar = (initSchedules: Schedule[]) => {
 	const [count, setCount] = useState<number>(0);
 	const [days, setDays] = useState<WeeklyDay[]>(getCalendarDays(0)); //初期値を設定する
 	const [year, setYear] = useState<string>(dayTextCommmon('YYYY'));
-	const [month, setMonth] = useState<string>(dayTextCommmon('MM'));
-	const [day, setDay] = useState<string>(dayTextCommmon('DD'));
+	const [month, setMonth] = useState<MonthString>(
+		dayTextCommmon('MM') as MonthString,
+	);
+	const [day, setDay] = useState<DayString>(dayTextCommmon('DD') as DayString);
 	const [schedules, setSchedules] = useState<Schedule[]>(initSchedules);
 
 	const onGetSchedules = useCallback(async (y: number, m: number) => {
@@ -118,10 +119,10 @@ export const useCalandar = (initSchedules: Schedule[]) => {
 	const setNowYearAndMonth = useCallback(
 		async (val: number) => {
 			const y = dayjs().add(val, 'month').format('YYYY');
-			const m = dayjs().add(val, 'month').format('MM');
+			const m = dayjs().add(val, 'month').format('MM') as MonthString;
 
-			setYear(() => y);
-			setMonth(() => m);
+			setYear(y);
+			setMonth(m);
 
 			onGetSchedules(Number(y), Number(m));
 		},
@@ -139,44 +140,46 @@ export const useCalandar = (initSchedules: Schedule[]) => {
 	);
 
 	// 年と月を変える
-	const onChangeYearAndMonth: ComponentProps<
-		typeof Select
-	>['onEventCallBack'] = (year: string, month: string) => {
-		const now = dayTextCommmon('YYYY-MM');
-		const nowYandM = dayjs(now);
-		const sltYandM = dayjs(`${year}-${month}`);
-		const c = sltYandM.diff(nowYandM, 'month');
+	const onChangeYearAndMonth = useCallback<
+		ComponentProps<typeof Select>['onEventCallBack']
+	>(
+		(year: string, month: string) => {
+			const now = dayTextCommmon('YYYY-MM');
+			const nowYandM = dayjs(now);
+			const sltYandM = dayjs(`${year}-${month}`);
+			const c = sltYandM.diff(nowYandM, 'month');
 
-		changeMonth(c);
-	};
+			changeMonth(c);
+		},
+		[changeMonth],
+	);
 
 	// 今見ているカレンダーが実際の現在の年月かどうか
 	const isNowMonth = useMemo(() => count === 0, [count]);
 
-	const getScheduleOnTheDate: ComponentProps<
-		typeof CalendarBody
-	>['getScheduleOnTheDate'] = (
-		day: string,
-	): Pick<Schedule, 'id' | 'title' | 'scheduleTypes'>[] => {
-		const y = dayjs(day).format('YYYY');
-		const m = dayjs(day).format('M');
-		const d = dayjs(day).format('D');
+	const getScheduleOnTheDate = useCallback(
+		(day: string): Pick<Schedule, 'id' | 'title' | 'scheduleTypes'>[] => {
+			const y = dayjs(day).format('YYYY');
+			const m = dayjs(day).format('M');
+			const d = dayjs(day).format('D');
 
-		return schedules
-			.filter((el) => {
-				const { year, month, day } = el;
+			return schedules
+				.filter((el) => {
+					const { year, month, day } = el;
 
-				return (
-					Number(year) === Number(y) &&
-					Number(month) === Number(m) &&
-					Number(day) === Number(d)
-				);
-			})
-			.map((el) => {
-				const { id, title, scheduleTypes } = el;
-				return { id, title, scheduleTypes };
-			});
-	};
+					return (
+						Number(year) === Number(y) &&
+						Number(month) === Number(m) &&
+						Number(day) === Number(d)
+					);
+				})
+				.map((el) => {
+					const { id, title, scheduleTypes } = el;
+					return { id, title, scheduleTypes };
+				});
+		},
+		[schedules],
+	);
 
 	return {
 		count,

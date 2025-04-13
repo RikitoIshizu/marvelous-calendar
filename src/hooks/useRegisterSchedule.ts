@@ -1,24 +1,11 @@
 'use Client';
 import dayjs from 'dayjs';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { amountOfDay, dayTextCommmon } from 'shared/calendar';
 import { registerScheduleDetail, updateSchedule } from 'shared/supabase';
-import { Hour, Minute } from 'shared/time';
-import { Schedule } from 'types/types';
+import { DayString, MonthString, SchduleRegisterInput } from 'types/types';
 
-export const useRegisterSchedule = (
-	schedule: Pick<
-		Schedule,
-		| 'year'
-		| 'month'
-		| 'day'
-		| 'start_hour'
-		| 'start_minute'
-		| 'end_hour'
-		| 'end_minute'
-	> &
-		Partial<Pick<Schedule, 'id' | 'title' | 'description' | 'scheduleTypes'>>,
-) => {
+export const useRegisterSchedule = (schedule: SchduleRegisterInput) => {
 	// 入力項目
 	const [year, setYear] = useState<string>(
 		schedule.year?.toString() || dayTextCommmon('YYYY'),
@@ -29,21 +16,27 @@ export const useRegisterSchedule = (
 	const [day, setDay] = useState<string>(
 		schedule.day?.toString() || dayTextCommmon('DD'),
 	);
-	const [title, setTitle] = useState<Schedule['title']>(schedule.title || '');
-	const [startHour, setStartHour] = useState<Hour>(schedule.start_hour as Hour);
-	const [startMinute, setStartMinute] = useState<Minute>(
-		schedule.start_minute as Minute,
+	const [title, setTitle] = useState<SchduleRegisterInput['title']>(
+		schedule.title || '',
 	);
-	const [endHour, setEndHour] = useState<Hour>(schedule.end_hour as Hour);
-	const [endMinute, setEndMinute] = useState<Minute>(
-		schedule.end_minute as Minute,
+	const [startHour, setStartHour] = useState<
+		SchduleRegisterInput['start_hour']
+	>(schedule.start_hour);
+	const [startMinute, setStartMinute] = useState<
+		SchduleRegisterInput['start_minute']
+	>(schedule.start_minute);
+	const [endHour, setEndHour] = useState<SchduleRegisterInput['end_hour']>(
+		schedule.end_hour,
 	);
-	const [description, setDescription] = useState<Schedule['description']>(
-		schedule.description || '',
-	);
-	const [scheduleType, setScheduleType] = useState<Schedule['scheduleTypes']>(
-		schedule.scheduleTypes || 1,
-	);
+	const [endMinute, setEndMinute] = useState<
+		SchduleRegisterInput['end_minute']
+	>(schedule.end_minute);
+	const [description, setDescription] = useState<
+		SchduleRegisterInput['description']
+	>(schedule.description || '');
+	const [scheduleType, setScheduleType] = useState<
+		SchduleRegisterInput['scheduleTypes']
+	>(schedule.scheduleTypes || 1);
 
 	// カレンダーの選択リストの初期値設定用の処理
 	const firstSetCalendar = useCallback(() => {
@@ -81,7 +74,10 @@ export const useRegisterSchedule = (
 		};
 	}, [month, year]);
 
-	const yearList = firstSetCalendar().yearList;
+	const yearList = useMemo(
+		() => firstSetCalendar().yearList,
+		[firstSetCalendar],
+	);
 
 	// カレンダーの月日のリスト
 	const [nowMonthList, setMonthList] = useState<string[]>(
@@ -109,8 +105,8 @@ export const useRegisterSchedule = (
 
 			const today = dayTextCommmon('YYYY-MM-DD');
 
-			let monthList: string[] = [];
-			let dayList: string[] = [];
+			let monthList: MonthString[] = [];
+			let dayList: DayString[] = [];
 
 			const thisMonthAmount = amountOfDay(dayTextCommmon('YYYY-MM'));
 			const thisYear = Number(dayTextCommmon('YYYY'));
@@ -124,11 +120,11 @@ export const useRegisterSchedule = (
 				const todayDay = dayjs().date();
 
 				for (var m = todayMonth; m <= 12; m++) {
-					monthList = [...monthList, String(m).padStart(2, '0')];
+					monthList = [...monthList, String(m).padStart(2, '0') as MonthString];
 				}
 
 				for (var d = todayDay + 1; d <= thisMonthAmount; d++) {
-					dayList = [...dayList, String(d).padStart(2, '0')];
+					dayList = [...dayList, String(d).padStart(2, '0') as DayString];
 				}
 
 				// さらに選択している月と日が過去の日になっちゃっている時
@@ -142,11 +138,14 @@ export const useRegisterSchedule = (
 			} else {
 				// 違う時は月と日のリストを作り直す
 				for (var mo = 1; mo <= 12; mo++) {
-					monthList = [...monthList, String(mo).padStart(2, '0')];
+					monthList = [
+						...monthList,
+						String(mo).padStart(2, '0') as MonthString,
+					];
 				}
 
 				for (var da = 1; da <= thisMonthAmount; da++) {
-					dayList = [...dayList, String(da).padStart(2, '0')];
+					dayList = [...dayList, String(da).padStart(2, '0') as DayString];
 				}
 			}
 
@@ -169,7 +168,7 @@ export const useRegisterSchedule = (
 
 			const amountOfMonth = amountOfDay(selectedYearAndMonth);
 
-			let dayList: string[] = [];
+			let dayList: DayString[] = [];
 
 			if (selectedYearAndMonth === nowMonth) {
 				const today = dayjs();
@@ -178,15 +177,18 @@ export const useRegisterSchedule = (
 					const date = `${selectedYearAndMonth}-${day}`;
 					const checkDay = dayjs(date);
 
-					checkDay.isAfter(today) && (dayList = [...dayList, day]);
+					checkDay.isAfter(today) && (dayList = [...dayList, day as DayString]);
 				}
 
-				const nowSelectedDay = String(Number(selectedDay)).padStart(2, '0');
+				const nowSelectedDay = String(Number(selectedDay)).padStart(
+					2,
+					'0',
+				) as DayString;
 
 				!dayList.includes(nowSelectedDay) && setDay(nowSelectedDay);
 			} else {
 				for (var n = 1; n <= amountOfMonth; n++) {
-					dayList = [...dayList, String(n).padStart(2, '0')];
+					dayList = [...dayList, String(n).padStart(2, '0') as DayString];
 				}
 
 				Number(selectedDay) > amountOfMonth && setDay(String(amountOfMonth));
