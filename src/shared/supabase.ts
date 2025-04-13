@@ -17,27 +17,31 @@ export const getSchedule = async (
 	year?: Schedule['year'],
 	month?: Schedule['month'],
 ) => {
-	const { data, error, status } =
-		year && month
-			? await supabase
-					.from('schedule')
-					.select(GET_COLUMN)
-					.match({ year, month })
-					.overrideTypes<Schedule[], { merge: false }>()
-			: await supabase
-					.from('schedule')
-					.select(GET_COLUMN)
-					.overrideTypes<Schedule[], { merge: false }>();
+	try {
+		const { data, error, status } =
+			year && month
+				? await supabase
+						.from('schedule')
+						.select(GET_COLUMN)
+						.match({ year, month })
+						.overrideTypes<Schedule[], { merge: false }>()
+				: await supabase
+						.from('schedule')
+						.select(GET_COLUMN)
+						.overrideTypes<Schedule[], { merge: false }>();
 
-	if (error && status !== 406) {
-		throw error;
+		if (error && status !== 406) {
+			throw new Error(`エラーが発生しました。${error}`);
+		}
+
+		if (data === null) {
+			throw new Error('スケジュールが取得できませんでした。');
+		}
+
+		return data!;
+	} catch (error) {
+		throw new Error(`予期せぬエラーが発生しました。${JSON.stringify(error)}`);
 	}
-
-	if (data === null) {
-		throw new Error('スケジュールが取得できませんでした。');
-	}
-
-	return data!;
 };
 
 export const getScheduleDetail = async (date: string) => {
@@ -45,21 +49,25 @@ export const getScheduleDetail = async (date: string) => {
 	const month = dayTextCommmon('M', date);
 	const day = dayTextCommmon('D', date);
 
-	const { data, error, status } = await supabase
-		.from('schedule')
-		.select(GET_COLUMN)
-		.match({ year, month, day })
-		.overrideTypes<Schedule[], { merge: false }>();
+	try {
+		const { data, error, status } = await supabase
+			.from('schedule')
+			.select(GET_COLUMN)
+			.match({ year, month, day })
+			.overrideTypes<Schedule[], { merge: false }>();
 
-	if (error && status !== 406) {
-		throw error;
+		if (error && status !== 406) {
+			throw new Error(`エラーが発生しました。${error}`);
+		}
+
+		if (data === null) {
+			throw new Error('スケジュールが取得できませんでした。');
+		}
+
+		return data;
+	} catch (error) {
+		throw new Error(`予期せぬエラーが発生しました。${JSON.stringify(error)}`);
 	}
-
-	if (data === null) {
-		throw new Error('スケジュールが取得できませんでした。');
-	}
-
-	return data;
 };
 
 export const registerScheduleDetail = async (
@@ -78,35 +86,45 @@ export const registerScheduleDetail = async (
 		end_minute,
 	} = registerParams;
 
-	const { error, status } = await supabase.from('schedule').insert({
-		year,
-		month,
-		day,
-		scheduleTypes,
-		title,
-		description,
-		start_hour,
-		start_minute,
-		end_hour,
-		end_minute,
-	});
+	try {
+		const { error, status } = await supabase.from('schedule').insert({
+			year,
+			month,
+			day,
+			scheduleTypes,
+			title,
+			description,
+			start_hour,
+			start_minute,
+			end_hour,
+			end_minute,
+		});
 
-	if (error && status !== 406) {
-		throw error;
+		if (error && status !== 406) {
+			throw new Error(`エラーが発生しました。${error}`);
+		}
+
+		return null;
+	} catch (error) {
+		throw new Error(`予期せぬエラーが発生しました。${JSON.stringify(error)}`);
 	}
-	return null;
 };
 
 export const deleteSchedule = async (id: Schedule['id']) => {
-	const { error, status } = await supabase
-		.from('schedule')
-		.delete()
-		.eq('id', id);
+	try {
+		const { error, status } = await supabase
+			.from('schedule')
+			.delete()
+			.eq('id', id);
 
-	if (error && status !== 406) {
-		throw error;
+		if (error && status !== 406) {
+			throw new Error(`エラーが発生しました。${error}`);
+		}
+
+		return null;
+	} catch (error) {
+		throw new Error(`予期せぬエラーが発生しました。${JSON.stringify(error)}`);
 	}
-	return null;
 };
 
 export const updateSchedule = async (params: ScheduleUpdateInput) => {
@@ -120,22 +138,27 @@ export const updateSchedule = async (params: ScheduleUpdateInput) => {
 		end_hour,
 		end_minute,
 	} = params;
-	const { error } = await supabase
-		.from('schedule')
-		.update({
-			title,
-			description,
-			scheduleTypes,
-			start_hour,
-			start_minute,
-			end_hour,
-			end_minute,
-		})
-		.eq('id', id);
 
-	if (error) {
-		throw error;
+	try {
+		const { error } = await supabase
+			.from('schedule')
+			.update({
+				title,
+				description,
+				scheduleTypes,
+				start_hour,
+				start_minute,
+				end_hour,
+				end_minute,
+			})
+			.eq('id', id);
+
+		if (error) {
+			throw new Error(`エラーが発生しました。${error}`);
+		}
+
+		return null;
+	} catch (error) {
+		throw new Error(`予期せぬエラーが発生しました。${JSON.stringify(error)}`);
 	}
-
-	return null;
 };
