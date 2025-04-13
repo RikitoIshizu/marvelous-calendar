@@ -1,6 +1,6 @@
 'use client';
-import { Select } from './Select';
 import { HOURS, MINUTES } from 'shared/time';
+import { Select } from '../../components/Select';
 
 type Hour = (typeof HOURS)[number];
 type Minute = (typeof MINUTES)[number];
@@ -14,6 +14,7 @@ type Props = {
 	onChangeStartMinute: (_startMinute: Minute) => void;
 	onChangeEndHour: (_endHour: Hour) => void;
 	onChangeEndMinute: (_endMinute: Minute) => void;
+	onBlur?: () => void;
 };
 
 export const ScheduleTime = ({
@@ -25,6 +26,7 @@ export const ScheduleTime = ({
 	onChangeStartMinute,
 	onChangeEndHour,
 	onChangeEndMinute,
+	onBlur,
 }: Props) => {
 	return (
 		<div className="mt-3 flex items-center">
@@ -38,6 +40,7 @@ export const ScheduleTime = ({
 				onEventCallBack={(startHour: Hour) => {
 					onChangeStartHour(startHour);
 				}}
+				onBlur={() => onBlur?.()}
 			/>
 			&nbsp;:&nbsp;
 			<Select
@@ -47,6 +50,7 @@ export const ScheduleTime = ({
 				onEventCallBack={(startMinute: Minute) => {
 					onChangeStartMinute(startMinute);
 				}}
+				onBlur={() => onBlur?.()}
 			/>
 			&nbsp;~&nbsp;
 			<Select
@@ -56,6 +60,7 @@ export const ScheduleTime = ({
 				onEventCallBack={(endHour: Hour) => {
 					onChangeEndHour(endHour);
 				}}
+				onBlur={() => onBlur?.()}
 			/>
 			&nbsp;:&nbsp;
 			<Select
@@ -65,6 +70,7 @@ export const ScheduleTime = ({
 				onEventCallBack={(endMinute: Minute) => {
 					onChangeEndMinute(endMinute);
 				}}
+				onBlur={() => onBlur?.()}
 			/>
 		</div>
 	);

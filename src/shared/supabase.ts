@@ -1,9 +1,9 @@
+import { createClient } from '@supabase/supabase-js';
 import {
 	SchduleRegisterInput,
 	Schedule,
 	ScheduleUpdateInput,
 } from 'types/types';
-import { createClient } from '@supabase/supabase-js';
 import { dayTextCommmon } from './calendar';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -16,22 +16,31 @@ const GET_COLUMN =
 export const getSchedule = async (
 	year?: Schedule['year'],
 	month?: Schedule['month'],
-): Promise<Schedule[]> => {
+) => {
 	const { data, error, status } =
 		year && month
 			? await supabase
 					.from('schedule')
 					.select(GET_COLUMN)
 					.match({ year, month })
-			: await supabase.from('schedule').select(GET_COLUMN);
+					.overrideTypes<Schedule[], { merge: false }>()
+			: await supabase
+					.from('schedule')
+					.select(GET_COLUMN)
+					.overrideTypes<Schedule[], { merge: false }>();
 
 	if (error && status !== 406) {
 		throw error;
 	}
-	return data as Schedule[];
+
+	if (data === null) {
+		throw new Error('スケジュールが取得できませんでした。');
+	}
+
+	return data!;
 };
 
-export const getScheduleDetail = async (date: string): Promise<Schedule[]> => {
+export const getScheduleDetail = async (date: string) => {
 	const year = dayTextCommmon('YYYY', date);
 	const month = dayTextCommmon('M', date);
 	const day = dayTextCommmon('D', date);
@@ -39,12 +48,18 @@ export const getScheduleDetail = async (date: string): Promise<Schedule[]> => {
 	const { data, error, status } = await supabase
 		.from('schedule')
 		.select(GET_COLUMN)
-		.match({ year, month, day });
+		.match({ year, month, day })
+		.overrideTypes<Schedule[], { merge: false }>();
 
 	if (error && status !== 406) {
 		throw error;
 	}
-	return data as Schedule[];
+
+	if (data === null) {
+		throw new Error('スケジュールが取得できませんでした。');
+	}
+
+	return data;
 };
 
 export const registerScheduleDetail = async (
@@ -82,7 +97,7 @@ export const registerScheduleDetail = async (
 	return null;
 };
 
-export const deleteSchedule = async (id: Schedule['id']): Promise<null> => {
+export const deleteSchedule = async (id: Schedule['id']) => {
 	const { error, status } = await supabase
 		.from('schedule')
 		.delete()
@@ -94,9 +109,7 @@ export const deleteSchedule = async (id: Schedule['id']): Promise<null> => {
 	return null;
 };
 
-export const updateSchedule = async (
-	params: ScheduleUpdateInput,
-): Promise<null> => {
+export const updateSchedule = async (params: ScheduleUpdateInput) => {
 	const {
 		id,
 		title,

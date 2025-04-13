@@ -1,22 +1,22 @@
 'use client';
+import dayjs from 'dayjs';
 import Link from 'next/link';
-import { useState, useCallback, ComponentProps, useMemo } from 'react';
+import { ComponentProps, useCallback, useMemo, useState } from 'react';
 import { dayTextCommmon, specialDays } from 'shared/calendar';
+import { CalendarRegisterModal } from 'shared/SchduleRegister/CalendarRegisterModal';
 import { deleteSchedule, getScheduleDetail } from 'shared/supabase';
 import { Schedule } from 'types/types';
+import { CalendarRegister } from '../../shared/SchduleRegister/CalendarRegister';
 import { Schedule as ScheduleComponent } from './Components/Schedule';
-import { CalendarRegister } from '../../shared/CalendarRegister';
-import { CalendarRegisterModal } from 'shared/CalendarRegisterModal';
-import dayjs from 'dayjs';
 
 export const DateDetail = ({
-	initSchedules,
+	registeredSchedules,
 	date,
 }: {
-	initSchedules: Schedule[];
+	registeredSchedules: Schedule[];
 	date: string;
 }) => {
-	const [schedules, setSchedules] = useState<Schedule[]>(initSchedules);
+	const [schedules, setSchedules] = useState<Schedule[]>(registeredSchedules);
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [modalMode, setModalMode] = useState<'register' | 'edit'>('register');
 	const [isNewScheduleLoading, setIsNewScheduleLoading] =
@@ -37,6 +37,7 @@ export const DateDetail = ({
 	const updSchedule: ComponentProps<
 		typeof CalendarRegister
 	>['onEventCallBack'] = useCallback(async () => {
+		alert('スケジュールが登録されました。');
 		setIsModalOpen(false);
 		loadSchedules();
 	}, [loadSchedules]);
@@ -130,6 +131,7 @@ export const DateDetail = ({
 					onOpenModal={updSchedule}
 					schedule={selectedSchedule as Schedule}
 					date={date}
+					registeredSchedules={registeredSchedules}
 				/>
 			</section>
 			{isNewScheduleLoading && (

@@ -1,5 +1,5 @@
-import { Suspense } from 'react';
 import { DateDetail } from 'features/DateDetail';
+import { Suspense } from 'react';
 import { getScheduleDetail } from 'shared/supabase';
 
 export default async function Date({
@@ -8,11 +8,11 @@ export default async function Date({
 	params: Promise<{ date: string }>;
 }) {
 	const date = (await params).date;
-	const schedule = await getScheduleDetail(date);
+	const registeredSchedule = await getScheduleDetail(date);
 
 	return (
 		<Suspense>
-			<DateDetail initSchedules={schedule} date={date} />
+			<DateDetail registeredSchedules={registeredSchedule} date={date} />
 		</Suspense>
 	);
 }

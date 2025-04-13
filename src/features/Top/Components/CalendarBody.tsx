@@ -1,4 +1,4 @@
-import { Day } from 'components/Day';
+import { Day } from './Day';
 
 type Calendar = {
 	keyOfdayOfWeek: number;

@@ -1,9 +1,9 @@
 'use client';
 import { Button } from 'components/Button';
-import { Schedule as TypeSchedule } from 'types/types';
-import { useMemo } from 'react';
 import dayjs from 'dayjs';
+import { useMemo } from 'react';
 import { scheduleTextColor } from 'shared/calendar';
+import { Schedule as TypeSchedule } from 'types/types';
 
 export const Schedule = ({
 	schedules,
@@ -38,7 +38,7 @@ export const Schedule = ({
 					/>
 				)}
 			</div>
-			{schedules.length ? (
+			{schedules?.length ? (
 				<ul className="mt-4">
 					{/* <li className="flex">
 						<div className="mr-4 font-bold w-8">時間</div>

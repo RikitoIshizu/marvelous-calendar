@@ -1,13 +1,19 @@
 'use client';
-import { useState, ComponentProps } from 'react';
-import { dayTextCommmon, yearAndMonthAndDateList } from 'shared/calendar';
-import { useCalandar } from 'hooks/useCalendar';
 import { CalendarBody } from 'features/Top/Components/CalendarBody';
 import { CalendarHead } from 'features/Top/Components/CalendarHead';
+import { useCalandar } from 'hooks/useCalendar';
+import { ComponentProps, useState } from 'react';
+import { dayTextCommmon, yearAndMonthAndDateList } from 'shared/calendar';
+import { CalendarRegisterModal } from 'shared/SchduleRegister/CalendarRegisterModal';
 import { Schedule } from 'types/types';
-import { CalendarRegisterModal } from 'shared/CalendarRegisterModal';
 
-export const Top = ({ schedules }: { schedules: Schedule[] }) => {
+export const Top = ({
+	registeredSchedules,
+	allSchedules,
+}: {
+	registeredSchedules: Schedule[];
+	allSchedules: Schedule[];
+}) => {
 	// 共通の処理はこのコンポーネントでまとめる
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -22,7 +28,7 @@ export const Top = ({ schedules }: { schedules: Schedule[] }) => {
 		onChangeYearAndMonth,
 		getScheduleOnTheDate,
 		onGetSchedules,
-	} = useCalandar(schedules);
+	} = useCalandar(registeredSchedules);
 
 	const onResetSchedule: ComponentProps<
 		typeof CalendarRegisterModal
@@ -64,6 +70,7 @@ export const Top = ({ schedules }: { schedules: Schedule[] }) => {
 				onOpenModal={onResetSchedule}
 				isModalOpen={isModalOpen}
 				date={dayTextCommmon('YYYYMMDD')}
+				registeredSchedules={allSchedules}
 			/>
 		</main>
 	);

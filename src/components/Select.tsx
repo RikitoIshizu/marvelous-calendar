@@ -1,6 +1,6 @@
 'use client';
-import React, { memo, NamedExoticComponent, useCallback } from 'react';
 import type { ChangeEvent } from 'react';
+import { useCallback } from 'react';
 
 type Props = {
 	name: string;
@@ -8,11 +8,10 @@ type Props = {
 	selectList: string[] | number[];
 	suffix?: string;
 	onEventCallBack: Function;
+	onBlur?: () => void;
 };
 
-export const Select: NamedExoticComponent<Props> = memo(function Select(
-	props: Props,
-) {
+export const Select = (props: Props) => {
 	const clickEvent = useCallback(
 		(text: Props['value']) => {
 			props.onEventCallBack(text);
@@ -29,6 +28,7 @@ export const Select: NamedExoticComponent<Props> = memo(function Select(
 				onChange={(e: ChangeEvent<HTMLSelectElement>) =>
 					clickEvent(e.target.value)
 				}
+				onBlur={() => props.onBlur?.()}
 			>
 				{props.selectList?.map((el) => {
 					return (
@@ -41,4 +41,4 @@ export const Select: NamedExoticComponent<Props> = memo(function Select(
 			{props.suffix && <span className="mx-2">{props.suffix}</span>}
 		</>
 	);
-});
+};

@@ -1,16 +1,22 @@
 import { Top } from 'features/Top';
+import { Suspense } from 'react';
 import { dayTextCommmon } from 'shared/calendar';
 import { getSchedule } from 'shared/supabase';
-import { Suspense } from 'react';
 
 export default async function Index() {
 	const year = Number(dayTextCommmon('YYYY'));
 	const month = Number(dayTextCommmon('MM'));
-	const schedules = await getSchedule(year, month);
+	const [allSchedules, currentMonthSchedules] = await Promise.all([
+		getSchedule(),
+		getSchedule(year, month),
+	]);
 
 	return (
 		<Suspense>
-			<Top schedules={schedules} />
+			<Top
+				registeredSchedules={currentMonthSchedules}
+				allSchedules={allSchedules}
+			/>
 		</Suspense>
 	);
 }

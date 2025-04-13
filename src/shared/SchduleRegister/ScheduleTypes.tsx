@@ -16,7 +16,7 @@ type Props = {
 	onEventCallBack: Function;
 };
 
-export function ScheduleTypes(props: Props): React.ReactElement {
+export const ScheduleTypes = (props: Props): React.ReactElement => {
 	const { onEventCallBack, type } = props;
 
 	return (
@@ -39,4 +39,4 @@ export function ScheduleTypes(props: Props): React.ReactElement {
 			})}
 		</div>
 	);
-}
+};

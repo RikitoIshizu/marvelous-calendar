@@ -1,8 +1,8 @@
 'use client';
-import ReactModal from 'react-modal';
-import { CalendarRegister } from './CalendarRegister';
 import { ComponentProps, ComponentType } from 'react';
-import { dayTextCommmon } from './calendar';
+import ReactModal from 'react-modal';
+import { dayTextCommmon } from '../calendar';
+import { CalendarRegister } from './CalendarRegister';
 
 const Modal = ReactModal as unknown as ComponentType<any>;
 
@@ -21,9 +21,14 @@ const customStyles = {
 type Props = {
 	isModalOpen: boolean;
 	type: 'register' | 'edit';
-	shouldHideDateArea: boolean;
+	shouldHideDateArea: ComponentProps<
+		typeof CalendarRegister
+	>['shouldHideDateArea'];
 	onOpenModal: (_isOpen: boolean) => void;
 	schedule: ComponentProps<typeof CalendarRegister>['schedule'];
+	registeredSchedules: ComponentProps<
+		typeof CalendarRegister
+	>['registeredSchedules'];
 	date: string;
 };
 
@@ -33,8 +38,14 @@ export const CalendarRegisterModal = ({
 	shouldHideDateArea,
 	onOpenModal,
 	schedule,
+	registeredSchedules,
 	date,
 }: Props) => {
+	const onSuccess = () => {
+		alert('スケジュールが登録されました。');
+		onOpenModal(true);
+	};
+
 	return (
 		<Modal
 			isOpen={isModalOpen}
@@ -45,31 +56,28 @@ export const CalendarRegisterModal = ({
 		>
 			<div className="text-center text-3xl font-bold mb-4">予定を登録</div>
 			<CalendarRegister
-				onEventCallBack={() => onOpenModal(true)}
+				onEventCallBack={() => onSuccess()}
 				type={type}
 				shouldHideDateArea={shouldHideDateArea}
 				schedule={{
-					year:
-						type === 'edit'
-							? schedule.year
-							: Number(dayTextCommmon('YYYY', date)),
-					month:
-						type === 'edit'
-							? schedule.month
-							: Number(dayTextCommmon('MM', date)),
-					day:
-						type === 'edit' ? schedule.day : Number(dayTextCommmon('DD', date)),
 					start_hour: schedule.start_hour,
 					start_minute: schedule.start_minute,
 					end_hour: schedule.end_hour,
 					end_minute: schedule.end_minute,
+					year: Number(dayTextCommmon('YYYY', date)),
+					month: Number(dayTextCommmon('MM', date)),
+					day: Number(dayTextCommmon('DD', date)),
 					...(type === 'edit' && {
 						id: schedule.id,
 						title: schedule.title,
 						description: schedule.description,
 						scheduleTypes: schedule.scheduleTypes,
+						year: schedule.year,
+						month: schedule.month,
+						day: schedule.day,
 					}),
 				}}
+				registeredSchedules={registeredSchedules}
 			/>
 		</Modal>
 	);

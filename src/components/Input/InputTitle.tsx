@@ -5,10 +5,11 @@ type Props = {
 	title: string;
 	titleError: string;
 	onChangeTitle: Function;
+	onBlur?: () => void;
 };
 
 export function InputTitle(props: Props): React.ReactElement {
-	const { title, titleError, onChangeTitle } = props;
+	const { title, titleError, onChangeTitle, onBlur } = props;
 
 	return (
 		<div className="mt-3">
@@ -21,9 +22,8 @@ export function InputTitle(props: Props): React.ReactElement {
 					value={title}
 					className="resize-none border-2 rounded-lg border-slate-900 w-[300px]"
 					placeholder="スケジュールのタイトルを入力"
-					onChange={(e) => {
-						onChangeTitle(e.target.value);
-					}}
+					onChange={(e) => onChangeTitle(e.target.value)}
+					onBlur={() => onBlur?.()}
 				/>
 			</div>
 			{titleError && <p className="text-xs text-[red]">{titleError}</p>}

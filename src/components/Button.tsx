@@ -1,8 +1,18 @@
 'use client';
-import { Button as Btn } from 'types/types';
-import { memo, NamedExoticComponent, useMemo } from 'react';
+import { useMemo } from 'react';
 
-export const Button: NamedExoticComponent<Btn> = memo(function Btn(props: Btn) {
+export type ButtonProps = {
+	text: string;
+	buttonColor?: string;
+	width?: string;
+	textColor?: string;
+	onEventCallBack?: () => void;
+	disabled?: boolean;
+	type?: 'submit' | 'reset' | 'button';
+	otherClasses?: string;
+};
+
+export const Button = (props: ButtonProps) => {
 	const classes = useMemo((): string => {
 		let classes = 'rounded-md hover:opacity-[0.8]';
 		classes += props.width ? ` ${props.width}` : ' w-[150px]';
@@ -11,9 +21,16 @@ export const Button: NamedExoticComponent<Btn> = memo(function Btn(props: Btn) {
 			: ' bg-[rgb(3_105_161)]';
 		props.textColor && (classes += ` ${props.textColor}`);
 		props.otherClasses && (classes += ` ${props.otherClasses}`);
+		props.disabled && (classes += ` bg-gray-300 text-[#fff]`);
 
 		return classes;
-	}, [props.buttonColor, props.textColor, props.width, props.otherClasses]);
+	}, [
+		props.buttonColor,
+		props.textColor,
+		props.width,
+		props.otherClasses,
+		props.disabled,
+	]);
 
 	return (
 		<button
@@ -25,4 +42,4 @@ export const Button: NamedExoticComponent<Btn> = memo(function Btn(props: Btn) {
 			{props.text}
 		</button>
 	);
-});
+};

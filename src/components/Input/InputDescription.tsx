@@ -5,10 +5,11 @@ type Props = {
 	description: string;
 	descriptionError: string;
 	onchangeDescription: Function;
+	onBlur?: () => void;
 };
 
 export function InputDescription(props: Props): React.ReactElement {
-	const { description, descriptionError, onchangeDescription } = props;
+	const { description, descriptionError, onchangeDescription, onBlur } = props;
 
 	return (
 		<div className="mt-3">
@@ -21,9 +22,8 @@ export function InputDescription(props: Props): React.ReactElement {
 					value={description}
 					className="resize-none border-2 rounded-lg border-slate-900 w-2/3"
 					placeholder="何かメモがあれば入力してください。"
-					onChange={(e) => {
-						onchangeDescription(e.target.value);
-					}}
+					onChange={(e) => onchangeDescription(e.target.value)}
+					onBlur={() => onBlur?.()}
 				/>
 			</div>
 			{descriptionError && (

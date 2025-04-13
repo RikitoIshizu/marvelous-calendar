@@ -1,15 +1,4 @@
-import { Database } from './supabase-generated-types';
-
-export type Button = {
-	text: string;
-	buttonColor?: string;
-	width?: string;
-	textColor?: string;
-	onEventCallBack?: () => void;
-	disabled?: false;
-	type?: 'submit' | 'reset' | 'button';
-	otherClasses?: string;
-};
+import { Tables, TablesInsert, TablesUpdate } from './supabase-generated-types';
 
 export type HolidayAndSpecialDayException = {
 	week: number;
@@ -18,43 +7,14 @@ export type HolidayAndSpecialDayException = {
 	name: string;
 };
 
-export type Schedule = Pick<
-	Database['public']['Tables']['schedule']['Row'],
-	| 'day'
-	| 'description'
-	| 'id'
-	| 'month'
-	| 'scheduleTypes'
-	| 'title'
-	| 'year'
-	| 'start_hour'
-	| 'start_minute'
-	| 'end_hour'
-	| 'end_minute'
+export type Schedule = Omit<Tables<'schedule'>, 'created_at' | 'user_id'>;
+
+export type SchduleRegisterInput = Omit<
+	TablesInsert<'schedule'>,
+	'created_at' | 'user_id' | 'id'
 >;
 
-export type SchduleRegisterInput = Pick<
-	Database['public']['Tables']['schedule']['Insert'],
-	| 'year'
-	| 'month'
-	| 'day'
-	| 'description'
-	| 'scheduleTypes'
-	| 'title'
-	| 'start_hour'
-	| 'start_minute'
-	| 'end_hour'
-	| 'end_minute'
->;
-
-export type ScheduleUpdateInput = Pick<
-	Database['public']['Tables']['schedule']['Update'],
-	| 'id'
-	| 'title'
-	| 'description'
-	| 'scheduleTypes'
-	| 'start_hour'
-	| 'start_minute'
-	| 'end_hour'
-	| 'end_minute'
+export type ScheduleUpdateInput = Omit<
+	TablesUpdate<'schedule'>,
+	'created_at' | 'user_id' | 'day' | 'month' | 'year'
 >;
