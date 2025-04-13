@@ -15,7 +15,8 @@
 		"lintfix": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
 		"reset": "rm -rf .next node_modules && yarn && yarn build",
 		"storybook": "storybook build && storybook dev -p 6006",
-		"generate:supabase-types": "env-cmd -f .env bash -c 'supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" > ./src/types/supabase-generated-types.ts 2>&1'"
+		"generate:supabase-types": "env-cmd -f .env bash -c 'supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" > ./src/types/supabase-generated-types.ts 2>&1'",
+		"prepare": "husky"
 	},
 	"dependencies": {
 		"@supabase/auth-ui-react": "^0.4.7",
@@ -58,7 +59,9 @@
 		"eslint-plugin-react": "^7.37.4",
 		"eslint-plugin-react-hooks": "^5.1.0",
 		"eslint-plugin-storybook": "^0.11.2",
+		"husky": "^9.1.7",
 		"jsdom": "^26.0.0",
+		"lint-staged": "^15.5.1",
 		"postcss": "^8.5.1",
 		"prettier": "^3.4.2",
 		"storybook": "^8.5.1",
@@ -72,6 +75,12 @@
 	"eslintConfig": {
 		"extends": [
 			"plugin:storybook/recommended"
+		]
+	},
+	"lint-staged": {
+		"*.{js,jsx,ts,tsx}": [
+			"eslint --fix",
+			"prettier --write"
 		]
 	}
 }
