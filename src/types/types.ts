@@ -61,8 +61,7 @@ export type OmitParamNames =
 	| 'start_hour'
 	| 'start_minute'
 	| 'end_hour'
-	| 'end_minute'
-	| 'scheduleTypes';
+	| 'end_minute';
 
 export type Schedule = Omit<Tables<'schedule'>, OmitParamNames> & {
 	start_hour: Hour;
@@ -79,7 +78,6 @@ export type SchduleRegisterInput = Omit<
 	start_minute: Minute;
 	end_hour: Hour;
 	end_minute: Minute;
-	scheduleTypes: number;
 };
 
 export type ScheduleUpdateInput = Omit<

@@ -1,6 +1,7 @@
 'use client';
 import { Radio } from 'components/Radio';
-import React from 'react';
+import { ReactElement } from 'react';
+import { SchduleRegisterInput } from 'types/types';
 
 const scheduleTypes = [
 	{ id: '1', name: '仕事' },
@@ -12,12 +13,12 @@ const scheduleTypes = [
 ];
 
 type Props = {
-	type: number | null;
+	scheduleType: SchduleRegisterInput['scheduleTypes'];
 	onEventCallBack: Function;
 };
 
-export const ScheduleTypes = (props: Props): React.ReactElement => {
-	const { onEventCallBack, type } = props;
+export const ScheduleTypes = (props: Props): ReactElement => {
+	const { onEventCallBack, scheduleType } = props;
 
 	return (
 		<div className="mt-3 flex">
@@ -30,7 +31,7 @@ export const ScheduleTypes = (props: Props): React.ReactElement => {
 						<Radio
 							name={el.name}
 							id={el.id}
-							selectedId={`${type}`}
+							selectedId={`${scheduleType}`}
 							inputName="scheduleType"
 							onEventCallBack={(e: string) => onEventCallBack(e)}
 						/>

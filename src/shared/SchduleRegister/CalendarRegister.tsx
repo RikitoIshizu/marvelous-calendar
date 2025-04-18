@@ -6,7 +6,7 @@ import { Select } from 'components/Select';
 import dayjs from 'dayjs';
 import isLeapYear from 'dayjs/plugin/isLeapYear';
 import { useRegisterSchedule } from 'hooks/useRegisterSchedule';
-import { FormEvent, useCallback } from 'react';
+import { FormEvent, useCallback, useMemo } from 'react';
 import { ScheduleTypes } from 'shared/SchduleRegister/ScheduleTypes';
 import { Hour, Minute } from 'shared/time';
 import { ScheduleTime } from './ScheduleTime';
@@ -136,11 +136,8 @@ export const CalendarRegister = (props: Props) => {
 		setTimeError,
 	]);
 
-	const isAveilableSubmit = useCallback(() => {
-		if (!title) return true;
-		if (!description) return true;
-		if (validateTime()) return true;
-		return false;
+	const isAveilableSubmit = useMemo(() => {
+		return !title || !description || validateTime();
 	}, [title, description, validateTime]);
 
 	return (
@@ -192,7 +189,7 @@ export const CalendarRegister = (props: Props) => {
 			/>
 			{timeError && <p className="text-xs text-[red]">{timeError}</p>}
 			<ScheduleTypes
-				type={scheduleType}
+				scheduleType={scheduleType}
 				onEventCallBack={(e: string) => setScheduleType(Number(e))}
 			/>
 			<InputTitle
@@ -211,7 +208,7 @@ export const CalendarRegister = (props: Props) => {
 				<Button
 					type="submit"
 					text="登録"
-					disabled={isAveilableSubmit()}
+					disabled={isAveilableSubmit}
 					buttonColor="bg-[#a7f3d0]"
 					otherClasses="h-[50px]"
 				/>

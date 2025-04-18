@@ -91,7 +91,6 @@ export const useRegisterSchedule = (schedule: SchduleRegisterInput) => {
 	const [titleError, setTitleError] = useState<string>('');
 	const [descriptionError, setDescriptionError] = useState<string>('');
 	const [timeError, setTimeError] = useState<string>('');
-	// const [isAveilableSubmit, setIsAveilableSubmit] = useState<boolean>(true);
 
 	const changeYear = useCallback(
 		(selectedYear: string, selectedMonth: string, selectedDay: string) => {
@@ -199,8 +198,6 @@ export const useRegisterSchedule = (schedule: SchduleRegisterInput) => {
 		[setDay],
 	);
 
-	// const isStartAfterEnd = Number(startHour) >= Number(endHour);
-
 	const clearErrorMessages = useCallback(() => {
 		setTitleError('');
 		setDescriptionError('');
@@ -238,7 +235,6 @@ export const useRegisterSchedule = (schedule: SchduleRegisterInput) => {
 			endHour,
 			endMinute,
 			scheduleType,
-			// isStartAfterEnd,
 			clearErrorMessages,
 		],
 	);
@@ -270,7 +266,6 @@ export const useRegisterSchedule = (schedule: SchduleRegisterInput) => {
 			endMinute,
 			scheduleType,
 			schedule.id,
-			// isStartAfterEnd,
 			clearErrorMessages,
 		],
 	);
@@ -292,7 +287,6 @@ export const useRegisterSchedule = (schedule: SchduleRegisterInput) => {
 		titleError,
 		descriptionError,
 		timeError,
-		// isAveilableSubmit,
 		setDay,
 		setTitle,
 		setStartHour,
@@ -308,6 +302,5 @@ export const useRegisterSchedule = (schedule: SchduleRegisterInput) => {
 		setTitleError,
 		setTimeError,
 		setDescriptionError,
-		// setIsAveilableSubmit,
 	};
 };
