@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { ComponentProps, useCallback, useMemo, useState } from 'react';
 import { dayTextCommmon, specialDays } from 'shared/calendar';
 import { CalendarRegisterModal } from 'shared/SchduleRegister/CalendarRegisterModal';
-import { deleteSchedule, getScheduleDetail } from 'shared/supabase';
 import { Schedule } from 'types/types';
+import { deleteSchedule, getScheduleDetail } from '../../api/apis/supabase';
 import { CalendarRegister } from '../../shared/SchduleRegister/CalendarRegister';
 import { Schedule as ScheduleComponent } from './Components/Schedule';
 

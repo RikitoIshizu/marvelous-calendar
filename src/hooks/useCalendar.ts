@@ -3,8 +3,8 @@ import { Select } from 'components/Select';
 import dayjs from 'dayjs';
 import { ComponentProps, useCallback, useMemo, useState } from 'react';
 import { amountOfDay, dayTextCommmon } from 'shared/calendar';
-import { getSchedule } from 'shared/supabase';
 import { DayString, MonthString, Schedule } from 'types/types';
+import { getSchedule } from '../api/apis/supabase';
 
 type Calendar = {
 	keyOfdayOfWeek: number;

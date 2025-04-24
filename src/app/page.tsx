@@ -1,7 +1,7 @@
 import { Top } from 'features/Top';
 import { Suspense } from 'react';
 import { dayTextCommmon } from 'shared/calendar';
-import { getSchedule } from 'shared/supabase';
+import { getSchedule } from '../api/apis/supabase';
 
 export default async function Index() {
 	const year = Number(dayTextCommmon('YYYY'));
