@@ -5,14 +5,16 @@ import { useCalandar } from 'hooks/useCalendar';
 import { ComponentProps, useState } from 'react';
 import { dayTextCommmon, yearAndMonthAndDateList } from 'shared/calendar';
 import { CalendarRegisterModal } from 'shared/SchduleRegister/CalendarRegisterModal';
-import { Schedule } from 'types/types';
+import { FetchCurrentWeather, Schedule } from 'types/types';
 
 export const Top = ({
 	registeredSchedules,
 	allSchedules,
+	wheather,
 }: {
 	registeredSchedules: Schedule[];
 	allSchedules: Schedule[];
+	wheather: FetchCurrentWeather;
 }) => {
 	// 共通の処理はこのコンポーネントでまとめる
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -44,6 +46,7 @@ export const Top = ({
 				year={year}
 				month={month}
 				isNowMonth={isNowMonth}
+				whether={wheather}
 				changeMonth={changeMonth}
 				yearAndMonthAndDateList={yearAndMonthAndDateList}
 				onChangeYearAndMonth={onChangeYearAndMonth}

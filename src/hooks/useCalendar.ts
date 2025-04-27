@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { ComponentProps, useCallback, useMemo, useState } from 'react';
 import { amountOfDay, dayTextCommmon } from 'shared/calendar';
 import { DayString, MonthString, Schedule } from 'types/types';
-import { getSchedule } from '../api/apis/supabase';
+import { getSchedule } from '../apis/supabase';
 
 type Calendar = {
 	keyOfdayOfWeek: number;

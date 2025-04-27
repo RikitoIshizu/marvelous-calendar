@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { useCallback, useMemo, useState } from 'react';
 import { amountOfDay, dayTextCommmon } from 'shared/calendar';
 import { DayString, MonthString, SchduleRegisterInput } from 'types/types';
-import { registerScheduleDetail, updateSchedule } from '../api/apis/supabase';
+import { registerScheduleDetail, updateSchedule } from '../apis/supabase';
 
 export const useRegisterSchedule = (schedule: SchduleRegisterInput) => {
 	// 入力項目
