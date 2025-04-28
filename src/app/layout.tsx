@@ -1,6 +1,7 @@
+import { ReactNode } from 'react';
 import 'styles/globals.css';
 import 'tailwindcss/tailwind.css';
-import { ReactNode } from 'react';
+import { LocationProvider } from '../context/LocationContext';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
@@ -13,7 +14,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 					content="ぼくがかんがえた すごい カレンダー だよ。"
 				/>
 			</head>
-			<body>{children}</body>
+			<body>
+				<LocationProvider>{children}</LocationProvider>
+			</body>
 		</html>
 	);
 }

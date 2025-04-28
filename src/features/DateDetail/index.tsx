@@ -2,7 +2,7 @@
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { ComponentProps, useCallback, useMemo, useState } from 'react';
-import { dayTextCommmon, specialDays } from 'shared/calendar';
+import { dayTextCommon, specialDays } from 'shared/calendar';
 import { CalendarRegisterModal } from 'shared/SchduleRegister/CalendarRegisterModal';
 import { Schedule } from 'types/types';
 import { deleteSchedule, getScheduleDetail } from '../../apis/supabase';
@@ -21,10 +21,10 @@ export const DateDetail = ({
 	const [modalMode, setModalMode] = useState<'register' | 'edit'>('register');
 	const [isNewScheduleLoading, setIsNewScheduleLoading] =
 		useState<boolean>(false);
-	const [selectedSchedule, setSelectedSchdeuld] = useState<Schedule | {}>({});
+	const [selectedSchedule, setSelectedScheduleId] = useState<Schedule | {}>({});
 
 	const specialDay = useMemo(() => {
-		const md = dayTextCommmon('MMDD', date);
+		const md = dayTextCommon('MMDD', date);
 
 		return specialDays[md] ? specialDays[md] : '';
 	}, [date]);
@@ -51,7 +51,7 @@ export const DateDetail = ({
 
 				if (!editSchedule?.length) return;
 
-				setSelectedSchdeuld(editSchedule[0]);
+				setSelectedScheduleId(editSchedule[0]);
 				setIsModalOpen(true);
 			},
 			[schedules],
@@ -80,11 +80,11 @@ export const DateDetail = ({
 		[loadSchedules],
 	);
 
-	const titleText = useCallback((): string => {
+	const titleText = useMemo((): string => {
 		const today = dayjs();
 		const selectedDay = dayjs(date);
-		const todayText = dayTextCommmon('YYYYMMDD');
-		const selectedDayWithFormat = dayTextCommmon('YYYYMMDD', date);
+		const todayText = dayTextCommon('YYYYMMDD');
+		const selectedDayWithFormat = dayTextCommon('YYYYMMDD', date);
 
 		if (todayText === selectedDayWithFormat) return '今日の予定';
 		if (today.add(1, 'day').format('YYYYMMDD') === selectedDayWithFormat)
@@ -102,7 +102,7 @@ export const DateDetail = ({
 		<main>
 			<section className="my-2 relative">
 				{typeof date === 'string' && !!date && (
-					<h1 className="text-4xl font-bold text-center">{titleText()}</h1>
+					<h1 className="text-4xl font-bold text-center">{titleText}</h1>
 				)}
 				<div className="w-[1000px] mx-auto">
 					{specialDay && (

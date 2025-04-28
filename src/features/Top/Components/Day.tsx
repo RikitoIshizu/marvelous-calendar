@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { scheduleTextColor } from 'shared/calendar';
 import type { Schedule } from 'types/types';
 
-import { memo, NamedExoticComponent, useCallback } from 'react';
+import { JSX, memo, NamedExoticComponent, useCallback } from 'react';
 import {
-	dayTextCommmon,
+	dayTextCommon,
 	holiday,
 	holidayAndSpecialDayException,
 	specialDays,
@@ -16,10 +16,12 @@ import { HolidayAndSpecialDayException } from 'types/types';
 type Props = {
 	date: string;
 	order: number;
-	keyOfdayOfWeek: number;
+	keyOfDayOfWeek: number;
 	selectYear: string;
 	selectMonth: string;
 	schedules?: Pick<Schedule, 'id' | 'title' | 'scheduleTypes'>[];
+	weatherIcon?: JSX.Element | null;
+	temperature?: string;
 };
 
 const holidayAndSpecialDayText = (
@@ -27,7 +29,7 @@ const holidayAndSpecialDayText = (
 	date: string,
 	order: number,
 ): string => {
-	const checkDate = dayTextCommmon('MMDD', date);
+	const checkDate = dayTextCommon('MMDD', date);
 
 	if (checkDate === '0229') return '閏年';
 	if (holiday[`${checkDate}`]) return holiday[`${checkDate}`];
@@ -52,9 +54,8 @@ const holidayAndSpecialDayText = (
 		.format('MMDD');
 	const dOfW = dayjs(yesterday).day();
 
-	if (holiday[`${yesterdayOnlyYearAndMonth}`] && dOfW === 0) {
+	if (holiday[`${yesterdayOnlyYearAndMonth}`] && dOfW === 0)
 		return '国民の休日';
-	}
 
 	return '';
 };
@@ -64,10 +65,10 @@ const holidayAndSpecialDayTextClass = (
 	date: string,
 	order: number,
 ): string => {
-	const checkDate = dayTextCommmon('MMDD', date);
+	const checkDate = dayTextCommon('MMDD', date);
 
 	if (specialDays[`${checkDate}`])
-		return 'p-1 text-cyan-500 text-xs whitespace-nowrap truncate';
+		return 'p-1 text-cyan-500 whitespace-nowrap truncate';
 
 	const isHolidayAndSpecialDayException = holidayAndSpecialDayException.filter(
 		(el: HolidayAndSpecialDayException) => {
@@ -90,7 +91,7 @@ const holidayAndSpecialDayTextClass = (
 		isHolidayAndSpecialDayException.length ||
 		(holiday[`${yesterdayOnlyYearAndMonth}`] && dOfW === 0)
 	) {
-		return 'p-1 text-green-600 text-xs';
+		return 'ml-1 p-1 text-green-600';
 	}
 
 	return '';
@@ -101,7 +102,7 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 ) {
 	const dayClass = useCallback(
 		(
-			keyOfdayOfWeek: Props['keyOfdayOfWeek'],
+			keyOfDayOfWeek: Props['keyOfDayOfWeek'],
 			date: Props['date'],
 			order: Props['order'],
 		): string => {
@@ -111,8 +112,8 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 			).month();
 			const checkMonth = dayjs(date).month();
 
-			const today = dayTextCommmon('YYYYMMDD');
-			const checkDay = dayTextCommmon('YYYYMMDD', date);
+			const today = dayTextCommon('YYYYMMDD');
+			const checkDay = dayTextCommon('YYYYMMDD', date);
 
 			if (checkDay === today) {
 				commonClass +=
@@ -123,13 +124,13 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 				} else {
 					commonClass += ' text-gray-300';
 				}
-			} else if (keyOfdayOfWeek === 0) {
+			} else if (keyOfDayOfWeek === 0) {
 				commonClass += ' text-sky-600';
-			} else if (keyOfdayOfWeek === 6) {
+			} else if (keyOfDayOfWeek === 6) {
 				commonClass += ' text-amber-600';
 			}
 
-			const checkDate = dayTextCommmon('MMDD', date);
+			const checkDate = dayTextCommon('MMDD', date);
 
 			if (specialDays[`${checkDate}`]) commonClass += ' text-cyan-500';
 			if (holiday[`${checkDate}`]) commonClass += ' text-green-600';
@@ -141,7 +142,7 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 					(el: HolidayAndSpecialDayException) => {
 						return (
 							el.week === order &&
-							keyOfdayOfWeek === el.dayOfWeek &&
+							keyOfDayOfWeek === el.dayOfWeek &&
 							el.month === month
 						);
 					},
@@ -173,7 +174,7 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 			const checkMonth = dayjs(date).month();
 
 			return nowMonth !== checkMonth
-				? dayTextCommmon('M/D', date)
+				? dayTextCommon('M/D', date)
 				: dayjs(date).date().toString();
 		},
 		[props.selectYear, props.selectMonth],
@@ -182,13 +183,13 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 	const classes = useCallback((): string => {
 		let commonClasses =
 			'h-[calc((100vh-64px-75px)/7)] align-text-top cursor-pointer';
-		if (props.keyOfdayOfWeek !== 6) commonClasses += ' border-r-2 border-black';
+		if (props.keyOfDayOfWeek !== 6) commonClasses += ' border-r-2 border-black';
 
 		const today = dayjs();
 		const theDay = dayjs(props.date);
 
-		const tod = dayTextCommmon('YYYYMMDD');
-		const the = dayTextCommmon('YYYYMMDD', props.date);
+		const tod = dayTextCommon('YYYYMMDD');
+		const the = dayTextCommon('YYYYMMDD', props.date);
 
 		if (tod === the) commonClasses += ' bg-yellow-200';
 		else if (theDay.isBefore(today)) commonClasses += ' bg-neutral-400';
@@ -198,33 +199,35 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 	return (
 		<td className={classes()}>
 			<div className="items-center">
-				<Link href={`/date/${dayTextCommmon('YYYYMMDD', props.date)}`}>
+				<Link href={`/date/${dayTextCommon('YYYYMMDD', props.date)}`}>
 					<div className="flex items-center justify-items-start">
 						<div
 							className={dayClass(
-								props.keyOfdayOfWeek,
+								props.keyOfDayOfWeek,
 								props.date,
 								props.order,
 							)}
 						>
 							{dayText(props.date)}
 						</div>
-						<span
-							className={holidayAndSpecialDayTextClass(
-								props.keyOfdayOfWeek,
-								props.date,
-								props.order,
-							)}
-						>
-							{holidayAndSpecialDayText(
-								props.keyOfdayOfWeek,
-								props.date,
-								props.order,
-							)}
-						</span>
+						{props.weatherIcon && props.weatherIcon}
+						{props.temperature && <span>{props.temperature}</span>}
+					</div>
+					<div
+						className={holidayAndSpecialDayTextClass(
+							props.keyOfDayOfWeek,
+							props.date,
+							props.order,
+						)}
+					>
+						{holidayAndSpecialDayText(
+							props.keyOfDayOfWeek,
+							props.date,
+							props.order,
+						)}
 					</div>
 					{(holidayAndSpecialDayText(
-						props.keyOfdayOfWeek,
+						props.keyOfDayOfWeek,
 						props.date,
 						props.order,
 					) ||

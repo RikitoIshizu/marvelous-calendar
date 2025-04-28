@@ -2,39 +2,34 @@
 import { Select } from 'components/Select';
 import dayjs from 'dayjs';
 import { ComponentProps, useCallback, useMemo, useState } from 'react';
-import { amountOfDay, dayTextCommmon } from 'shared/calendar';
-import { DayString, MonthString, Schedule } from 'types/types';
+import { amountOfDay, dayTextCommon } from 'shared/calendar';
+import {
+	Calendar,
+	DayString,
+	MonthString,
+	Schedule,
+	WeeklyDay,
+} from 'types/types';
 import { getSchedule } from '../apis/supabase';
 
-type Calendar = {
-	keyOfdayOfWeek: number;
-	order: number;
-	date: string;
-};
-
-type WeeklyDay = {
-	days: Calendar[];
-	week: number;
-};
-
 const getCalendarDays = (val: number) => {
-	const setYandM = dayjs().add(val, 'month').format('YYYY-MM');
+	const setYAndM = dayjs().add(val, 'month').format('YYYY-MM');
 
 	// カレンダーを取得する
 	// その月の全日付を取得
 	let nowCalendar: Calendar[] = [];
 
 	// まずは現在見ている月のカレンダーの日付を取得する
-	for (var i = 1; i <= amountOfDay(setYandM); i++) {
+	for (var i = 1; i <= amountOfDay(setYAndM); i++) {
 		const day = i.toString().padStart(2, '0');
-		const yearAndMonth = dayTextCommmon('YYYY-MM', setYandM);
-		const date = dayTextCommmon('YYYY-MM-DD', `${yearAndMonth}-${day}`);
-		const keyOfdayOfWeek = dayjs(date).day();
+		const yearAndMonth = dayTextCommon('YYYY-MM', setYAndM);
+		const date = dayTextCommon('YYYY-MM-DD', `${yearAndMonth}-${day}`);
+		const keyOfDayOfWeek = dayjs(date).day();
 		const order =
-			nowCalendar.filter((el: Calendar) => el.keyOfdayOfWeek === keyOfdayOfWeek)
+			nowCalendar.filter((el: Calendar) => el.keyOfDayOfWeek === keyOfDayOfWeek)
 				.length + 1;
 
-		const setData: Calendar = { date, keyOfdayOfWeek, order };
+		const setData: Calendar = { date, keyOfDayOfWeek: keyOfDayOfWeek, order };
 		nowCalendar = [...nowCalendar, setData];
 	}
 
@@ -48,14 +43,14 @@ const getCalendarDays = (val: number) => {
 
 		if (day === 1) {
 			// 月初の場合、前月の足りない日数を追加する
-			if (date.keyOfdayOfWeek) {
-				for (var i = date.keyOfdayOfWeek; i > 0; i--) {
+			if (date.keyOfDayOfWeek) {
+				for (var i = date.keyOfDayOfWeek; i > 0; i--) {
 					const addPrevMonthDate = d.add(-i, 'day');
 					prevMonthDate = [
 						...prevMonthDate,
 						{
 							date: addPrevMonthDate.format('YYYY-MM-DD'),
-							keyOfdayOfWeek: addPrevMonthDate.day(),
+							keyOfDayOfWeek: addPrevMonthDate.day(),
 							order: 1,
 						},
 					];
@@ -63,14 +58,14 @@ const getCalendarDays = (val: number) => {
 			}
 		} else if (day === nowCalendar.length) {
 			// 月末の場合、次月の足りない日数を追加する
-			if (date.keyOfdayOfWeek !== 6) {
-				for (var n = 1; n <= 6 - date.keyOfdayOfWeek; n++) {
+			if (date.keyOfDayOfWeek !== 6) {
+				for (var n = 1; n <= 6 - date.keyOfDayOfWeek; n++) {
 					const addPrevMonthDate = d.add(n, 'day');
 					nextMonthDate = [
 						...nextMonthDate,
 						{
 							date: addPrevMonthDate.format('YYYY-MM-DD'),
-							keyOfdayOfWeek: addPrevMonthDate.day(),
+							keyOfDayOfWeek: addPrevMonthDate.day(),
 							order: 6,
 						},
 					];
@@ -89,7 +84,7 @@ const getCalendarDays = (val: number) => {
 	displayCalendar.forEach((date: Calendar) => {
 		oneWeek = [...oneWeek, date];
 
-		if (date.keyOfdayOfWeek === 6) {
+		if (date.keyOfDayOfWeek === 6) {
 			const addData: WeeklyDay[] = [{ week, days: oneWeek }];
 
 			datePerWeek = [...datePerWeek, ...addData];
@@ -101,14 +96,14 @@ const getCalendarDays = (val: number) => {
 	return datePerWeek;
 };
 
-export const useCalandar = (initSchedules: Schedule[]) => {
+export const useCalendar = (initSchedules: Schedule[]) => {
 	const [count, setCount] = useState<number>(0);
 	const [days, setDays] = useState<WeeklyDay[]>(getCalendarDays(0)); //初期値を設定する
-	const [year, setYear] = useState<string>(dayTextCommmon('YYYY'));
+	const [year, setYear] = useState<string>(dayTextCommon('YYYY'));
 	const [month, setMonth] = useState<MonthString>(
-		dayTextCommmon('MM') as MonthString,
+		dayTextCommon('MM') as MonthString,
 	);
-	const [day, setDay] = useState<DayString>(dayTextCommmon('DD') as DayString);
+	const [day, setDay] = useState<DayString>(dayTextCommon('DD') as DayString);
 	const [schedules, setSchedules] = useState<Schedule[]>(initSchedules);
 
 	const onGetSchedules = useCallback(async (y: number, m: number) => {
@@ -131,9 +126,9 @@ export const useCalandar = (initSchedules: Schedule[]) => {
 
 	// 月を変える
 	const changeMonth = useCallback(
-		(c: number) => {
+		async (c: number) => {
 			setCount(c);
-			setNowYearAndMonth(c);
+			await setNowYearAndMonth(c);
 			setDays(getCalendarDays(c));
 		},
 		[setCount, setNowYearAndMonth],
@@ -143,13 +138,13 @@ export const useCalandar = (initSchedules: Schedule[]) => {
 	const onChangeYearAndMonth = useCallback<
 		ComponentProps<typeof Select>['onEventCallBack']
 	>(
-		(year: string, month: string) => {
-			const now = dayTextCommmon('YYYY-MM');
-			const nowYandM = dayjs(now);
-			const sltYandM = dayjs(`${year}-${month}`);
-			const c = sltYandM.diff(nowYandM, 'month');
+		async (year: string, month: string) => {
+			const now = dayTextCommon('YYYY-MM');
+			const nowYAndM = dayjs(now);
+			const sltYAndM = dayjs(`${year}-${month}`);
+			const c = sltYAndM.diff(nowYAndM, 'month');
 
-			changeMonth(c);
+			await changeMonth(c);
 		},
 		[changeMonth],
 	);

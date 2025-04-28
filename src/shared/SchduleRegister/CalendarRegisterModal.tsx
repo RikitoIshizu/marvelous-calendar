@@ -1,7 +1,7 @@
 'use client';
 import { ComponentProps, ComponentType } from 'react';
 import ReactModal from 'react-modal';
-import { dayTextCommmon } from '../calendar';
+import { dayTextCommon } from '../calendar';
 import { CalendarRegister } from './CalendarRegister';
 
 const Modal = ReactModal as unknown as ComponentType<any>;
@@ -64,9 +64,9 @@ export const CalendarRegisterModal = ({
 					start_minute: schedule.start_minute,
 					end_hour: schedule.end_hour,
 					end_minute: schedule.end_minute,
-					year: Number(dayTextCommmon('YYYY', date)),
-					month: Number(dayTextCommmon('MM', date)),
-					day: Number(dayTextCommmon('DD', date)),
+					year: Number(dayTextCommon('YYYY', date)),
+					month: Number(dayTextCommon('MM', date)),
+					day: Number(dayTextCommon('DD', date)),
 					...(type === 'edit' && {
 						id: schedule.id,
 						title: schedule.title,

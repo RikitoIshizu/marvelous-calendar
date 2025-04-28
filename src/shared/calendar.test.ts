@@ -1,7 +1,7 @@
-import { describe, expect, it, test } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
 	amountOfDay,
-	dayTextCommmon,
+	dayTextCommon,
 	scheduleTextColor,
 } from '../shared/calendar';
 
@@ -44,21 +44,21 @@ describe('calendar.tsのテスト', () => {
 		});
 	});
 
-	describe('dayTextCommmon', () => {
+	describe('dayTextCommon', () => {
 		it('年だけを取得', () => {
-			expect(dayTextCommmon('YYYY', '20210525')).toBe('2021');
+			expect(dayTextCommon('YYYY', '20210525')).toBe('2021');
 		});
 		it('月だけを取得', () => {
-			expect(dayTextCommmon('MM', '20210525')).toBe('05');
+			expect(dayTextCommon('MM', '20210525')).toBe('05');
 		});
 		it('日だけを取得', () => {
-			expect(dayTextCommmon('DD', '20210525')).toBe('25');
+			expect(dayTextCommon('DD', '20210525')).toBe('25');
 		});
 		it('年と月を取得', () => {
-			expect(dayTextCommmon('YYYYMM', '20210525')).toBe('202105');
+			expect(dayTextCommon('YYYYMM', '20210525')).toBe('202105');
 		});
 		it('月と日を取得', () => {
-			expect(dayTextCommmon('MMDD', '20210525')).toBe('0525');
+			expect(dayTextCommon('MMDD', '20210525')).toBe('0525');
 		});
 	});
 });

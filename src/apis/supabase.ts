@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
-import { dayTextCommmon } from '../shared/calendar';
+import { dayTextCommon } from '../shared/calendar';
 import {
-	SchduleRegisterInput,
 	Schedule,
+	ScheduleRegisterInput,
 	ScheduleUpdateInput,
 } from '../types/types';
 
@@ -45,9 +45,9 @@ export const getSchedule = async (
 };
 
 export const getScheduleDetail = async (date: string) => {
-	const year = dayTextCommmon('YYYY', date);
-	const month = dayTextCommmon('M', date);
-	const day = dayTextCommmon('D', date);
+	const year = dayTextCommon('YYYY', date);
+	const month = dayTextCommon('M', date);
+	const day = dayTextCommon('D', date);
 
 	try {
 		const { data, error, status } = await supabase
@@ -71,7 +71,7 @@ export const getScheduleDetail = async (date: string) => {
 };
 
 export const registerScheduleDetail = async (
-	registerParams: SchduleRegisterInput,
+	registerParams: ScheduleRegisterInput,
 ): Promise<null> => {
 	const {
 		year,

@@ -1,8 +1,7 @@
+import { getCoordinate } from 'apis/ipstack';
+import { fetchCurrentWeather, fetchMonthlyWeather } from 'apis/weather';
 import { Hour, Minute } from 'shared/time';
 import { Tables, TablesInsert, TablesUpdate } from './supabase-generated-types';
-// import { fetchWeatherApi } from 'openmeteo';
-
-// type FetchWeatherApiResponse = ReturnType<typeof fetchWeatherApi>;
 
 export type CurrentWeather = {
 	temperature?: number;
@@ -58,6 +57,26 @@ export type DayString =
 	| '30'
 	| '31';
 
+export type Calendar = {
+	keyOfDayOfWeek: number;
+	order: number;
+	date: string;
+};
+
+export type WeeklyDay = {
+	days: Calendar[];
+	week: number;
+};
+
+export type MonthlyWeatherData = Record<
+	string,
+	{
+		weatherCode: number;
+		temperatureMax: number;
+		temperatureMin: number;
+	}
+>;
+
 export type HolidayAndSpecialDayException = {
 	week: number;
 	dayOfWeek: number;
@@ -80,7 +99,7 @@ export type Schedule = Omit<Tables<'schedule'>, OmitParamNames> & {
 	end_minute: Minute;
 };
 
-export type SchduleRegisterInput = Omit<
+export type ScheduleRegisterInput = Omit<
 	TablesInsert<'schedule'>,
 	OmitParamNames
 > & {
@@ -95,13 +114,15 @@ export type ScheduleUpdateInput = Omit<
 	'created_at' | 'user_id' | 'day' | 'month' | 'year'
 >;
 
-export type FetchCurrentWeather = {
-	temperature: number;
-	relativeHumidity: number;
-	precipitation: number;
-	rain: number;
-	weatherCode: number;
-};
+export type FetchCurrentWeather = Awaited<
+	ReturnType<typeof fetchCurrentWeather>
+>;
+
+export type FetchMonthlyWeather = Awaited<
+	ReturnType<typeof fetchMonthlyWeather>
+>;
+
+export type GetCoordinate = Awaited<ReturnType<typeof getCoordinate>>;
 
 export type FindIp = {
 	city: {

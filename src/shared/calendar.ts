@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
-import { HolidayAndSpecialDayException } from '../types/types';
 import type { Schedule } from '../types/types';
+import { HolidayAndSpecialDayException } from '../types/types';
 
 type Calendar = {
-	keyOfdayOfWeek: number;
+	keyOfDayOfWeek: number;
 	order: number;
 	date: string;
 };
@@ -67,49 +67,6 @@ export const holidayAndSpecialDayException: HolidayAndSpecialDayException[] = [
 	},
 ];
 
-export const specialDayList: { date: string; name: string }[] = [
-	{ date: '0101', name: 'ヴィジュアル系バンド・NIGHTMAREのバンド結成日' },
-	{ date: '0106', name: 'セーラーサターンの誕生日' },
-	{ date: '0107', name: '人日の節句' },
-	{ date: '0111', name: '鏡開き' },
-	{ date: '0115', name: '小正月' },
-	{ date: '0127', name: 'セーラーウラヌスの誕生日' },
-	{ date: '0201', name: '旧正月' },
-	{ date: '0203', name: '節分' },
-	{ date: '0208', name: '針供養' },
-	{ date: '0214', name: 'バレンタインデー' },
-	{ date: '0303', name: '雛祭り' },
-	{ date: '0306', name: 'セーラーネプチューンの誕生日' },
-	{ date: '0308', name: '国際女性デー' },
-	{ date: '0314', name: 'ホワイトデー' },
-	{ date: '0321', name: 'ロックマンエグゼが発売された日' },
-	{ date: '0401', name: 'エイプリルフール' },
-	{ date: '0408', name: '花祭り' },
-	{ date: '0417', name: 'セーラーマーズの誕生日' },
-	{ date: '0420', name: 'MOTHER3が発売された日' },
-	{ date: '0610', name: '時の記念日' },
-	{ date: '0630', name: 'セーラームーンの誕生日' },
-	{ date: '0701', name: '山・海開き' },
-	{ date: '0706', name: 'セーラームーンの連載が始まった日' },
-	{ date: '0707', name: '七夕' },
-	{ date: '0707', name: 'ヴィジュアル系バンド・vistlipのバンド結成日' },
-	{ date: '0727', name: 'MOTHERが発売された日' },
-	{ date: '0806', name: '広島原爆の日' },
-	{ date: '0809', name: '長崎原爆の日' },
-	{ date: '0815', name: '終戦記念日' },
-	{ date: '0827', name: 'MOTHER2が発売された日' },
-	{ date: '0909', name: '重陽の節句' },
-	{ date: '0910', name: 'セーラーマーキュリーの誕生日' },
-	{ date: '1022', name: 'セーラーヴィーナスの誕生日' },
-	{ date: '1029', name: 'セーラープルートの誕生日' },
-	{ date: '1031', name: 'ハロウィン' },
-	{ date: '1115', name: '七五三' },
-	{ date: '1119', name: '国際男性デー' },
-	{ date: '1205', name: 'セーラージュピターの誕生日' },
-	{ date: '1225', name: 'クリスマス' },
-	{ date: '1231', name: '大晦日' },
-];
-
 export const specialDays: Record<string, string> = {
 	'0101': 'ヴィジュアル系バンド・NIGHTMAREのバンド結成日',
 	'0106': 'セーラーサターンの誕生日',
@@ -152,7 +109,7 @@ export const specialDays: Record<string, string> = {
 	'1231': '大晦日',
 };
 
-export const dayTextCommmon = (
+export const dayTextCommon = (
 	format: string,
 	date?: string | undefined,
 ): string => {
@@ -228,23 +185,23 @@ export const scheduleTextColor = (id: Schedule['id']): string => {
 };
 
 export const getCalendarDays = (val: number) => {
-	const setYandM = dayjs().add(val, 'month').format('YYYY-MM');
+	const setYAndM = dayjs().add(val, 'month').format('YYYY-MM');
 
 	// カレンダーを取得する
 	// その月の全日付を取得
 	let nowCalendar: Calendar[] = [];
 
 	// まずは現在見ている月のカレンダーの日付を取得する
-	for (var i = 1; i <= amountOfDay(setYandM); i++) {
+	for (var i = 1; i <= amountOfDay(setYAndM); i++) {
 		const day = i.toString().padStart(2, '0');
-		const yearAndMonth = dayTextCommmon('YYYY-MM', setYandM);
-		const date = dayTextCommmon('YYYY-MM-DD', `${yearAndMonth}-${day}`);
-		const keyOfdayOfWeek = dayjs(date).day();
+		const yearAndMonth = dayTextCommon('YYYY-MM', setYAndM);
+		const date = dayTextCommon('YYYY-MM-DD', `${yearAndMonth}-${day}`);
+		const keyOfDayOfWeek = dayjs(date).day();
 		const order =
-			nowCalendar.filter((el: Calendar) => el.keyOfdayOfWeek === keyOfdayOfWeek)
+			nowCalendar.filter((el: Calendar) => el.keyOfDayOfWeek === keyOfDayOfWeek)
 				.length + 1;
 
-		const setData: Calendar = { date, keyOfdayOfWeek, order };
+		const setData: Calendar = { date, keyOfDayOfWeek: keyOfDayOfWeek, order };
 		nowCalendar = [...nowCalendar, setData];
 	}
 
@@ -258,14 +215,14 @@ export const getCalendarDays = (val: number) => {
 
 		if (day === 1) {
 			// 月初の場合、前月の足りない日数を追加する
-			if (date.keyOfdayOfWeek) {
-				for (var i = date.keyOfdayOfWeek; i > 0; i--) {
+			if (date.keyOfDayOfWeek) {
+				for (var i = date.keyOfDayOfWeek; i > 0; i--) {
 					const addPrevMonthDate = d.add(-i, 'day');
 					prevMonthDate = [
 						...prevMonthDate,
 						{
 							date: addPrevMonthDate.format('YYYY-MM-DD'),
-							keyOfdayOfWeek: addPrevMonthDate.day(),
+							keyOfDayOfWeek: addPrevMonthDate.day(),
 							order: 1,
 						},
 					];
@@ -273,14 +230,14 @@ export const getCalendarDays = (val: number) => {
 			}
 		} else if (day === nowCalendar.length) {
 			// 月末の場合、次月の足りない日数を追加する
-			if (date.keyOfdayOfWeek !== 6) {
-				for (var n = 1; n <= 6 - date.keyOfdayOfWeek; n++) {
+			if (date.keyOfDayOfWeek !== 6) {
+				for (var n = 1; n <= 6 - date.keyOfDayOfWeek; n++) {
 					const addPrevMonthDate = d.add(n, 'day');
 					nextMonthDate = [
 						...nextMonthDate,
 						{
 							date: addPrevMonthDate.format('YYYY-MM-DD'),
-							keyOfdayOfWeek: addPrevMonthDate.day(),
+							keyOfDayOfWeek: addPrevMonthDate.day(),
 							order: 6,
 						},
 					];
@@ -299,7 +256,7 @@ export const getCalendarDays = (val: number) => {
 	displayCalendar.forEach((date: Calendar) => {
 		oneWeek = [...oneWeek, date];
 
-		if (date.keyOfdayOfWeek === 6) {
+		if (date.keyOfDayOfWeek === 6) {
 			const addData: WeeklyDay[] = [{ week, days: oneWeek }];
 
 			datePerWeek = [...datePerWeek, ...addData];

@@ -1,9 +1,11 @@
 import fetch from 'node-fetch';
 import { FindIp } from 'types/types';
 
-const findIpApiKey = process.env.FINDIP_API_KEY;
+const findIpApiKey = process.env.FIND_IP_API_KEY;
 
-export const getCoordinate = async () => {
+export const getCoordinate = async (): Promise<
+	Pick<FindIp['location'], 'latitude' | 'longitude'>
+> => {
 	try {
 		const ipResponse = await fetch('https://api.ipify.org?format=json');
 		const ipAddress = (await ipResponse.json()) as { ip?: string };

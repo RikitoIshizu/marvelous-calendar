@@ -1,24 +1,45 @@
 'use client';
+import { useLocation } from 'context/LocationContext';
 import { CalendarBody } from 'features/Top/Components/CalendarBody';
 import { CalendarHead } from 'features/Top/Components/CalendarHead';
-import { useCalandar } from 'hooks/useCalendar';
-import { ComponentProps, useState } from 'react';
-import { dayTextCommmon, yearAndMonthAndDateList } from 'shared/calendar';
+import { useCalendar } from 'hooks/useCalendar';
+import { useWeather } from 'hooks/useWeather';
+import { ComponentProps, useCallback, useEffect, useState } from 'react';
+import { dayTextCommon, yearAndMonthAndDateList } from 'shared/calendar';
 import { CalendarRegisterModal } from 'shared/SchduleRegister/CalendarRegisterModal';
-import { FetchCurrentWeather, Schedule } from 'types/types';
+import {
+	FetchCurrentWeather,
+	FetchMonthlyWeather,
+	GetCoordinate,
+	Schedule,
+} from 'types/types';
 
 export const Top = ({
 	registeredSchedules,
 	allSchedules,
-	wheather,
+	defaultCurrentWeather,
+	defaultMonthlyWeather,
+	coordinate,
 }: {
 	registeredSchedules: Schedule[];
 	allSchedules: Schedule[];
-	wheather: FetchCurrentWeather;
+	defaultCurrentWeather: FetchCurrentWeather;
+	defaultMonthlyWeather: FetchMonthlyWeather;
+	coordinate: GetCoordinate;
 }) => {
-	// 共通の処理はこのコンポーネントでまとめる
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+	// 外部APIを使用して経度と緯度を取得するため、useEffectを使用する
+	const { setLocation, latitude, longitude } = useLocation();
+	useEffect(() => {
+		if (latitude && longitude) return;
+		setLocation(coordinate.latitude, coordinate.longitude);
+	}, [coordinate, latitude, longitude, setLocation]);
+
+	const { currentWeather, monthlyWeather, changeYearAndMonth } = useWeather({
+		defaultCurrentWeather,
+		defaultMonthlyWeather,
+	});
 	const {
 		count,
 		days,
@@ -30,14 +51,24 @@ export const Top = ({
 		onChangeYearAndMonth,
 		getScheduleOnTheDate,
 		onGetSchedules,
-	} = useCalandar(registeredSchedules);
+	} = useCalendar(registeredSchedules);
+
+	const onChangeMonth = useCallback(
+		async (c: number) => {
+			Promise.all([
+				changeMonth(c),
+				Number(year) >= 2016 || c <= 1 ? changeYearAndMonth(c) : null,
+			]);
+		},
+		[changeMonth, changeYearAndMonth, year],
+	);
 
 	const onResetSchedule: ComponentProps<
 		typeof CalendarRegisterModal
-	>['onOpenModal'] = () => {
+	>['onOpenModal'] = useCallback(() => {
 		onGetSchedules(Number(year), Number(month));
 		setIsModalOpen(false);
-	};
+	}, [onGetSchedules, year, month]);
 
 	return (
 		<main className="w-full relative">
@@ -46,16 +77,17 @@ export const Top = ({
 				year={year}
 				month={month}
 				isNowMonth={isNowMonth}
-				whether={wheather}
-				changeMonth={changeMonth}
-				yearAndMonthAndDateList={yearAndMonthAndDateList}
+				whether={currentWeather}
 				onChangeYearAndMonth={onChangeYearAndMonth}
+				changeMonth={onChangeMonth}
+				yearAndMonthAndDateList={yearAndMonthAndDateList}
 				setIsModalOpen={setIsModalOpen}
 			/>
 			<CalendarBody
 				days={days}
 				month={month}
 				year={year}
+				monthlyWeather={monthlyWeather}
 				getScheduleOnTheDate={getScheduleOnTheDate}
 			/>
 			<CalendarRegisterModal
@@ -72,7 +104,7 @@ export const Top = ({
 				}}
 				onOpenModal={onResetSchedule}
 				isModalOpen={isModalOpen}
-				date={dayTextCommmon('YYYYMMDD')}
+				date={dayTextCommon('YYYYMMDD')}
 				registeredSchedules={allSchedules}
 			/>
 		</main>

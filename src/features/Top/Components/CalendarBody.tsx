@@ -1,7 +1,10 @@
+import { getWeatherMark } from 'libs/getWeatherMark';
+import { useCallback, useMemo } from 'react';
+import { FetchMonthlyWeather } from 'types/types';
 import { Day } from './Day';
 
 type Calendar = {
-	keyOfdayOfWeek: number;
+	keyOfDayOfWeek: number;
 	order: number;
 	date: string;
 };
@@ -53,42 +56,77 @@ export const CalendarBody = ({
 	month,
 	year,
 	getScheduleOnTheDate,
+	monthlyWeather,
 }: {
 	days: WeeklyDay[];
 	month: string;
 	year: string;
 	getScheduleOnTheDate: Function;
+	monthlyWeather: FetchMonthlyWeather;
 }) => {
+	const getWeatherData = useCallback(
+		(date: string) => {
+			const weatherData = monthlyWeather[date];
+
+			if (!weatherData) {
+				return {
+					weather: undefined,
+					temperature: undefined,
+				};
+			}
+
+			const maxTemperature = weatherData.temperatureMax.toFixed(1);
+			const minTemperature = weatherData.temperatureMin.toFixed(1);
+
+			const temperature = `${minTemperature} ~ ${maxTemperature}℃`;
+
+			return {
+				icon: getWeatherMark(
+					weatherData.weatherCode,
+					'!w-[25px] !h-[25px] mx-2',
+				),
+				temperature,
+			};
+		},
+		[monthlyWeather],
+	);
+
+	const dayComponent = useMemo(() => {
+		return days.map((el) => {
+			return (
+				<tr
+					key={`${`${el.week}-${el.days}`}`}
+					className="border-b-2 border-black"
+				>
+					{el.days.map((elem) => {
+						const weather = getWeatherData(elem.date);
+
+						return (
+							<Day
+								key={elem.date}
+								date={elem.date}
+								order={elem.order}
+								keyOfDayOfWeek={elem.keyOfDayOfWeek}
+								selectMonth={month}
+								selectYear={year}
+								weatherIcon={weather.icon}
+								temperature={weather.temperature}
+								schedules={getScheduleOnTheDate(elem.date)}
+							/>
+						);
+					})}
+				</tr>
+			);
+		});
+	}, [days, getScheduleOnTheDate, month, year, getWeatherData]);
+
 	return (
 		<table
 			id="calender-main-area"
 			className="h-[calc(100vh-64px)] top-[64px] w-full border-solid border-4 border-black table-fixed"
 		>
 			{DayOfWeek()}
-			<tbody>
-				{days.map((el) => {
-					return (
-						<tr
-							key={`${`${el.week}-${el.days}`}`}
-							className="border-b-2 border-black"
-						>
-							{el.days.map((elem) => {
-								return (
-									<Day
-										key={elem.date}
-										date={elem.date}
-										order={elem.order}
-										keyOfdayOfWeek={elem.keyOfdayOfWeek}
-										selectMonth={month}
-										selectYear={year}
-										schedules={getScheduleOnTheDate(elem.date)}
-									/>
-								);
-							})}
-						</tr>
-					);
-				})}
-			</tbody>
+			<tbody>{dayComponent}</tbody>
 		</table>
 	);
 };

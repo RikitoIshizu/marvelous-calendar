@@ -1,7 +1,7 @@
 'use client';
 import { Radio } from 'components/Radio';
 import { ReactElement } from 'react';
-import { SchduleRegisterInput } from 'types/types';
+import { ScheduleRegisterInput } from 'types/types';
 
 const scheduleTypes = [
 	{ id: '1', name: '仕事' },
@@ -13,7 +13,7 @@ const scheduleTypes = [
 ];
 
 type Props = {
-	scheduleType: SchduleRegisterInput['scheduleTypes'];
+	scheduleType: ScheduleRegisterInput['scheduleTypes'];
 	onEventCallBack: Function;
 };
 
