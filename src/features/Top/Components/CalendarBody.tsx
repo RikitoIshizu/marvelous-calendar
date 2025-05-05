@@ -56,17 +56,17 @@ export const CalendarBody = ({
 	month,
 	year,
 	getScheduleOnTheDate,
-	monthlyWeather,
+	monthlyWeatherData,
 }: {
 	days: WeeklyDay[];
 	month: string;
 	year: string;
 	getScheduleOnTheDate: Function;
-	monthlyWeather: FetchMonthlyWeather;
+	monthlyWeatherData: FetchMonthlyWeather | null;
 }) => {
 	const getWeatherData = useCallback(
 		(date: string) => {
-			const weatherData = monthlyWeather[date];
+			const weatherData = monthlyWeatherData?.[date];
 
 			if (!weatherData) {
 				return {
@@ -88,7 +88,7 @@ export const CalendarBody = ({
 				temperature,
 			};
 		},
-		[monthlyWeather],
+		[monthlyWeatherData],
 	);
 
 	const dayComponent = useMemo(() => {

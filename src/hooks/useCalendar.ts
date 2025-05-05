@@ -1,7 +1,8 @@
 'use client';
-import { Select } from 'components/Select';
+import { getSchedule } from 'apis/supabase';
 import dayjs from 'dayjs';
-import { ComponentProps, useCallback, useMemo, useState } from 'react';
+import { useAsyncLoading } from 'hooks/useAsyncLoading';
+import { useCallback, useMemo, useState } from 'react';
 import { amountOfDay, dayTextCommon } from 'shared/calendar';
 import {
 	Calendar,
@@ -10,7 +11,6 @@ import {
 	Schedule,
 	WeeklyDay,
 } from 'types/types';
-import { getSchedule } from '../apis/supabase';
 
 const getCalendarDays = (val: number) => {
 	const setYAndM = dayjs().add(val, 'month').format('YYYY-MM');
@@ -119,25 +119,25 @@ export const useCalendar = (initSchedules: Schedule[]) => {
 			setYear(y);
 			setMonth(m);
 
-			onGetSchedules(Number(y), Number(m));
+			await onGetSchedules(Number(y), Number(m));
 		},
 		[onGetSchedules],
 	);
 
 	// 月を変える
-	const changeMonth = useCallback(
-		async (c: number) => {
-			setCount(c);
-			await setNowYearAndMonth(c);
-			setDays(getCalendarDays(c));
-		},
-		[setCount, setNowYearAndMonth],
+	const changeMonth = useAsyncLoading(
+		useCallback(
+			async (c: number) => {
+				setCount(c);
+				setDays(getCalendarDays(c));
+				await setNowYearAndMonth(c);
+			},
+			[setCount, setNowYearAndMonth],
+		),
 	);
 
 	// 年と月を変える
-	const onChangeYearAndMonth = useCallback<
-		ComponentProps<typeof Select>['onEventCallBack']
-	>(
+	const changeYearAndMonth = useCallback(
 		async (year: string, month: string) => {
 			const now = dayTextCommon('YYYY-MM');
 			const nowYAndM = dayjs(now);
@@ -185,7 +185,7 @@ export const useCalendar = (initSchedules: Schedule[]) => {
 		schedules,
 		isNowMonth,
 		changeMonth,
-		onChangeYearAndMonth,
+		changeYearAndMonth,
 		getScheduleOnTheDate,
 		onGetSchedules,
 		setDay,

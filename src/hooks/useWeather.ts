@@ -6,8 +6,8 @@ import { useCallback, useState } from 'react';
 import { FetchCurrentWeather, FetchMonthlyWeather } from 'types/types';
 
 type UseCalendar = {
-	defaultCurrentWeather: FetchCurrentWeather;
-	defaultMonthlyWeather: FetchMonthlyWeather;
+	defaultCurrentWeather?: FetchCurrentWeather;
+	defaultMonthlyWeather?: FetchMonthlyWeather;
 };
 
 export const useWeather = ({
@@ -16,12 +16,10 @@ export const useWeather = ({
 }: UseCalendar) => {
 	const { latitude, longitude } = useLocation();
 
-	const [currentWeather, setCurrentWeather] = useState<FetchCurrentWeather>(
-		defaultCurrentWeather,
-	);
-	const [monthlyWeather, setMonthlyWeather] = useState<FetchMonthlyWeather>(
-		defaultMonthlyWeather,
-	);
+	const [currentWeather, setCurrentWeather] =
+		useState<FetchCurrentWeather | null>(defaultCurrentWeather || null);
+	const [monthlyWeather, setMonthlyWeather] =
+		useState<FetchMonthlyWeather | null>(defaultMonthlyWeather || null);
 
 	const getMonthlyWeatherData = useCallback(
 		async ({
@@ -68,42 +66,21 @@ export const useWeather = ({
 		[latitude, longitude],
 	);
 
-	// 未来の天気予報は15日先までしか取れない
-	const getMonthlyWeatherDataUntil15days = useCallback(
-		async (count: number) => {
-			const startDate = dayjs()
-				.add(count, 'month')
-				.startOf('month')
-				.format('YYYY-MM-DD');
-			const end_date = dayjs().add(15, 'day').format('YYYY-MM-DD');
-
-			const { start_date } = getStartAndEndDate(startDate, end_date);
-
-			await getMonthlyWeatherData({ start_date, end_date });
-		},
-		[getMonthlyWeatherData],
-	);
-
 	const getThisMonthWeatherData = useCallback(async () => {
 		const startDate = dayjs().startOf('month').format('YYYY-MM-DD');
-		const endDate = dayjs().endOf('month').format('YYYY-MM-DD');
+		const end_date = dayjs().add(15, 'day').format('YYYY-MM-DD'); // 仕様上、現在の月から15日先の日までしか取得できないので、こうする
 
-		const { start_date, end_date } = getStartAndEndDate(startDate, endDate);
+		const { start_date } = getStartAndEndDate(startDate, end_date);
 
 		await getMonthlyWeatherData({ start_date, end_date });
 	}, [getMonthlyWeatherData]);
 
-	const changeYearAndMonth = useCallback(
+	const getWeatherData = useCallback(
 		async (count: number) => {
 			if (count < 0) await getHistoryMonthlyWeatherData(count);
 			if (count === 0) await getThisMonthWeatherData();
-			if (count > 0) await getMonthlyWeatherDataUntil15days(count);
 		},
-		[
-			getHistoryMonthlyWeatherData,
-			getThisMonthWeatherData,
-			getMonthlyWeatherDataUntil15days,
-		],
+		[getHistoryMonthlyWeatherData, getThisMonthWeatherData],
 	);
 
 	return {
@@ -111,6 +88,6 @@ export const useWeather = ({
 		monthlyWeather,
 		setCurrentWeather,
 		setMonthlyWeather,
-		changeYearAndMonth,
+		getWeatherData,
 	};
 };

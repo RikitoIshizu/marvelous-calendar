@@ -1,7 +1,9 @@
+import { LocationProvider } from 'context/LocationContext';
 import { ReactNode } from 'react';
 import 'styles/globals.css';
 import 'tailwindcss/tailwind.css';
-import { LocationProvider } from '../context/LocationContext';
+
+import { LoadingProvider } from 'context/LoadingContext';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
@@ -15,7 +17,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 				/>
 			</head>
 			<body>
-				<LocationProvider>{children}</LocationProvider>
+				<LocationProvider>
+					<LoadingProvider>{children}</LoadingProvider>
+				</LocationProvider>
 			</body>
 		</html>
 	);

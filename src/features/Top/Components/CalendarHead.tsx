@@ -21,19 +21,19 @@ export const CalendarHead = ({
 	year: string;
 	month: string;
 	isNowMonth: boolean;
-	whether: FetchCurrentWeather;
+	whether: FetchCurrentWeather | null;
 	changeMonth: Function;
 	yearAndMonthAndDateList: Function;
 	onChangeYearAndMonth: Function;
 	setIsModalOpen: Function;
 }) => {
 	const temperature = useMemo(() => {
-		return Number(whether.temperature).toFixed(1);
-	}, [whether.temperature]);
+		return Number(whether?.temperature).toFixed(1) || null;
+	}, [whether?.temperature]);
 
 	const humidity = useMemo(() => {
-		return whether.relativeHumidity;
-	}, [whether.relativeHumidity]);
+		return whether?.relativeHumidity || null;
+	}, [whether?.relativeHumidity]);
 
 	return (
 		<div
@@ -50,9 +50,14 @@ export const CalendarHead = ({
 			</button>
 			<div className="flex items-center justify-center w-[90%]">
 				<div className="flex items-center w-1/3">
-					{getWeatherMark(whether.weatherCode, '!w-[40px] !h-[40px] mr-4')}
-					<div className="mr-4">気温 {temperature}℃</div>
-					<div>湿度 {humidity}%</div>
+					{whether && (
+						<>
+							{getWeatherMark(whether.weatherCode, '!w-[40px] !h-[40px] mr-4')}
+							<div className="mr-4">気温 {temperature}℃</div>
+							<div>湿度 {humidity}%</div>
+						</>
+					)}
+
 					{/* 
 				<div>降水量 </div>*/}
 				</div>
