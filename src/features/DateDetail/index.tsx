@@ -3,10 +3,10 @@ import dayjs from 'dayjs';
 import Link from 'next/link';
 import { ComponentProps, useCallback, useMemo, useState } from 'react';
 import { dayTextCommon, specialDays } from 'shared/calendar';
-import { CalendarRegisterModal } from 'shared/SchduleRegister/CalendarRegisterModal';
+import { CalendarRegisterModal } from 'shared/ScheduleRegister/CalendarRegisterModal';
 import { Schedule } from 'types/types';
 import { deleteSchedule, getScheduleDetail } from '../../apis/supabase';
-import { CalendarRegister } from '../../shared/SchduleRegister/CalendarRegister';
+import { CalendarRegister } from '../../shared/ScheduleRegister/CalendarRegister';
 import { Schedule as ScheduleComponent } from './Components/Schedule';
 
 export const DateDetail = ({

@@ -9,7 +9,7 @@ import { useCalendar } from 'hooks/useCalendar';
 import { useWeather } from 'hooks/useWeather';
 import { useCallback, useEffect, useState } from 'react';
 import { dayTextCommon, yearAndMonthAndDateList } from 'shared/calendar';
-import { CalendarRegisterModal } from 'shared/SchduleRegister/CalendarRegisterModal';
+import { CalendarRegisterModal } from 'shared/ScheduleRegister/CalendarRegisterModal';
 import {
 	FetchCurrentWeather,
 	FetchMonthlyWeather,

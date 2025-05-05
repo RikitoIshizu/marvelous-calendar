@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 import { useAsyncLoading } from 'hooks/useAsyncLoading';
 import { useRegisterSchedule } from 'hooks/useRegisterSchedule';
 import { FormEvent, useCallback, useMemo } from 'react';
-import { ScheduleTypes } from 'shared/SchduleRegister/ScheduleTypes';
+import { ScheduleTypes } from 'shared/ScheduleRegister/ScheduleTypes';
 import { Hour, Minute } from 'shared/time';
 import { ScheduleTime } from './ScheduleTime';
 
