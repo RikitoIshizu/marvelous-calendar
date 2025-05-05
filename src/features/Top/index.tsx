@@ -19,13 +19,11 @@ import {
 
 export const Top = ({
 	registeredSchedules,
-	allSchedules,
 	defaultCurrentWeather,
 	defaultMonthlyWeather,
 	coordinate,
 }: {
 	registeredSchedules: Schedule[];
-	allSchedules: Schedule[];
 	defaultCurrentWeather: FetchCurrentWeather;
 	defaultMonthlyWeather: FetchMonthlyWeather;
 	coordinate: GetCoordinate;
@@ -51,6 +49,7 @@ export const Top = ({
 		month,
 		day,
 		isNowMonth,
+		schedules,
 		changeMonth,
 		changeYearAndMonth,
 		getScheduleOnTheDate,
@@ -88,7 +87,7 @@ export const Top = ({
 		),
 	);
 
-	const onResetSchedule = useAsyncLoading(
+	const resetSchedule = useAsyncLoading(
 		useCallback(async () => {
 			await onGetSchedules(Number(year), Number(month));
 			setIsModalOpen(false);
@@ -129,10 +128,11 @@ export const Top = ({
 						end_hour: '00',
 						end_minute: '00',
 					}}
-					onOpenModal={onResetSchedule}
+					onOpenModal={resetSchedule}
+					onCloseModal={() => setIsModalOpen(false)}
 					isModalOpen={isModalOpen}
 					date={dayTextCommon('YYYYMMDD')}
-					registeredSchedules={allSchedules}
+					registeredSchedules={schedules}
 				/>
 			</main>
 		</>

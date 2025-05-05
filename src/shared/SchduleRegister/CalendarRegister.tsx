@@ -4,14 +4,12 @@ import { InputDescription } from 'components/Input/InputDescription';
 import { InputTitle } from 'components/Input/InputTitle';
 import { Select } from 'components/Select';
 import dayjs from 'dayjs';
-import isLeapYear from 'dayjs/plugin/isLeapYear';
+import { useAsyncLoading } from 'hooks/useAsyncLoading';
 import { useRegisterSchedule } from 'hooks/useRegisterSchedule';
 import { FormEvent, useCallback, useMemo } from 'react';
 import { ScheduleTypes } from 'shared/SchduleRegister/ScheduleTypes';
 import { Hour, Minute } from 'shared/time';
 import { ScheduleTime } from './ScheduleTime';
-
-dayjs.extend(isLeapYear);
 
 type Schedule = Parameters<typeof useRegisterSchedule>['0'];
 
@@ -61,27 +59,30 @@ export const CalendarRegister = (props: Props) => {
 		setDescriptionError,
 	} = useRegisterSchedule(schedule);
 
-	const onSubmitAction = useCallback(
-		(e: FormEvent<Element>) => {
-			e.preventDefault();
-			props.type === 'register'
-				? registerSchedule(props.onEventCallBack)
-				: editSchedule(props.onEventCallBack);
-		},
-		[props.type, props.onEventCallBack, registerSchedule, editSchedule],
+	const onSubmitAction = useAsyncLoading(
+		useCallback(
+			async (e: FormEvent<Element>) => {
+				e.preventDefault();
+				props.type === 'register'
+					? await registerSchedule(props.onEventCallBack)
+					: await editSchedule(props.onEventCallBack);
+			},
+			[props.type, props.onEventCallBack, registerSchedule, editSchedule],
+		),
 	);
 
 	const validateTitle = useCallback(() => {
 		setTitleError(!title ? 'タイトルを入力してください。' : '');
 	}, [title, setTitleError]);
 
-	const validateDescriotion = useCallback(() => {
+	const validateDescription = useCallback(() => {
 		setDescriptionError(
 			!description ? 'スケジュールの詳細を入力してください。' : '',
 		);
 	}, [description, setDescriptionError]);
 
 	const validateTime = useCallback(() => {
+		setTimeError('');
 		// はじまりと終わりの時間が同じかどうか
 		const isSameStartAndEnd =
 			startHour === endHour && startMinute === endMinute;
@@ -89,8 +90,6 @@ export const CalendarRegister = (props: Props) => {
 		if (isSameStartAndEnd) {
 			setTimeError('はじめと終わりの時間が同じです。');
 			return true;
-		} else {
-			setTimeError('');
 		}
 
 		// はじまりの時間が終わりを超えていないかどうか
@@ -103,27 +102,47 @@ export const CalendarRegister = (props: Props) => {
 				'スケジュールのはじまりの時間が終わりの時間を超えています。',
 			);
 			return true;
-		} else {
-			setTimeError('');
 		}
 
 		// かぶってるスケジュールがないか
-		const isDuplecatedHour = registeredSchedules.some((schedule) => {
-			const registeredStart = `${schedule.start_hour}:${schedule.start_minute}`;
-			const registerStart = `${startHour}:${startMinute}`;
-			const registeredEnd = `${schedule.end_hour}:${schedule.end_minute}`;
-			const registerEnd = `${endHour}:${endMinute}`;
+		const isDuplicatedTime = registeredSchedules.some((schedule) => {
+			// 日付一致しているか
+			const registeredDate = `${schedule.year}-${String(schedule.month).padStart(2, '0')}-${String(schedule.day).padStart(2, '0')}`;
+			const registeringDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+			if (registeredDate !== registeringDate) return;
 
-			return registeredStart === registerStart || registeredEnd === registerEnd;
+			// 登録しようとしている日時
+			const registeringStartTime = dayjs(
+				`${registeringDate} ${startHour}:${startMinute}`,
+			);
+			const registeringEndTime = dayjs(
+				`${registeringDate} ${endHour}:${endMinute}`,
+			);
+
+			// 登録済みの日時
+			const registeredStartTime = dayjs(
+				`${registeredDate} ${schedule.start_hour}:${schedule.start_minute}`,
+			);
+			const registeredEndTime = dayjs(
+				`${registeredDate} ${schedule.end_hour}:${schedule.end_minute}`,
+			);
+
+			const isStartTimeBetweenRegisteredStartAndEndTime =
+				registeredStartTime.isAfter(registeringStartTime) &&
+				registeredStartTime.isBefore(registeringEndTime);
+
+			const isEndTimeBetweenRegisteredStartAndEndTime =
+				registeredEndTime.isAfter(registeringStartTime) &&
+				registeredEndTime.isBefore(registeringEndTime);
+
+			return (
+				isStartTimeBetweenRegisteredStartAndEndTime ||
+				isEndTimeBetweenRegisteredStartAndEndTime
+			);
 		});
 
-		if (isDuplecatedHour) {
-			setTimeError('スケジュールが被ってます。');
-			return true;
-		} else {
-			setTimeError('');
-			return false;
-		}
+		setTimeError(isDuplicatedTime ? 'スケジュールが被ってます。' : '');
+		return isDuplicatedTime;
 	}, [
 		startHour,
 		startMinute,
@@ -136,7 +155,7 @@ export const CalendarRegister = (props: Props) => {
 		setTimeError,
 	]);
 
-	const isAveilableSubmit = useMemo(() => {
+	const isAvailableSubmit = useMemo(() => {
 		return !title || !description || validateTime();
 	}, [title, description, validateTime]);
 
@@ -202,13 +221,13 @@ export const CalendarRegister = (props: Props) => {
 				description={description!}
 				descriptionError={descriptionError}
 				onchangeDescription={(text: string) => setDescription(text)}
-				onBlur={validateDescriotion}
+				onBlur={validateDescription}
 			/>
 			<div className="text-center mt-5">
 				<Button
 					type="submit"
 					text="登録"
-					disabled={isAveilableSubmit}
+					disabled={isAvailableSubmit}
 					buttonColor="bg-[#a7f3d0]"
 					otherClasses="h-[50px]"
 				/>

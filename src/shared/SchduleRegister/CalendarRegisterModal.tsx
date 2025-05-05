@@ -1,4 +1,5 @@
 'use client';
+import CloseIcon from 'assets/svgs/cross.svg';
 import { ComponentProps, ComponentType } from 'react';
 import ReactModal from 'react-modal';
 import { dayTextCommon } from '../calendar';
@@ -25,6 +26,7 @@ type Props = {
 		typeof CalendarRegister
 	>['shouldHideDateArea'];
 	onOpenModal: (_isOpen: boolean) => void;
+	onCloseModal: () => void;
 	schedule: ComponentProps<typeof CalendarRegister>['schedule'];
 	registeredSchedules: ComponentProps<
 		typeof CalendarRegister
@@ -37,6 +39,7 @@ export const CalendarRegisterModal = ({
 	type,
 	shouldHideDateArea,
 	onOpenModal,
+	onCloseModal,
 	schedule,
 	registeredSchedules,
 	date,
@@ -50,10 +53,12 @@ export const CalendarRegisterModal = ({
 		<Modal
 			isOpen={isModalOpen}
 			ariaHideApp={false}
-			onRequestClose={() => onOpenModal(false)}
 			style={customStyles}
 			contentLabel="Example Modal"
 		>
+			<button className="absolute top-0 left-[10px]" onClick={onCloseModal}>
+				<CloseIcon className="!w-6 aspect-square" />
+			</button>
 			<div className="text-center text-3xl font-bold mb-4">予定を登録</div>
 			<CalendarRegister
 				onEventCallBack={() => onSuccess()}

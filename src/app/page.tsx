@@ -16,8 +16,7 @@ export default async function Index() {
 
 	const { start_date } = getStartAndEndDate(startDate, end_date);
 
-	const [allSchedules, currentMonthSchedules, coordinate] = await Promise.all([
-		getSchedule(),
+	const [currentMonthSchedules, coordinate] = await Promise.all([
 		getSchedule(year, month),
 		getCoordinate(),
 	]);
@@ -40,7 +39,6 @@ export default async function Index() {
 		<Suspense>
 			<Top
 				registeredSchedules={currentMonthSchedules}
-				allSchedules={allSchedules}
 				defaultCurrentWeather={currentWeather}
 				defaultMonthlyWeather={monthlyWeather}
 				coordinate={coordinate}
