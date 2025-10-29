@@ -12,88 +12,116 @@ import {
 	WeeklyDay,
 } from 'types/types';
 
-const getCalendarDays = (val: number) => {
-	const setYAndM = dayjs().add(val, 'month').format('YYYY-MM');
+const SUNDAY = 0;
+const SATURDAY = 6;
+const DAYS_IN_WEEK = 7;
 
-	// カレンダーを取得する
-	// その月の全日付を取得
-	let nowCalendar: Calendar[] = [];
+type ScheduleSummary = Pick<Schedule, 'id' | 'title' | 'scheduleTypes'>;
 
-	// まずは現在見ている月のカレンダーの日付を取得する
-	for (var i = 1; i <= amountOfDay(setYAndM); i++) {
+// その月のカレンダーを生成する
+const makeCalendar = (ym: string): Calendar[] => {
+	const calendar: Calendar[] = [];
+	const weekdayCounters: number[] = new Array(DAYS_IN_WEEK).fill(0);
+
+	// 現在見ている月のカレンダーの日付を取得する
+	for (let i = 1; i <= amountOfDay(ym); i++) {
 		const day = i.toString().padStart(2, '0');
-		const yearAndMonth = dayTextCommon('YYYY-MM', setYAndM);
+		const yearAndMonth = dayTextCommon('YYYY-MM', ym);
 		const date = dayTextCommon('YYYY-MM-DD', `${yearAndMonth}-${day}`);
 		const keyOfDayOfWeek = dayjs(date).day();
-		const order =
-			nowCalendar.filter((el: Calendar) => el.keyOfDayOfWeek === keyOfDayOfWeek)
-				.length + 1;
 
-		const setData: Calendar = { date, keyOfDayOfWeek: keyOfDayOfWeek, order };
-		nowCalendar = [...nowCalendar, setData];
+		weekdayCounters[keyOfDayOfWeek]++;
+		const order = weekdayCounters[keyOfDayOfWeek];
+
+		const calendarEntry: Calendar = { date, keyOfDayOfWeek, order };
+		calendar.push(calendarEntry);
 	}
 
-	// 足りない前後の月の日付を取得する。
-	let prevMonthDate: Calendar[] = [];
-	let nextMonthDate: Calendar[] = [];
+	return calendar;
+};
 
-	nowCalendar.forEach((date) => {
-		const d = dayjs(date.date);
-		const day: number = d.date();
+// 前月の不足日を追加する関数
+const addPreviousMonthDays = (firstDayOfMonth: Calendar): Calendar[] => {
+	const prevMonthDays: Calendar[] = [];
+	const dateObj = dayjs(firstDayOfMonth.date);
 
-		if (day === 1) {
-			// 月初の場合、前月の足りない日数を追加する
-			if (date.keyOfDayOfWeek) {
-				for (var i = date.keyOfDayOfWeek; i > 0; i--) {
-					const addPrevMonthDate = d.add(-i, 'day');
-					prevMonthDate = [
-						...prevMonthDate,
-						{
-							date: addPrevMonthDate.format('YYYY-MM-DD'),
-							keyOfDayOfWeek: addPrevMonthDate.day(),
-							order: 1,
-						},
-					];
-				}
-			}
-		} else if (day === nowCalendar.length) {
-			// 月末の場合、次月の足りない日数を追加する
-			if (date.keyOfDayOfWeek !== 6) {
-				for (var n = 1; n <= 6 - date.keyOfDayOfWeek; n++) {
-					const addPrevMonthDate = d.add(n, 'day');
-					nextMonthDate = [
-						...nextMonthDate,
-						{
-							date: addPrevMonthDate.format('YYYY-MM-DD'),
-							keyOfDayOfWeek: addPrevMonthDate.day(),
-							order: 6,
-						},
-					];
-				}
-			}
-		}
-	});
+	// 月初が日曜日の場合は追加不要
+	if (firstDayOfMonth.keyOfDayOfWeek === SUNDAY) return prevMonthDays;
 
-	const displayCalendar = [...prevMonthDate, ...nowCalendar, ...nextMonthDate];
+	// 日曜日でない場合、前月の日付を追加
+	for (let i = firstDayOfMonth.keyOfDayOfWeek; i > 0; i--) {
+		const prevDate = dateObj.add(-i, 'day');
+		prevMonthDays.push({
+			date: prevDate.format('YYYY-MM-DD'),
+			keyOfDayOfWeek: prevDate.day(),
+			order: 1,
+		});
+	}
 
-	let datePerWeek: WeeklyDay[] = [];
+	return prevMonthDays;
+};
+
+// 次月の不足日を追加する関数
+const addNextMonthDays = (lastDayOfMonth: Calendar): Calendar[] => {
+	const nextMonthDays: Calendar[] = [];
+	const dateObj = dayjs(lastDayOfMonth.date);
+
+	// 月末が土曜日の場合は追加不要
+	if (lastDayOfMonth.keyOfDayOfWeek === SATURDAY) return nextMonthDays;
+
+	// 土曜日でない場合、次月の日付を追加
+	for (let i = 1; i <= SATURDAY - lastDayOfMonth.keyOfDayOfWeek; i++) {
+		const nextDate = dateObj.add(i, 'day');
+		nextMonthDays.push({
+			date: nextDate.format('YYYY-MM-DD'),
+			keyOfDayOfWeek: nextDate.day(),
+			order: SATURDAY,
+		});
+	}
+
+	return nextMonthDays;
+};
+
+// 週ごとに分割する関数
+const groupByWeek = (calendar: Calendar[]): WeeklyDay[] => {
+	const datePerWeek: WeeklyDay[] = [];
 	let oneWeek: Calendar[] = [];
 	let week = 1;
 
-	// 週ごとに分ける
-	displayCalendar.forEach((date: Calendar) => {
-		oneWeek = [...oneWeek, date];
+	calendar.forEach((calendarDate: Calendar) => {
+		oneWeek.push(calendarDate);
 
-		if (date.keyOfDayOfWeek === 6) {
-			const addData: WeeklyDay[] = [{ week, days: oneWeek }];
-
-			datePerWeek = [...datePerWeek, ...addData];
-			oneWeek = [];
-			week++;
-		}
+		// 土曜日(週の最後)になったら週をまとめる
+		if (calendarDate.keyOfDayOfWeek !== SATURDAY) return;
+		datePerWeek.push({ week, days: oneWeek });
+		oneWeek = [];
+		week++;
 	});
 
 	return datePerWeek;
+};
+
+const getCalendarDays = (val: number): WeeklyDay[] => {
+	const yearMonth = dayjs().add(val, 'month').format('YYYY-MM');
+
+	// カレンダーを取得する、その月の全日付を取得
+	const currentMonthCalendar = makeCalendar(yearMonth);
+
+	// 前月と次月の不足日を追加
+	const previousMonthDays = addPreviousMonthDays(currentMonthCalendar[0]);
+	const nextMonthDays = addNextMonthDays(
+		currentMonthCalendar[currentMonthCalendar.length - 1],
+	);
+
+	// 前月、今月、次月を結合
+	const fullCalendar = [
+		...previousMonthDays,
+		...currentMonthCalendar,
+		...nextMonthDays,
+	];
+
+	// 週ごとに分ける
+	return groupByWeek(fullCalendar);
 };
 
 export const useCalendar = (initSchedules: Schedule[]) => {
@@ -113,8 +141,9 @@ export const useCalendar = (initSchedules: Schedule[]) => {
 
 	const setNowYearAndMonth = useCallback(
 		async (val: number) => {
-			const y = dayjs().add(val, 'month').format('YYYY');
-			const m = dayjs().add(val, 'month').format('MM') as MonthString;
+			const targetDate = dayjs().add(val, 'month');
+			const y = targetDate.format('YYYY');
+			const m = targetDate.format('MM') as MonthString;
 
 			setYear(y);
 			setMonth(m);
@@ -153,23 +182,24 @@ export const useCalendar = (initSchedules: Schedule[]) => {
 	const isNowMonth = useMemo(() => count === 0, [count]);
 
 	const getScheduleOnTheDate = useCallback(
-		(day: string): Pick<Schedule, 'id' | 'title' | 'scheduleTypes'>[] => {
-			const y = dayjs(day).format('YYYY');
-			const m = dayjs(day).format('M');
-			const d = dayjs(day).format('D');
+		(day: string): ScheduleSummary[] => {
+			const dateObj = dayjs(day);
+			const targetYear = Number(dateObj.format('YYYY'));
+			const targetMonth = Number(dateObj.format('M'));
+			const targetDay = Number(dateObj.format('D'));
 
 			return schedules
-				.filter((el) => {
-					const { year, month, day } = el;
+				.filter((schedule) => {
+					const { year, month, day } = schedule;
 
 					return (
-						Number(year) === Number(y) &&
-						Number(month) === Number(m) &&
-						Number(day) === Number(d)
+						Number(year) === targetYear &&
+						Number(month) === targetMonth &&
+						Number(day) === targetDay
 					);
 				})
-				.map((el) => {
-					const { id, title, scheduleTypes } = el;
+				.map((schedule) => {
+					const { id, title, scheduleTypes } = schedule;
 					return { id, title, scheduleTypes };
 				});
 		},
