@@ -1,29 +1,32 @@
 'use client';
-import React from 'react';
+import { Input } from 'components/Input';
+import React, { useId } from 'react';
 
 type Props = {
 	title: string;
 	titleError: string;
-	onChangeTitle: Function;
+	onChangeTitle: (_: string) => void;
 	onBlur?: () => void;
 };
 
 export function InputTitle(props: Props): React.ReactElement {
 	const { title, titleError, onChangeTitle, onBlur } = props;
+	const id = useId();
 
 	return (
 		<div className="mt-3">
 			<div className="flex">
-				<label htmlFor="title" className="mr-2">
+				<label htmlFor={id} className="mr-2">
 					タイトル:
 				</label>
-				<input
+				<Input
+					id={id}
 					name="title"
-					value={title}
-					className="resize-none border-2 rounded-lg border-slate-900 w-[300px]"
+					text={title}
 					placeholder="スケジュールのタイトルを入力"
-					onChange={(e) => onChangeTitle(e.target.value)}
-					onBlur={() => onBlur?.()}
+					onChangeText={onChangeTitle}
+					onBlur={onBlur}
+					className="w-[300px]"
 				/>
 			</div>
 			{titleError && <p className="text-xs text-[red]">{titleError}</p>}

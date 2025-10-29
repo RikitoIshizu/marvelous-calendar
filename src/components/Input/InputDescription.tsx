@@ -1,10 +1,11 @@
 'use client';
+import { Textarea } from 'components/Textarea';
 import React, { useId } from 'react';
 
 type Props = {
 	description: string;
 	descriptionError: string;
-	onchangeDescription: Function;
+	onchangeDescription: (_: string) => void;
 	onBlur?: () => void;
 };
 
@@ -18,14 +19,13 @@ export function InputDescription(props: Props): React.ReactElement {
 				<label htmlFor={id} className="mr-2">
 					メモ:
 				</label>
-				<textarea
+				<Textarea
 					id={id}
 					name="description"
 					value={description}
-					className="resize-none border-2 rounded-lg border-slate-900 w-2/3"
 					placeholder="何かメモがあれば入力してください。"
-					onChange={(e) => onchangeDescription(e.target.value)}
-					onBlur={() => onBlur?.()}
+					onChange={onchangeDescription}
+					onBlur={onBlur}
 				/>
 			</div>
 			{descriptionError && (
