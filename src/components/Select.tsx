@@ -1,6 +1,6 @@
 'use client';
 import type { ChangeEvent } from 'react';
-import { useCallback } from 'react';
+import { memo, useCallback } from 'react';
 
 type Props = {
 	name: string;
@@ -11,7 +11,7 @@ type Props = {
 	onBlur?: () => void;
 };
 
-export const Select = (props: Props) => {
+export const Select = memo(function Select(props: Props) {
 	const clickEvent = useCallback(
 		(text: Props['value']) => {
 			props.onEventCallBack(text);
@@ -41,4 +41,4 @@ export const Select = (props: Props) => {
 			{props.suffix && <span className="mx-2">{props.suffix}</span>}
 		</>
 	);
-};
+});

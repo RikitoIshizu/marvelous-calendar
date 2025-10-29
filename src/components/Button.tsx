@@ -1,5 +1,5 @@
 'use client';
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
 export type ButtonProps = {
 	text: string;
@@ -12,7 +12,7 @@ export type ButtonProps = {
 	otherClasses?: string;
 };
 
-export const Button = (props: ButtonProps) => {
+export const Button = memo(function Button(props: ButtonProps) {
 	const classes = useMemo((): string => {
 		let classes = 'rounded-md hover:opacity-[0.8]';
 		classes += props.width ? ` ${props.width}` : ' w-[150px]';
@@ -42,4 +42,4 @@ export const Button = (props: ButtonProps) => {
 			{props.text}
 		</button>
 	);
-};
+});
