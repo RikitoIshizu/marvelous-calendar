@@ -1,9 +1,7 @@
 import dayjs from 'dayjs';
 import { fetchWeatherApi } from 'openmeteo';
 import { MonthlyWeatherData } from 'types/types';
-
-const SUNDAY_CODE = 0;
-const SATURDAY_CODE = 6;
+import { SATURDAY, SUNDAY } from 'utils/constants';
 
 export const getStartAndEndDate = (startDate: string, endDate: string) => {
 	let start_date = startDate;
@@ -12,8 +10,8 @@ export const getStartAndEndDate = (startDate: string, endDate: string) => {
 	const dayOfWeekCodeOfStart = dayjs(startDate).day();
 	const dayOfWeekCodeOfEnd = dayjs(endDate).day();
 
-	const isTheDaySunday = dayOfWeekCodeOfStart === SUNDAY_CODE;
-	const isTheDaySaturday = dayOfWeekCodeOfEnd === SATURDAY_CODE;
+	const isTheDaySunday = dayOfWeekCodeOfStart === SUNDAY;
+	const isTheDaySaturday = dayOfWeekCodeOfEnd === SATURDAY;
 
 	if (!isTheDaySunday) {
 		start_date = dayjs(start_date)
@@ -22,7 +20,7 @@ export const getStartAndEndDate = (startDate: string, endDate: string) => {
 	}
 
 	if (!isTheDaySaturday) {
-		const lackOfDay = SATURDAY_CODE - dayOfWeekCodeOfEnd;
+		const lackOfDay = SATURDAY - dayOfWeekCodeOfEnd;
 		end_date = dayjs(end_date).add(lackOfDay, 'day').format('YYYY-MM-DD');
 	}
 

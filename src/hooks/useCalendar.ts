@@ -11,10 +11,7 @@ import {
 	Schedule,
 	WeeklyDay,
 } from 'types/types';
-
-const SUNDAY = 0;
-const SATURDAY = 6;
-const DAYS_IN_WEEK = 7;
+import { DAYS_IN_WEEK, SATURDAY, SUNDAY } from 'utils/constants';
 
 type ScheduleSummary = Pick<Schedule, 'id' | 'title' | 'scheduleTypes'>;
 

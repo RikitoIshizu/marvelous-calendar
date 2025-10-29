@@ -4,9 +4,7 @@ import dayjs from 'dayjs';
 import { getStartAndEndDate } from 'libs/weather';
 import { useCallback, useState } from 'react';
 import { FetchCurrentWeather, FetchMonthlyWeather } from 'types/types';
-
-// 定数定義
-const FORECAST_DAYS_LIMIT = 14; // API仕様上、現在から14日先までしか取得できない
+import { FORECAST_DAYS_LIMIT } from 'utils/constants';
 
 type UseWeatherProps = {
 	defaultCurrentWeather?: FetchCurrentWeather;

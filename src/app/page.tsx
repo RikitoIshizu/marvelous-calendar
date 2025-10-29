@@ -6,13 +6,14 @@ import { Top } from 'features/Top';
 import { getStartAndEndDate } from 'libs/weather';
 import { Suspense } from 'react';
 import { dayTextCommon } from 'shared/calendar';
+import { YEARS_TO_SHOW } from 'utils/constants';
 
 export default async function Index() {
 	const year = Number(dayTextCommon('YYYY'));
 	const month = Number(dayTextCommon('MM'));
 
 	const startDate = dayjs().startOf('month').format('YYYY-MM-DD');
-	const end_date = dayjs().add(14, 'day').format('YYYY-MM-DD'); // 仕様上、現在の月から14日先の日までしか取得できないので、こうする
+	const end_date = dayjs().add(YEARS_TO_SHOW, 'day').format('YYYY-MM-DD');
 
 	const { start_date } = getStartAndEndDate(startDate, end_date);
 

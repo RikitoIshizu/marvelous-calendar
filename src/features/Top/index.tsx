@@ -16,6 +16,7 @@ import {
 	GetCoordinate,
 	Schedule,
 } from 'types/types';
+import { LIMIT_YEAR } from 'utils/constants';
 
 export const Top = ({
 	registeredSchedules,
@@ -66,7 +67,7 @@ export const Top = ({
 
 				await Promise.all([
 					changeYearAndMonth(year, month),
-					Number(year) >= 2016 && differenceOfMonth <= 0
+					Number(year) >= LIMIT_YEAR && differenceOfMonth <= 0
 						? getWeatherData(differenceOfMonth)
 						: null,
 				]);
@@ -80,7 +81,7 @@ export const Top = ({
 			async (c: number) => {
 				await Promise.all([
 					changeMonth(c),
-					Number(year) >= 2016 && c <= 0 ? getWeatherData(c) : null,
+					Number(year) >= LIMIT_YEAR && c <= 0 ? getWeatherData(c) : null,
 				]);
 			},
 			[year, changeMonth, getWeatherData],

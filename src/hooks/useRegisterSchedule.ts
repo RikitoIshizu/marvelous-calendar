@@ -4,10 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { amountOfDay, dayTextCommon } from 'shared/calendar';
 import { DayString, MonthString, ScheduleRegisterInput } from 'types/types';
 import { registerScheduleDetail, updateSchedule } from '../apis/supabase';
-
-// 定数定義
-const MONTHS_IN_YEAR = 12;
-const YEARS_TO_SHOW = 10; // 今年から何年後まで選択可能にするか
+import { MONTHS_IN_YEAR, YEARS_TO_SHOW } from 'utils/constants';
 
 // ヘルパー関数: 年リストを生成
 const generateYearList = (startYear: string): string[] => {
