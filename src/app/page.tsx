@@ -12,7 +12,7 @@ export default async function Index() {
 	const month = Number(dayTextCommon('MM'));
 
 	const startDate = dayjs().startOf('month').format('YYYY-MM-DD');
-	const end_date = dayjs().add(15, 'day').format('YYYY-MM-DD'); // 仕様上、現在の月から15日先の日までしか取得できないので、こうする
+	const end_date = dayjs().add(14, 'day').format('YYYY-MM-DD'); // 仕様上、現在の月から14日先の日までしか取得できないので、こうする
 
 	const { start_date } = getStartAndEndDate(startDate, end_date);
 

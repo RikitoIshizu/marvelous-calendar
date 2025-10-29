@@ -23,7 +23,7 @@ type Props = {
 
 // TODO: ここの入力項目が引用元に依存してるので、修正予定
 export const CalendarRegister = (props: Props) => {
-	const { schedule, registeredSchedules } = props;
+	const { schedule } = props;
 
 	const {
 		year,
@@ -81,6 +81,47 @@ export const CalendarRegister = (props: Props) => {
 		);
 	}, [description, setDescriptionError]);
 
+	// const checkAllRegisteredSchedule = () => {
+	// 	registeredSchedules.forEach((schedule) => {
+	// 		const registeredDate = `${schedule.year}-${String(schedule.month).padStart(2, '0')}-${String(schedule.day).padStart(2, '0')}`;
+	// 		const registeringDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+
+	// 		if (props.type === 'register' && registeredDate !== registeringDate) {
+	// 		}
+
+	// 		// 登録しようとしている日時
+	// 		const registeringStartTime = dayjs(
+	// 			`${registeringDate} ${startHour}:${startMinute}`,
+	// 		);
+	// 		const registeringEndTime = dayjs(
+	// 			`${registeringDate} ${endHour}:${endMinute}`,
+	// 		);
+
+	// 		// 登録済みの日時
+	// 		const registeredStartTime = dayjs(
+	// 			`${registeredDate} ${schedule.start_hour}:${schedule.start_minute}`,
+	// 		);
+	// 		const registeredEndTime = dayjs(
+	// 			`${registeredDate} ${schedule.end_hour}:${schedule.end_minute}`,
+	// 		);
+
+	// 		const isStartTimeBetweenRegisteredStartAndEndTime =
+	// 			registeredStartTime.isAfter(registeringStartTime) &&
+	// 			registeredStartTime.isBefore(registeringEndTime);
+
+	// 		const isEndTimeBetweenRegisteredStartAndEndTime =
+	// 			registeredEndTime.isAfter(registeringStartTime) &&
+	// 			registeredEndTime.isBefore(registeringEndTime);
+
+	// 		// return (
+	// 		// 	isStartTimeBetweenRegisteredStartAndEndTime ||
+	// 		// 	isEndTimeBetweenRegisteredStartAndEndTime
+	// 		// );
+	// 	});
+
+	// 	return null;
+	// };
+
 	const validateTime = useCallback(() => {
 		setTimeError('');
 		// はじまりと終わりの時間が同じかどうか
@@ -104,45 +145,52 @@ export const CalendarRegister = (props: Props) => {
 			return true;
 		}
 
+		// if (checkAllRegisteredSchedule()) {
+		// 	setTimeError(checkAllRegisteredSchedule());
+		// 	return true;
+		// }
+
 		// かぶってるスケジュールがないか
-		const isDuplicatedTime = registeredSchedules.some((schedule) => {
-			// 日付一致しているか
-			const registeredDate = `${schedule.year}-${String(schedule.month).padStart(2, '0')}-${String(schedule.day).padStart(2, '0')}`;
-			const registeringDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-			if (registeredDate !== registeringDate) return;
+		// const isDuplicatedTime = registeredSchedules.some((schedule) => {
+		// 	// 日付一致しているか
+		// 	const registeredDate = `${schedule.year}-${String(schedule.month).padStart(2, '0')}-${String(schedule.day).padStart(2, '0')}`;
+		// 	const registeringDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+		// 	if (registeredDate !== registeringDate) return;
 
-			// 登録しようとしている日時
-			const registeringStartTime = dayjs(
-				`${registeringDate} ${startHour}:${startMinute}`,
-			);
-			const registeringEndTime = dayjs(
-				`${registeringDate} ${endHour}:${endMinute}`,
-			);
+		// 	// 登録しようとしている日時
+		// 	const registeringStartTime = dayjs(
+		// 		`${registeringDate} ${startHour}:${startMinute}`,
+		// 	);
+		// 	const registeringEndTime = dayjs(
+		// 		`${registeringDate} ${endHour}:${endMinute}`,
+		// 	);
 
-			// 登録済みの日時
-			const registeredStartTime = dayjs(
-				`${registeredDate} ${schedule.start_hour}:${schedule.start_minute}`,
-			);
-			const registeredEndTime = dayjs(
-				`${registeredDate} ${schedule.end_hour}:${schedule.end_minute}`,
-			);
+		// 	// 登録済みの日時
+		// 	const registeredStartTime = dayjs(
+		// 		`${registeredDate} ${schedule.start_hour}:${schedule.start_minute}`,
+		// 	);
+		// 	const registeredEndTime = dayjs(
+		// 		`${registeredDate} ${schedule.end_hour}:${schedule.end_minute}`,
+		// 	);
 
-			const isStartTimeBetweenRegisteredStartAndEndTime =
-				registeredStartTime.isAfter(registeringStartTime) &&
-				registeredStartTime.isBefore(registeringEndTime);
+		// 	const isStartTimeBetweenRegisteredStartAndEndTime =
+		// 		registeredStartTime.isAfter(registeringStartTime) &&
+		// 		registeredStartTime.isBefore(registeringEndTime);
 
-			const isEndTimeBetweenRegisteredStartAndEndTime =
-				registeredEndTime.isAfter(registeringStartTime) &&
-				registeredEndTime.isBefore(registeringEndTime);
+		// 	const isEndTimeBetweenRegisteredStartAndEndTime =
+		// 		registeredEndTime.isAfter(registeringStartTime) &&
+		// 		registeredEndTime.isBefore(registeringEndTime);
 
-			return (
-				isStartTimeBetweenRegisteredStartAndEndTime ||
-				isEndTimeBetweenRegisteredStartAndEndTime
-			);
-		});
+		// 	return (
+		// 		isStartTimeBetweenRegisteredStartAndEndTime ||
+		// 		isEndTimeBetweenRegisteredStartAndEndTime
+		// 	);
+		// });
 
-		setTimeError(isDuplicatedTime ? 'スケジュールが被ってます。' : '');
-		return isDuplicatedTime;
+		// console.log(isDuplicatedTime);
+
+		// setTimeError(isDuplicatedTime ? 'スケジュールが被ってます。' : '');
+		return true;
 	}, [
 		startHour,
 		startMinute,
@@ -150,7 +198,6 @@ export const CalendarRegister = (props: Props) => {
 		endMinute,
 		day,
 		month,
-		registeredSchedules,
 		year,
 		setTimeError,
 	]);

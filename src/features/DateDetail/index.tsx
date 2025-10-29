@@ -1,5 +1,6 @@
 'use client';
 import dayjs from 'dayjs';
+import { useAsyncLoading } from 'hooks/useAsyncLoading';
 import Link from 'next/link';
 import { ComponentProps, useCallback, useMemo, useState } from 'react';
 import { dayTextCommon, specialDays } from 'shared/calendar';
@@ -36,11 +37,13 @@ export const DateDetail = ({
 
 	const updSchedule: ComponentProps<
 		typeof CalendarRegister
-	>['onEventCallBack'] = useCallback(async () => {
-		alert('スケジュールが登録されました。');
-		setIsModalOpen(false);
-		loadSchedules();
-	}, [loadSchedules]);
+	>['onEventCallBack'] = useAsyncLoading(
+		useCallback(async () => {
+			alert('スケジュールが登録されました。');
+			setIsModalOpen(false);
+			await loadSchedules();
+		}, [loadSchedules]),
+	);
 
 	// 編集
 	const openModal: ComponentProps<typeof ScheduleComponent>['onOpenModal'] =
@@ -67,17 +70,19 @@ export const DateDetail = ({
 
 	const confirmShouldDeleteSchedule: ComponentProps<
 		typeof ScheduleComponent
-	>['onDeleteSchedule'] = useCallback(
-		async (id: Schedule['id']) => {
-			setIsNewScheduleLoading(true);
-			const response = await deleteSchedule(id);
+	>['onDeleteSchedule'] = useAsyncLoading(
+		useCallback(
+			async (id: Schedule['id']) => {
+				setIsNewScheduleLoading(true);
+				const response = await deleteSchedule(id);
 
-			if (!response) {
-				loadSchedules();
-				setIsNewScheduleLoading(false);
-			}
-		},
-		[loadSchedules],
+				if (!response) {
+					await loadSchedules();
+					setIsNewScheduleLoading(false);
+				}
+			},
+			[loadSchedules],
+		),
 	);
 
 	const titleText = useMemo((): string => {
@@ -106,10 +111,10 @@ export const DateDetail = ({
 				)}
 				<div className="w-[1000px] mx-auto">
 					{specialDay && (
-						<section>
+						<>
 							<h2 className="text-3xl font-bold">今日は何の日？</h2>
 							<div className="mt-1">{specialDay}</div>
-						</section>
+						</>
 					)}
 					<ScheduleComponent
 						schedules={schedules}
@@ -129,6 +134,7 @@ export const DateDetail = ({
 					type={modalMode}
 					shouldHideDateArea={true}
 					onOpenModal={updSchedule}
+					onCloseModal={() => setIsModalOpen(false)}
 					schedule={selectedSchedule as Schedule}
 					date={date}
 					registeredSchedules={registeredSchedules}

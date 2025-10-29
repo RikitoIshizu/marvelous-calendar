@@ -270,6 +270,48 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 		],
 	);
 
+	// const checkAllRegisteredSchedule = () => {
+	// 		registeredSchedules.forEach((schedule) => {
+	// 			const registeredDate = `${schedule.year}-${String(schedule.month).padStart(2, '0')}-${String(schedule.day).padStart(2, '0')}`;
+	// 			const registeringDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+
+	// 			if (props.type === 'register' && registeredDate !== registeringDate) {
+
+	// 			}
+
+	// 			// 登録しようとしている日時
+	// 			const registeringStartTime = dayjs(
+	// 				`${registeringDate} ${startHour}:${startMinute}`,
+	// 			);
+	// 			const registeringEndTime = dayjs(
+	// 				`${registeringDate} ${endHour}:${endMinute}`,
+	// 			);
+
+	// 			// 登録済みの日時
+	// 			const registeredStartTime = dayjs(
+	// 				`${registeredDate} ${schedule.start_hour}:${schedule.start_minute}`,
+	// 			);
+	// 			const registeredEndTime = dayjs(
+	// 				`${registeredDate} ${schedule.end_hour}:${schedule.end_minute}`,
+	// 			);
+
+	// 			const isStartTimeBetweenRegisteredStartAndEndTime =
+	// 				registeredStartTime.isAfter(registeringStartTime) &&
+	// 				registeredStartTime.isBefore(registeringEndTime);
+
+	// 			const isEndTimeBetweenRegisteredStartAndEndTime =
+	// 				registeredEndTime.isAfter(registeringStartTime) &&
+	// 				registeredEndTime.isBefore(registeringEndTime);
+
+	// 			// return (
+	// 			// 	isStartTimeBetweenRegisteredStartAndEndTime ||
+	// 			// 	isEndTimeBetweenRegisteredStartAndEndTime
+	// 			// );
+	// 		});
+
+	// 		return null;
+	// 	};
+
 	return {
 		year,
 		month,
