@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import { Top } from 'features/Top';
 import { getStartAndEndDate } from 'libs/weather';
 import { Suspense } from 'react';
-import { dayTextCommon } from 'shared/calendar';
+import { dayTextCommon } from 'utils/calendar';
 import { YEARS_TO_SHOW } from 'utils/constants';
 
 export default async function Index() {

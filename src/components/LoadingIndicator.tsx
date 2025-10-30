@@ -1,6 +1,6 @@
+import { useLoading } from 'context/LoadingContext';
 import React from 'react';
 import { ClipLoader } from 'react-spinners';
-import { useLoading } from '../context/LoadingContext';
 
 const LoadingIndicator: React.FC = () => {
 	const { isLoading } = useLoading();

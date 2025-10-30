@@ -3,7 +3,6 @@ import { getSchedule } from 'apis/supabase';
 import dayjs from 'dayjs';
 import { useAsyncLoading } from 'hooks/useAsyncLoading';
 import { useCallback, useMemo, useState } from 'react';
-import { amountOfDay, dayTextCommon } from 'shared/calendar';
 import {
 	Calendar,
 	DayString,
@@ -11,6 +10,7 @@ import {
 	Schedule,
 	WeeklyDay,
 } from 'types/types';
+import { amountOfDay, dayTextCommon } from 'utils/calendar';
 import { DAYS_IN_WEEK, SATURDAY, SUNDAY } from 'utils/constants';
 
 type ScheduleSummary = Pick<Schedule, 'id' | 'title' | 'scheduleTypes'>;

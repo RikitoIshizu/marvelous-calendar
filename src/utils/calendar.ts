@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
-import type { Schedule } from '../types/types';
-import { HolidayAndSpecialDayException } from '../types/types';
+import { HolidayAndSpecialDayException, type Schedule } from 'types/types';
 
 type Calendar = {
 	keyOfDayOfWeek: number;
@@ -79,6 +78,7 @@ export const specialDays: Record<string, string> = {
 	'0208': '針供養',
 	'0214': 'バレンタインデー',
 	'0303': '雛祭り',
+	'0305': 'NIGHTMARE・ギター、棺さんの誕生日',
 	'0306': 'セーラーネプチューンの誕生日',
 	'0308': '国際女性デー',
 	'0314': 'ホワイトデー',
@@ -87,11 +87,15 @@ export const specialDays: Record<string, string> = {
 	'0408': '花祭り',
 	'0417': 'セーラーマーズの誕生日',
 	'0420': 'MOTHER3が発売された日',
+	'0609': 'NIGHTMARE・ドラム、RUKAさんの誕生日',
 	'0610': '時の記念日',
+	'0623': 'NIGHTMARE・ベース、Ni~yaさんの誕生日',
+	'0629': 'NIGHTMARE・ギター、咲人さんの誕生日',
 	'0630': 'セーラームーンの誕生日',
 	'0701': '山・海開き',
 	'0706': 'セーラームーンの連載が始まった日',
 	'0707': '七夕',
+	'0714': 'NIGHTMARE・ボーカル、YOMIさんの誕生日',
 	'0727': 'MOTHERが発売された日',
 	'0806': '広島原爆の日',
 	'0809': '長崎原爆の日',

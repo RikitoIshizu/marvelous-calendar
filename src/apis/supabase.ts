@@ -1,10 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
-import { dayTextCommon } from '../shared/calendar';
 import {
 	Schedule,
 	ScheduleRegisterInput,
 	ScheduleUpdateInput,
-} from '../types/types';
+} from 'types/types';
+import { dayTextCommon } from 'utils/calendar';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;

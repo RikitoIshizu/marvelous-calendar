@@ -3,8 +3,7 @@ import { createContext, FC, ReactNode, useContext, useState } from 'react';
 
 interface LoadingContextType {
 	isLoading: boolean;
-	// eslint-disable-next-line no-unused-vars
-	setIsLoading: (isLoading: boolean) => void;
+	setIsLoading: (_isLoading: boolean) => void;
 }
 
 const LoadingContext = createContext<LoadingContextType | undefined>(undefined);

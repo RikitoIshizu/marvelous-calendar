@@ -1,12 +1,12 @@
 'use client';
+import { registerScheduleDetail, updateSchedule } from 'apis/supabase';
 import dayjs from 'dayjs';
 import { useCallback, useMemo, useState } from 'react';
-import { amountOfDay, dayTextCommon } from 'shared/calendar';
 import { DayString, MonthString, ScheduleRegisterInput } from 'types/types';
-import { registerScheduleDetail, updateSchedule } from '../apis/supabase';
+import { amountOfDay, dayTextCommon } from 'utils/calendar';
 import { MONTHS_IN_YEAR, YEARS_TO_SHOW } from 'utils/constants';
 
-// ヘルパー関数: 年リストを生成
+// 年リストを生成
 const generateYearList = (startYear: string): string[] => {
 	const yearList: string[] = [startYear];
 	for (let i = 1; i < YEARS_TO_SHOW; i++) {
@@ -16,7 +16,7 @@ const generateYearList = (startYear: string): string[] => {
 	return yearList;
 };
 
-// ヘルパー関数: 月リストを生成（開始月から12月まで）
+// 月リストを生成（開始月から12月まで）
 const generateMonthList = (startMonth: number): MonthString[] => {
 	const monthList: MonthString[] = [];
 	for (let month = startMonth; month <= MONTHS_IN_YEAR; month++) {
@@ -25,7 +25,7 @@ const generateMonthList = (startMonth: number): MonthString[] => {
 	return monthList;
 };
 
-// ヘルパー関数: 全ての月リストを生成（1月から12月まで）
+// 全ての月リストを生成（1月から12月まで）
 const generateAllMonthList = (): MonthString[] => {
 	const monthList: MonthString[] = [];
 	for (let month = 1; month <= MONTHS_IN_YEAR; month++) {
@@ -34,7 +34,7 @@ const generateAllMonthList = (): MonthString[] => {
 	return monthList;
 };
 
-// ヘルパー関数: 日リストを生成（特定の日より後の日のみ）
+// 日リストを生成（特定の日より後の日のみ）
 const generateDayListAfter = (
 	yearMonth: string,
 	afterDay: number,
@@ -47,7 +47,7 @@ const generateDayListAfter = (
 	return dayList;
 };
 
-// ヘルパー関数: 日リストを生成（全ての日）
+// 日リストを生成（全ての日）
 const generateAllDayList = (yearMonth: string): DayString[] => {
 	const dayList: DayString[] = [];
 	const totalDays = amountOfDay(yearMonth);
@@ -57,7 +57,7 @@ const generateAllDayList = (yearMonth: string): DayString[] => {
 	return dayList;
 };
 
-// ヘルパー関数: 日リストを生成（今日より後の日のみ）
+// 日リストを生成（今日より後の日のみ）
 const generateFutureDayList = (yearMonth: string): DayString[] => {
 	const dayList: DayString[] = [];
 	const totalDays = amountOfDay(yearMonth);
@@ -88,9 +88,9 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 	);
 
 	// スケジュールのタイトル
-	const [title, setTitle] = useState<ScheduleRegisterInput['title']>(
-		schedule.title || '',
-	);
+	const [title, setTitle] = useState<
+		NonNullable<ScheduleRegisterInput['title']>
+	>(schedule.title ?? '');
 
 	// 時間関係
 	const [startHour, setStartHour] = useState<
@@ -106,8 +106,8 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 		ScheduleRegisterInput['end_minute']
 	>(schedule.end_minute);
 	const [description, setDescription] = useState<
-		ScheduleRegisterInput['description']
-	>(schedule.description || '');
+		NonNullable<ScheduleRegisterInput['description']>
+	>(schedule.description ?? '');
 	const [scheduleType, setScheduleType] = useState<
 		ScheduleRegisterInput['scheduleTypes']
 	>(schedule.scheduleTypes || 1);

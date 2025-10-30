@@ -2,8 +2,8 @@
 import { Button } from 'components/Button';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
-import { scheduleTextColor } from 'shared/calendar';
 import { Schedule as TypeSchedule } from 'types/types';
+import { scheduleTextColor } from 'utils/calendar';
 
 export const Schedule = ({
 	schedules,

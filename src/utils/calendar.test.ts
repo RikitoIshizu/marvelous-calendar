@@ -3,7 +3,7 @@ import {
 	amountOfDay,
 	dayTextCommon,
 	scheduleTextColor,
-} from '../shared/calendar';
+} from '../utils/calendar';
 
 describe('calendar.tsのテスト', () => {
 	describe('scheduleTextColor', () => {

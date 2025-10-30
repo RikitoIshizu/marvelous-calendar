@@ -2,20 +2,20 @@
 import LoadingIndicator from 'components/LoadingIndicator';
 import { useLocation } from 'context/LocationContext';
 import dayjs from 'dayjs';
+import { ScheduleRegister } from 'features/ScheduleRegister';
 import { CalendarBody } from 'features/Top/Components/CalendarBody';
 import { CalendarHead } from 'features/Top/Components/CalendarHead';
 import { useAsyncLoading } from 'hooks/useAsyncLoading';
 import { useCalendar } from 'hooks/useCalendar';
 import { useWeather } from 'hooks/useWeather';
 import { useCallback, useEffect, useState } from 'react';
-import { dayTextCommon, yearAndMonthAndDateList } from 'shared/calendar';
-import { CalendarRegisterModal } from 'shared/ScheduleRegister/CalendarRegisterModal';
 import {
 	FetchCurrentWeather,
 	FetchMonthlyWeather,
 	GetCoordinate,
 	Schedule,
 } from 'types/types';
+import { dayTextCommon, yearAndMonthAndDateList } from 'utils/calendar';
 import { LIMIT_YEAR } from 'utils/constants';
 
 export const Top = ({
@@ -50,7 +50,7 @@ export const Top = ({
 		month,
 		day,
 		isNowMonth,
-		schedules,
+		// schedules,
 		changeMonth,
 		changeYearAndMonth,
 		getScheduleOnTheDate,
@@ -117,7 +117,7 @@ export const Top = ({
 					monthlyWeatherData={monthlyWeather}
 					getScheduleOnTheDate={getScheduleOnTheDate}
 				/>
-				<CalendarRegisterModal
+				<ScheduleRegister
 					type="register"
 					shouldHideDateArea={false}
 					schedule={{
@@ -133,7 +133,6 @@ export const Top = ({
 					onCloseModal={() => setIsModalOpen(false)}
 					isModalOpen={isModalOpen}
 					date={dayTextCommon('YYYYMMDD')}
-					registeredSchedules={schedules}
 				/>
 			</main>
 		</>

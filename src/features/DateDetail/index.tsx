@@ -1,13 +1,12 @@
 'use client';
 import dayjs from 'dayjs';
+import { CalendarRegisterModal } from 'features/ScheduleRegister';
 import { useAsyncLoading } from 'hooks/useAsyncLoading';
 import Link from 'next/link';
 import { ComponentProps, useCallback, useMemo, useState } from 'react';
-import { dayTextCommon, specialDays } from 'shared/calendar';
-import { CalendarRegisterModal } from 'shared/ScheduleRegister/CalendarRegisterModal';
 import { Schedule } from 'types/types';
+import { dayTextCommon, specialDays } from 'utils/calendar';
 import { deleteSchedule, getScheduleDetail } from '../../apis/supabase';
-import { CalendarRegister } from '../../shared/ScheduleRegister/CalendarRegister';
 import { Schedule as ScheduleComponent } from './Components/Schedule';
 
 export const DateDetail = ({
@@ -35,14 +34,14 @@ export const DateDetail = ({
 		setSchedules(schedules);
 	}, [date]);
 
-	const updSchedule: ComponentProps<
-		typeof CalendarRegister
-	>['onEventCallBack'] = useAsyncLoading(
-		useCallback(async () => {
-			alert('スケジュールが登録されました。');
-			setIsModalOpen(false);
-			await loadSchedules();
-		}, [loadSchedules]),
+	const updSchedule = useAsyncLoading(
+		useCallback(
+			async (_: boolean) => {
+				setIsModalOpen(false);
+				await loadSchedules();
+			},
+			[loadSchedules],
+		),
 	);
 
 	// 編集
@@ -137,7 +136,6 @@ export const DateDetail = ({
 					onCloseModal={() => setIsModalOpen(false)}
 					schedule={selectedSchedule as Schedule}
 					date={date}
-					registeredSchedules={registeredSchedules}
 				/>
 			</section>
 			{isNewScheduleLoading && (

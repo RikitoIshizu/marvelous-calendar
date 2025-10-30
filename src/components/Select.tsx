@@ -1,12 +1,13 @@
 'use client';
-import type { ChangeEvent } from 'react';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, type ChangeEvent } from 'react';
 
 type Props = {
+	id?: string;
 	name: string;
 	value: string | number;
 	selectList: string[] | number[];
 	suffix?: string;
+	suffixAs?: 'span' | 'label';
 	onEventCallBack: Function;
 	onBlur?: () => void;
 };
@@ -19,9 +20,12 @@ export const Select = memo(function Select(props: Props) {
 		[props],
 	);
 
+	const suffixAs = props.suffixAs ?? 'span';
+
 	return (
 		<>
 			<select
+				id={props.id}
 				name={props.name}
 				value={props.value}
 				className="w-[150px] h-full border-2 rounded-lg border-slate-900 text-2xl text-center"
@@ -38,7 +42,14 @@ export const Select = memo(function Select(props: Props) {
 					);
 				})}
 			</select>
-			{props.suffix && <span className="mx-2">{props.suffix}</span>}
+			{props.suffix &&
+				(suffixAs === 'label' ? (
+					<label htmlFor={props.id} className="mx-2">
+						{props.suffix}
+					</label>
+				) : (
+					<span className="mx-2">{props.suffix}</span>
+				))}
 		</>
 	);
 });

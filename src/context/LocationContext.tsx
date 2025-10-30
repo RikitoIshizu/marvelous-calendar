@@ -4,8 +4,7 @@ import { ReactNode, createContext, useContext, useState } from 'react';
 interface LocationState {
 	latitude: number | null;
 	longitude: number | null;
-	// eslint-disable-next-line no-unused-vars
-	setLocation: (latitude: number, longitude: number) => void;
+	setLocation: (_latitude: number, _longitude: number) => void;
 }
 
 const initialState: LocationState = {

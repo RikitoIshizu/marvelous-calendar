@@ -23,6 +23,7 @@ module.exports = [
 				Element: 'readonly',
 				window: 'readonly',
 				alert: 'readonly', // TODO: alertを使ってるところは後で別の処理にする
+				HTMLFormElement: 'readonly',
 			},
 		},
 		plugins: {
