@@ -2,9 +2,11 @@ import LeftArrowIcon from 'assets/svgs/arrowLeft.svg';
 import RightArrowIcon from 'assets/svgs/arrowRight.svg';
 import { Button } from 'components/Button';
 import { Select } from 'components/Select';
+import type { UseCalendar } from 'hooks/useCalendar';
+import type { UseWeather } from 'hooks/useWeather';
 import { getWeatherMark } from 'libs/getWeatherMark';
 import { useMemo } from 'react';
-import { FetchCurrentWeather } from 'types/types';
+import { yearAndMonthAndDateList } from 'utils/calendar';
 
 export const CalendarHead = ({
 	count,
@@ -13,19 +15,17 @@ export const CalendarHead = ({
 	isNowMonth,
 	whether,
 	changeMonth,
-	yearAndMonthAndDateList,
 	onChangeYearAndMonth,
 	setIsModalOpen,
 }: {
-	count: number;
-	year: string;
-	month: string;
-	isNowMonth: boolean;
-	whether: FetchCurrentWeather | null;
-	changeMonth: Function;
-	yearAndMonthAndDateList: Function;
-	onChangeYearAndMonth: Function;
-	setIsModalOpen: Function;
+	count: UseCalendar['count'];
+	year: UseCalendar['year'];
+	month: UseCalendar['month'];
+	isNowMonth: UseCalendar['isNowMonth'];
+	whether: UseWeather['currentWeather'];
+	changeMonth: UseCalendar['changeMonth'];
+	onChangeYearAndMonth: (_year: string, _month: string) => Promise<void>;
+	setIsModalOpen: (_value: boolean) => void;
 }) => {
 	const temperature = useMemo(() => {
 		return Number(whether?.temperature).toFixed(1) || null;

@@ -11,6 +11,8 @@ type UseWeatherProps = {
 	defaultMonthlyWeather?: FetchMonthlyWeather;
 };
 
+export type UseWeather = ReturnType<typeof useWeather>;
+
 export const useWeather = ({
 	defaultCurrentWeather,
 	defaultMonthlyWeather,

@@ -1,18 +1,8 @@
+import type { UseCalendar } from 'hooks/useCalendar';
+import { UseWeather } from 'hooks/useWeather';
 import { getWeatherMark } from 'libs/getWeatherMark';
 import { useCallback, useMemo } from 'react';
-import { FetchMonthlyWeather } from 'types/types';
 import { Day } from './Day';
-
-type Calendar = {
-	keyOfDayOfWeek: number;
-	order: number;
-	date: string;
-};
-
-type WeeklyDay = {
-	days: Calendar[];
-	week: number;
-};
 
 const DayOfWeek = () => {
 	return (
@@ -58,11 +48,11 @@ export const CalendarBody = ({
 	getScheduleOnTheDate,
 	monthlyWeatherData,
 }: {
-	days: WeeklyDay[];
-	month: string;
-	year: string;
-	getScheduleOnTheDate: Function;
-	monthlyWeatherData: FetchMonthlyWeather | null;
+	days: UseCalendar['days'];
+	month: UseCalendar['month'];
+	year: UseCalendar['year'];
+	monthlyWeatherData: UseWeather['monthlyWeather'];
+	getScheduleOnTheDate: UseCalendar['getScheduleOnTheDate'];
 }) => {
 	const getWeatherData = useCallback(
 		(date: string) => {

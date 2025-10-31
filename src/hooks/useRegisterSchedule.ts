@@ -75,6 +75,8 @@ const generateFutureDayList = (yearMonth: string): DayString[] => {
 	return dayList;
 };
 
+export type UseRegisterSchedule = ReturnType<typeof useRegisterSchedule>;
+
 export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 	// 年月日
 	const [year, setYear] = useState<string>(

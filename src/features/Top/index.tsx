@@ -15,7 +15,7 @@ import {
 	GetCoordinate,
 	Schedule,
 } from 'types/types';
-import { dayTextCommon, yearAndMonthAndDateList } from 'utils/calendar';
+import { dayTextCommon } from 'utils/calendar';
 import { LIMIT_YEAR } from 'utils/constants';
 
 export const Top = ({
@@ -50,13 +50,13 @@ export const Top = ({
 		month,
 		day,
 		isNowMonth,
-		// schedules,
 		changeMonth,
 		changeYearAndMonth,
 		getScheduleOnTheDate,
 		onGetSchedules,
 	} = useCalendar(registeredSchedules);
 
+	// 年と月を変える
 	const onChangeYearAndMonth = useAsyncLoading(
 		useCallback(
 			async (year: string, month: string) => {
@@ -76,6 +76,7 @@ export const Top = ({
 		),
 	);
 
+	// 月を変える
 	const onChangeMonth = useAsyncLoading(
 		useCallback(
 			async (c: number) => {
@@ -88,6 +89,7 @@ export const Top = ({
 		),
 	);
 
+	//
 	const resetSchedule = useAsyncLoading(
 		useCallback(async () => {
 			await onGetSchedules(Number(year), Number(month));
@@ -105,9 +107,8 @@ export const Top = ({
 					month={month}
 					isNowMonth={isNowMonth}
 					whether={currentWeather}
-					onChangeYearAndMonth={onChangeYearAndMonth}
 					changeMonth={onChangeMonth}
-					yearAndMonthAndDateList={yearAndMonthAndDateList}
+					onChangeYearAndMonth={onChangeYearAndMonth}
 					setIsModalOpen={setIsModalOpen}
 				/>
 				<CalendarBody

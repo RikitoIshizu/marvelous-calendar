@@ -121,6 +121,8 @@ const getCalendarDays = (val: number): WeeklyDay[] => {
 	return groupByWeek(fullCalendar);
 };
 
+export type UseCalendar = ReturnType<typeof useCalendar>;
+
 export const useCalendar = (initSchedules: Schedule[]) => {
 	const [count, setCount] = useState<number>(0);
 	const [days, setDays] = useState<WeeklyDay[]>(getCalendarDays(0)); //初期値を設定する

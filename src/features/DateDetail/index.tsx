@@ -1,9 +1,9 @@
 'use client';
 import dayjs from 'dayjs';
-import { CalendarRegisterModal } from 'features/ScheduleRegister';
+import { ScheduleRegister } from 'features/ScheduleRegister';
 import { useAsyncLoading } from 'hooks/useAsyncLoading';
 import Link from 'next/link';
-import { ComponentProps, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Schedule } from 'types/types';
 import { dayTextCommon, specialDays } from 'utils/calendar';
 import { deleteSchedule, getScheduleDetail } from '../../apis/supabase';
@@ -45,31 +45,26 @@ export const DateDetail = ({
 	);
 
 	// 編集
-	const openModal: ComponentProps<typeof ScheduleComponent>['onOpenModal'] =
-		useCallback(
-			(id: Schedule['id']) => {
-				setModalMode('edit');
-				const editSchedule = schedules?.filter((el) => el.id === id);
+	const openModal = useCallback(
+		(id: Schedule['id']) => {
+			setModalMode('edit');
+			const editSchedule = schedules?.filter((el) => el.id === id);
 
-				if (!editSchedule?.length) return;
+			if (!editSchedule?.length) return;
 
-				setSelectedScheduleId(editSchedule[0]);
-				setIsModalOpen(true);
-			},
-			[schedules],
-		);
+			setSelectedScheduleId(editSchedule[0]);
+			setIsModalOpen(true);
+		},
+		[schedules],
+	);
 
 	// 登録
-	const openRegisterScheduleModal: ComponentProps<
-		typeof ScheduleComponent
-	>['onOpenRegisterScheduleModal'] = useCallback(() => {
+	const openRegisterScheduleModal = useCallback(() => {
 		setIsModalOpen(true);
 		setModalMode('register');
 	}, []);
 
-	const confirmShouldDeleteSchedule: ComponentProps<
-		typeof ScheduleComponent
-	>['onDeleteSchedule'] = useAsyncLoading(
+	const confirmShouldDeleteSchedule = useAsyncLoading(
 		useCallback(
 			async (id: Schedule['id']) => {
 				setIsNewScheduleLoading(true);
@@ -128,7 +123,7 @@ export const DateDetail = ({
 						</Link>
 					</div>
 				</div>
-				<CalendarRegisterModal
+				<ScheduleRegister
 					isModalOpen={isModalOpen}
 					type={modalMode}
 					shouldHideDateArea={true}

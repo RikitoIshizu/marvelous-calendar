@@ -15,8 +15,8 @@ export const Schedule = ({
 	schedules: TypeSchedule[];
 	date: string;
 	onOpenRegisterScheduleModal: () => void;
-	onOpenModal: Function;
-	onDeleteSchedule: Function;
+	onOpenModal: (_id: TypeSchedule['id']) => void;
+	onDeleteSchedule: (_id: TypeSchedule['id']) => Promise<void>;
 }) => {
 	const shouldShowScheduleRegisterBtn = useMemo(() => {
 		return dayjs(date).isAfter(dayjs());

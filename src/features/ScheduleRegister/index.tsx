@@ -3,15 +3,15 @@ import CloseIcon from 'assets/svgs/cross.svg';
 import { Button } from 'components/Button';
 import dayjs from 'dayjs';
 import { InputDate } from 'features/ScheduleRegister/Components/InputDate';
-import { ScheduleTime } from 'features/ScheduleRegister/Components/ScheduleTime';
+import { ScheduleTime } from 'features/ScheduleRegister/Components/InputTime';
 import { useAsyncLoading } from 'hooks/useAsyncLoading';
 import { useRegisterSchedule } from 'hooks/useRegisterSchedule';
 import { FormEvent, useCallback, useMemo } from 'react';
 import ReactModal from 'react-modal';
 import { dayTextCommon } from 'utils/calendar';
 import { InputDescription } from './Components/InputDescription';
+import { ScheduleTypes } from './Components/InputScheduleTypes';
 import { InputTitle } from './Components/InputTitle';
-import { ScheduleTypes } from './Components/ScheduleTypes';
 
 const customStyles = {
 	content: {
