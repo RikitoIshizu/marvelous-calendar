@@ -214,20 +214,13 @@ export const ScheduleRegister = ({
 						startMinute={startMinute}
 						endHour={endHour}
 						endMinute={endMinute}
+						timeError={timeError}
 						onChangeStartHour={setStartHour}
 						onChangeStartMinute={setStartMinute}
 						onChangeEndHour={setEndHour}
 						onChangeEndMinute={setEndMinute}
 						onBlur={validateTime}
 					/>
-					{timeError && (
-						<>
-							<dt></dt>
-							<dd>
-								<p className="text-xs text-[red]">{timeError}</p>
-							</dd>
-						</>
-					)}
 					<ScheduleTypes
 						scheduleType={scheduleType}
 						onEventCallBack={(e: string) => setScheduleType(Number(e))}
