@@ -5,7 +5,6 @@ import { Select } from 'components/Select';
 import type { UseCalendar } from 'hooks/useCalendar';
 import type { UseWeather } from 'hooks/useWeather';
 import { getWeatherMark } from 'libs/getWeatherMark';
-import { useMemo } from 'react';
 import { yearAndMonthAndDateList } from 'utils/calendar';
 
 export const CalendarHead = ({
@@ -27,13 +26,17 @@ export const CalendarHead = ({
 	onChangeYearAndMonth: (_year: string, _month: string) => Promise<void>;
 	setIsModalOpen: (_value: boolean) => void;
 }) => {
-	const temperature = useMemo(() => {
-		return Number(whether?.temperature).toFixed(1) || null;
-	}, [whether?.temperature]);
+	const temperature: string | null =
+		whether?.temperature != null
+			? Number(whether.temperature).toFixed(1) + '℃'
+			: null;
 
-	const humidity = useMemo(() => {
-		return whether?.relativeHumidity || null;
-	}, [whether?.relativeHumidity]);
+	const humidity: string | null = whether?.relativeHumidity + '%' || null;
+
+	const precipitation = (): string => {
+		const precipitation = Math.round(Number(whether?.precipitation) * 100);
+		return precipitation + '%';
+	};
 
 	return (
 		<div
@@ -53,13 +56,15 @@ export const CalendarHead = ({
 					{whether && (
 						<>
 							{getWeatherMark(whether.weatherCode, '!w-[40px] !h-[40px] mr-4')}
-							<div className="mr-4">気温 {temperature}℃</div>
-							<div>湿度 {humidity}%</div>
+							<div>
+								<div className="flex items-center">
+									<div className="mr-4">気温 {temperature}</div>
+									<div>湿度 {humidity}</div>
+								</div>
+								<div>降水確率: {precipitation()}</div>
+							</div>
 						</>
 					)}
-
-					{/* 
-				<div>降水量 </div>*/}
 				</div>
 				<div className="flex items-center w-1/3">
 					<Select
