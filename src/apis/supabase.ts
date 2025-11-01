@@ -31,7 +31,7 @@ export const getSchedule = async (
 						.overrideTypes<Schedule[], { merge: false }>();
 
 		if (error && status !== 406) {
-			throw new Error(`エラーが発生しました。${error}`);
+			throw new Error(`エラーが発生しました。${String(error)}`);
 		}
 
 		if (data === null) {
@@ -40,7 +40,7 @@ export const getSchedule = async (
 
 		return data!;
 	} catch (error) {
-		throw new Error(`予期せぬエラーが発生しました。${JSON.stringify(error)}`);
+		throw new Error(`予期せぬエラーが発生しました。${String(error)}`);
 	}
 };
 
@@ -57,7 +57,7 @@ export const getScheduleDetail = async (date: string) => {
 			.overrideTypes<Schedule[], { merge: false }>();
 
 		if (error && status !== 406) {
-			throw new Error(`エラーが発生しました。${error}`);
+			throw new Error(`エラーが発生しました。${String(error)}`);
 		}
 
 		if (data === null) {
@@ -66,7 +66,7 @@ export const getScheduleDetail = async (date: string) => {
 
 		return data;
 	} catch (error) {
-		throw new Error(`予期せぬエラーが発生しました。${JSON.stringify(error)}`);
+		throw new Error(`予期せぬエラーが発生しました。${String(error)}`);
 	}
 };
 
@@ -101,12 +101,12 @@ export const registerScheduleDetail = async (
 		});
 
 		if (error && status !== 406) {
-			throw new Error(`エラーが発生しました。${error}`);
+			throw new Error(`エラーが発生しました。${String(error)}`);
 		}
 
 		return null;
 	} catch (error) {
-		throw new Error(`予期せぬエラーが発生しました。${JSON.stringify(error)}`);
+		throw new Error(`予期せぬエラーが発生しました。${String(error)}`);
 	}
 };
 
@@ -118,12 +118,12 @@ export const deleteSchedule = async (id: Schedule['id']) => {
 			.eq('id', id);
 
 		if (error && status !== 406) {
-			throw new Error(`エラーが発生しました。${error}`);
+			throw new Error(`エラーが発生しました。${String(error)}`);
 		}
 
 		return null;
 	} catch (error) {
-		throw new Error(`予期せぬエラーが発生しました。${JSON.stringify(error)}`);
+		throw new Error(`予期せぬエラーが発生しました。${String(error)}`);
 	}
 };
 
@@ -154,11 +154,11 @@ export const updateSchedule = async (params: ScheduleUpdateInput) => {
 			.eq('id', id);
 
 		if (error) {
-			throw new Error(`エラーが発生しました。${error}`);
+			throw new Error(`エラーが発生しました。${String(error)}`);
 		}
 
 		return null;
 	} catch (error) {
-		throw new Error(`予期せぬエラーが発生しました。${JSON.stringify(error)}`);
+		throw new Error(`予期せぬエラーが発生しました。${String(error)}`);
 	}
 };
