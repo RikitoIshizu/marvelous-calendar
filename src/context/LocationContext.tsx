@@ -1,5 +1,12 @@
 'use client';
-import { ReactNode, createContext, useContext, useState } from 'react';
+import {
+	ReactNode,
+	createContext,
+	useCallback,
+	useContext,
+	useMemo,
+	useState,
+} from 'react';
 
 interface LocationState {
 	latitude: number | null;
@@ -19,13 +26,21 @@ export const LocationProvider = ({ children }: { children: ReactNode }) => {
 	const [latitude, setLatitude] = useState<LocationState['latitude']>(null);
 	const [longitude, setLongitude] = useState<LocationState['longitude']>(null);
 
-	const setLocation = (newLatitude: number, newLongitude: number) => {
-		setLatitude(newLatitude);
-		setLongitude(newLongitude);
-	};
+	const setLocation = useCallback(
+		(newLatitude: number, newLongitude: number) => {
+			setLatitude(newLatitude);
+			setLongitude(newLongitude);
+		},
+		[],
+	);
+
+	const value = useMemo(
+		() => ({ latitude, longitude, setLocation }),
+		[latitude, longitude, setLocation],
+	);
 
 	return (
-		<LocationContext.Provider value={{ latitude, longitude, setLocation }}>
+		<LocationContext.Provider value={value}>
 			{children}
 		</LocationContext.Provider>
 	);
