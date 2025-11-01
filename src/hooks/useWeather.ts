@@ -96,10 +96,9 @@ export const useWeather = ({
 					throw new Error(`14日以降の天気予報は取得できません。`);
 				}
 			} catch (error) {
-				throw new Error(
-					`予期せぬエラーが発生しました。${error instanceof Error ? error.message : JSON.stringify(error)}`,
-					{ cause: error },
-				);
+				throw new Error(`予期せぬエラーが発生しました。`, {
+					cause: error,
+				});
 			}
 		},
 		[getHistoryMonthlyWeatherData, getThisMonthWeatherData],
