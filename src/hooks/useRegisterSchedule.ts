@@ -75,19 +75,37 @@ const generateFutureDayList = (yearMonth: string): DayString[] => {
 	return dayList;
 };
 
+// カレンダーの選択リストの初期値設定用の処理
+const firstSetCalendar = (year: string, month: string) => {
+	const nowYearAndMonth = `${year}-${month}`;
+
+	// 年リスト: 今年から10年後まで
+	const yearList = generateYearList(year);
+
+	// 月リスト: 今月以降の月
+	const monthList = generateMonthList(Number(month));
+
+	// 日リスト: 今日より後の日
+	const dayList = generateFutureDayList(nowYearAndMonth);
+
+	return {
+		yearList,
+		monthList,
+		dayList,
+	};
+};
+
 export type UseRegisterSchedule = ReturnType<typeof useRegisterSchedule>;
 
 export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
+	const defaultYear = schedule.year?.toString() || dayTextCommon('YYYY');
+	const defaultMonth = schedule.month?.toString() || dayTextCommon('MM');
+	const defaultDay = schedule.day?.toString() || dayTextCommon('DD');
+
 	// 年月日
-	const [year, setYear] = useState<string>(
-		schedule.year?.toString() || dayTextCommon('YYYY'),
-	);
-	const [month, setMonth] = useState<string>(
-		schedule.month?.toString() || dayTextCommon('MM'),
-	);
-	const [day, setDay] = useState<string>(
-		schedule.day?.toString() || dayTextCommon('DD'),
-	);
+	const [year, setYear] = useState<string>(defaultYear);
+	const [month, setMonth] = useState<string>(defaultMonth);
+	const [day, setDay] = useState<string>(defaultDay);
 
 	// スケジュールのタイトル
 	const [title, setTitle] = useState<
@@ -114,37 +132,17 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 		ScheduleRegisterInput['scheduleTypes']
 	>(schedule.scheduleTypes || 1);
 
-	// カレンダーの選択リストの初期値設定用の処理
-	const firstSetCalendar = useCallback(() => {
-		const nowYearAndMonth = `${year}-${month}`;
-
-		// 年リスト: 今年から10年後まで
-		const yearList = generateYearList(year);
-
-		// 月リスト: 今月以降の月
-		const monthList = generateMonthList(Number(month));
-
-		// 日リスト: 今日より後の日
-		const dayList = generateFutureDayList(nowYearAndMonth);
-
-		return {
-			yearList,
-			monthList,
-			dayList,
-		};
-	}, [month, year]);
-
 	const yearList = useMemo(
-		() => firstSetCalendar().yearList,
-		[firstSetCalendar],
+		() => firstSetCalendar(defaultYear, defaultMonth).yearList,
+		[defaultYear, defaultMonth],
 	);
 
 	// カレンダーの月日のリスト
 	const [nowMonthList, setMonthList] = useState<string[]>(
-		firstSetCalendar().monthList,
+		firstSetCalendar(defaultYear, defaultMonth).monthList,
 	);
 	const [nowDayList, setDayList] = useState<string[]>(
-		firstSetCalendar().dayList,
+		firstSetCalendar(defaultYear, defaultMonth).dayList,
 	);
 
 	// バリデーション
