@@ -1,5 +1,12 @@
 'use client';
-import { createContext, FC, ReactNode, useContext, useState } from 'react';
+import {
+	createContext,
+	FC,
+	ReactNode,
+	useContext,
+	useMemo,
+	useState,
+} from 'react';
 
 interface LoadingContextType {
 	isLoading: boolean;
@@ -11,10 +18,10 @@ const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
 export const LoadingProvider: FC<{ children: ReactNode }> = ({ children }) => {
 	const [isLoading, setIsLoading] = useState(false);
 
+	const value = useMemo(() => ({ isLoading, setIsLoading }), [isLoading]);
+
 	return (
-		<LoadingContext.Provider value={{ isLoading, setIsLoading }}>
-			{children}
-		</LoadingContext.Provider>
+		<LoadingContext.Provider value={value}>{children}</LoadingContext.Provider>
 	);
 };
 
