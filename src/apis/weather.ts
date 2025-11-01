@@ -36,7 +36,7 @@ export const fetchCurrentWeather = async (request: {
 
 		return currentWeatherData;
 	} catch (error) {
-		throw new Error(`予期せぬエラーが発生しました。${JSON.stringify(error)}`);
+		throw new Error(`予期せぬエラーが発生しました。${String(error)}`);
 	}
 };
 
@@ -61,7 +61,7 @@ export const fetchMonthlyWeather = async (request: {
 		const responses = await fetchWeatherApi(apiUrl, params);
 		return adjustFetchWeatherData(responses);
 	} catch (error) {
-		throw new Error(`予期せぬエラーが発生しました。${JSON.stringify(error)}`);
+		throw new Error(`予期せぬエラーが発生しました。${String(error)}`);
 	}
 };
 
@@ -89,6 +89,6 @@ export const fetchHistoryMonthlyWeather = async (request: {
 		);
 		return adjustFetchWeatherData(responses);
 	} catch (error) {
-		throw new Error(`予期せぬエラーが発生しました。${JSON.stringify(error)}`);
+		throw new Error(`予期せぬエラーが発生しました。${String(error)}`);
 	}
 };

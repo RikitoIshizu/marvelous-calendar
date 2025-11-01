@@ -13,10 +13,7 @@ export const useAsyncLoading = <T, Args extends any[]>(
 				const result = await func(...args);
 				return result;
 			} catch (error) {
-				throw new Error(
-					`予期せぬエラーが発生しました。${error instanceof Error ? error.message : JSON.stringify(error)}`,
-					{ cause: error },
-				);
+				throw new Error(`予期せぬエラーが発生しました。${String(error)}`);
 			} finally {
 				setIsLoading(false);
 			}
