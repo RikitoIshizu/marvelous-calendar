@@ -116,19 +116,19 @@ export const ScheduleRegister = ({
 					? await registerSchedule(onSuccess)
 					: await editSchedule(onSuccess);
 			},
-			[type, onSuccess, registerSchedule, editSchedule],
+			[type, registerSchedule, editSchedule, onSuccess],
 		),
 	);
 
-	const validateTitle = useCallback(() => {
+	const validateTitle = () => {
 		setTitleError(!title ? 'タイトルを入力してください。' : '');
-	}, [title, setTitleError]);
+	};
 
-	const validateDescription = useCallback(() => {
+	const validateDescription = () => {
 		setDescriptionError(
 			!description ? 'スケジュールの詳細を入力してください。' : '',
 		);
-	}, [description, setDescriptionError]);
+	};
 
 	const validateTime = useCallback(() => {
 		setTimeError('');
@@ -169,20 +169,6 @@ export const ScheduleRegister = ({
 		return !title || !description || validateTime();
 	}, [title, description, validateTime]);
 
-	const onChangeYear = useCallback(
-		(selectedYear: string) => {
-			changeYear(selectedYear, month, day);
-		},
-		[changeYear, month, day],
-	);
-
-	const onChangeMonth = useCallback(
-		(selectedMonth: string) => {
-			changeMonth(year, selectedMonth, day);
-		},
-		[changeMonth, year, day],
-	);
-
 	return (
 		<ReactModal
 			isOpen={isModalOpen}
@@ -204,8 +190,12 @@ export const ScheduleRegister = ({
 							yearList={yearList}
 							nowMonthList={nowMonthList}
 							nowDayList={nowDayList}
-							onChangeYear={onChangeYear}
-							onChangeMonth={onChangeMonth}
+							onChangeYear={(selectedYear: string) =>
+								changeYear(selectedYear, month, day)
+							}
+							onChangeMonth={(selectedMonth: string) =>
+								changeMonth(year, selectedMonth, day)
+							}
 							onChangeDay={setDay}
 						/>
 					)}
