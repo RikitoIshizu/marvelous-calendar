@@ -128,9 +128,9 @@ export const useCalendar = (initSchedules: Schedule[]) => {
 	const [days, setDays] = useState<WeeklyDay[]>(getCalendarDays(0)); //初期値を設定する
 	const [year, setYear] = useState<string>(dayTextCommon('YYYY'));
 	const [month, setMonth] = useState<MonthString>(
-		dayTextCommon('MM') as MonthString,
+		dayTextCommon<MonthString>('MM'),
 	);
-	const [day, setDay] = useState<DayString>(dayTextCommon('DD') as DayString);
+	const [day, setDay] = useState<DayString>(dayTextCommon<DayString>('DD'));
 	const [schedules, setSchedules] = useState<Schedule[]>(initSchedules);
 
 	const onGetSchedules = useCallback(async (y: number, m: number) => {
