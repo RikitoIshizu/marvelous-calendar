@@ -103,20 +103,21 @@ export const ScheduleRegister = ({
 		setDescriptionError,
 	} = useRegisterSchedule(schedule);
 
-	const onSuccess = useCallback(() => {
-		alert('スケジュールが登録されました。');
-		onOpenModal(true);
-	}, [onOpenModal]);
-
 	const onSubmitAction = useAsyncLoading(
 		useCallback(
 			async (e: FormEvent<HTMLFormElement>) => {
 				e.preventDefault();
+
+				const onSuccess = () => {
+					alert('スケジュールが登録されました。');
+					onOpenModal(true);
+				};
+
 				type === 'register'
 					? await registerSchedule(onSuccess)
 					: await editSchedule(onSuccess);
 			},
-			[type, registerSchedule, editSchedule, onSuccess],
+			[type, registerSchedule, editSchedule, onOpenModal],
 		),
 	);
 
