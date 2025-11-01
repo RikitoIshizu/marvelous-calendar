@@ -113,11 +113,11 @@ export const specialDays: Record<string, string> = {
 	'1231': '大晦日',
 };
 
-export const dayTextCommon = (
+export const dayTextCommon = <T extends string>(
 	format: string,
-	date?: string | undefined,
-): string => {
-	return date ? dayjs(date).format(format) : dayjs().format(format);
+	date?: string,
+): T => {
+	return (date ? dayjs(date).format(format) : dayjs().format(format)) as T;
 };
 
 export const yearAndMonthAndDateList = (
@@ -145,7 +145,7 @@ export const yearAndMonthAndDateList = (
 	return { yearList, monthList };
 };
 
-export const amountOfDay = (yearAndMonth: string) => {
+export const amountOfDay = (yearAndMonth: string): number => {
 	const startMonth: string = dayjs(yearAndMonth)
 		.startOf('month')
 		.format('YYYY-MM-DD');
