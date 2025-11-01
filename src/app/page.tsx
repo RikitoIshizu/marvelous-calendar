@@ -17,24 +17,23 @@ export default async function Index() {
 
 	const { start_date } = getStartAndEndDate(startDate, end_date);
 
-	const [currentMonthSchedules, coordinate] = await Promise.all([
-		getSchedule(year, month),
-		getCoordinate(),
-	]);
+	const coordinate = await getCoordinate();
 
 	// 現在と当月の天候情報を取得する
-	const [currentWeather, monthlyWeather] = await Promise.all([
-		fetchCurrentWeather({
-			latitude: coordinate.latitude,
-			longitude: coordinate.longitude,
-		}),
-		fetchMonthlyWeather({
-			latitude: coordinate.latitude,
-			longitude: coordinate.longitude,
-			start_date,
-			end_date,
-		}),
-	]);
+	const [currentWeather, monthlyWeather, currentMonthSchedules] =
+		await Promise.all([
+			fetchCurrentWeather({
+				latitude: coordinate.latitude,
+				longitude: coordinate.longitude,
+			}),
+			fetchMonthlyWeather({
+				latitude: coordinate.latitude,
+				longitude: coordinate.longitude,
+				start_date,
+				end_date,
+			}),
+			getSchedule(year, month),
+		]);
 
 	return (
 		<Suspense>
