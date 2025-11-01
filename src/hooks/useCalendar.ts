@@ -160,7 +160,7 @@ export const useCalendar = (initSchedules: Schedule[]) => {
 				setDays(getCalendarDays(c));
 				await setNowYearAndMonth(c);
 			},
-			[setCount, setNowYearAndMonth],
+			[setNowYearAndMonth],
 		),
 	);
 
