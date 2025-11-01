@@ -200,7 +200,7 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 			setMonthList(monthList);
 			setDayList(dayList);
 		},
-		[setDay, setYear],
+		[],
 	);
 
 	// 月を変更
@@ -241,7 +241,7 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 
 			setDayList(dayList);
 		},
-		[setDay],
+		[],
 	);
 
 	// エラーメッセージをリセットする
