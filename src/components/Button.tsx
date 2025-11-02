@@ -34,9 +34,9 @@ export const Button = memo(function Button(props: ButtonProps) {
 
 	return (
 		<button
-			type={props.type ? 'submit' : 'button'}
+			type={props.type ?? 'button'}
 			className={classes}
-			onClick={() => props.onEventCallBack && props.onEventCallBack()}
+			onClick={props.onEventCallBack || undefined}
 			disabled={props.disabled}
 		>
 			{props.text}
