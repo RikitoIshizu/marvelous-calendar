@@ -20,7 +20,7 @@ export function Input(props: Props): React.ReactElement {
 			id={id}
 			name={name}
 			value={text}
-			className={`resize-none border-2 rounded-lg border-slate-900 ${className ?? ''}`}
+			className={`resize-none border-2 rounded-lg border-slate-900 py-1 px-2 text-xl ${className ?? ''}`}
 			placeholder={placeholder}
 			onChange={(e) => {
 				onChangeText(e.target.value);

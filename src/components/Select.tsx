@@ -28,7 +28,7 @@ export const Select = memo(function Select(props: Props) {
 				id={props.id}
 				name={props.name}
 				value={props.value}
-				className="w-[150px] h-full border-2 rounded-lg border-slate-900 text-2xl text-center"
+				className="w-[150px] h-full border-2 rounded-lg border-slate-900 text-2xl text-center py-1 px-2"
 				onChange={(e: ChangeEvent<HTMLSelectElement>) =>
 					clickEvent(e.target.value)
 				}

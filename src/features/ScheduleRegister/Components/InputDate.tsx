@@ -20,7 +20,7 @@ type Props = {
 export const InputDate = (props: Props): ReactElement => {
 	return (
 		<>
-			<dt className="text-right">日付:</dt>
+			<dt className="text-right pt-1 text-xl">日付:</dt>
 			<dd className="flex items-center">
 				<Select
 					id="year"

@@ -18,8 +18,10 @@ export function InputTitle(props: Props): ReactElement {
 
 	return (
 		<>
-			<dt className="text-right">
-				<label htmlFor={id}>タイトル:</label>
+			<dt className="text-right pt-1">
+				<label htmlFor={id} className="text-xl">
+					タイトル:
+				</label>
 			</dt>
 			<dd>
 				<Input
@@ -31,7 +33,7 @@ export function InputTitle(props: Props): ReactElement {
 					onBlur={onBlur}
 					className="w-[300px]"
 				/>
-				{titleError && <p className="text-xs text-[red]">{titleError}</p>}
+				{titleError && <p className="text-md text-[red] mt-1">{titleError}</p>}
 			</dd>
 		</>
 	);

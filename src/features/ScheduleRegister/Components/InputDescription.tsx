@@ -18,8 +18,10 @@ export function InputDescription(props: Props): ReactElement {
 
 	return (
 		<>
-			<dt className="text-right">
-				<label htmlFor={id}>メモ:</label>
+			<dt className="text-right pt-1">
+				<label htmlFor={id} className="text-xl">
+					メモ:
+				</label>
 			</dt>
 			<dd>
 				<Textarea
@@ -31,7 +33,7 @@ export function InputDescription(props: Props): ReactElement {
 					onBlur={onBlur}
 				/>
 				{descriptionError && (
-					<p className="text-xs text-[red]">{descriptionError}</p>
+					<p className="text-md text-[red]">{descriptionError}</p>
 				)}
 			</dd>
 		</>

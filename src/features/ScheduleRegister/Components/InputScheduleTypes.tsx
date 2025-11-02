@@ -22,11 +22,14 @@ type Props = {
 export const ScheduleTypes = (props: Props): ReactElement => {
 	return (
 		<>
-			<dt className="text-right">スケジュールの種類:</dt>
+			<dt className="text-right text-xl">スケジュールの種類:</dt>
 			<dd className="flex">
-				{scheduleTypes.map((el) => {
+				{scheduleTypes.map((el, index) => {
 					return (
-						<span key={el.id} className="ml-3">
+						<span
+							key={el.id}
+							className={scheduleTypes.length !== index + 1 ? 'mr-2' : ''}
+						>
 							<Radio
 								name={el.name}
 								id={el.id}

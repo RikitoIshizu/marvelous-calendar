@@ -22,7 +22,7 @@ type Props = {
 export const ScheduleTime = (props: Props): ReactElement => {
 	return (
 		<>
-			<dt className="text-right">時間:</dt>
+			<dt className="text-right pt-1 text-xl">時間:</dt>
 			<dd>
 				<div className="flex items-center">
 					<Select
@@ -72,7 +72,7 @@ export const ScheduleTime = (props: Props): ReactElement => {
 					</label>
 				</div>
 				{props.timeError && (
-					<p className="text-xs text-[red] mt-1">{props.timeError}</p>
+					<p className="text-md text-[red] mt-1">{props.timeError}</p>
 				)}
 			</dd>
 		</>
