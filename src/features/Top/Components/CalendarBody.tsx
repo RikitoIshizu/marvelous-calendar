@@ -1,7 +1,6 @@
 import type { UseCalendar } from 'hooks/useCalendar';
 import { UseWeather } from 'hooks/useWeather';
 import { getWeatherMark } from 'libs/getWeatherMark';
-import { useCallback, useMemo } from 'react';
 import { Day } from './Day';
 
 const DayOfWeek = () => {
@@ -54,61 +53,53 @@ export const CalendarBody = ({
 	monthlyWeatherData: UseWeather['monthlyWeather'];
 	getScheduleOnTheDate: UseCalendar['getScheduleOnTheDate'];
 }) => {
-	const getWeatherData = useCallback(
-		(date: string) => {
-			const weatherData = monthlyWeatherData?.[date];
+	// 天気データを取得する
+	const getWeatherData = (date: string) => {
+		const weatherData = monthlyWeatherData?.[date];
 
-			if (!weatherData) {
-				return {
-					weather: undefined,
-					temperature: undefined,
-				};
-			}
-
-			const maxTemperature = weatherData.temperatureMax.toFixed(1);
-			const minTemperature = weatherData.temperatureMin.toFixed(1);
-
-			const temperature = `${minTemperature} ~ ${maxTemperature}℃`;
-
+		if (!weatherData) {
 			return {
-				icon: getWeatherMark(
-					weatherData.weatherCode,
-					'!w-[25px] !h-[25px] mx-2',
-				),
-				temperature,
+				weather: undefined,
+				temperature: undefined,
 			};
-		},
-		[monthlyWeatherData],
-	);
+		}
 
-	const dayComponent = useMemo(() => {
-		return days.map((el) => {
-			return (
-				<tr
-					key={`${`${el.week}-${el.days}`}`}
-					className="border-b-2 border-black"
-				>
-					{el.days.map((elem) => {
-						const weather = getWeatherData(elem.date);
+		const maxTemperature = weatherData.temperatureMax.toFixed(1);
+		const minTemperature = weatherData.temperatureMin.toFixed(1);
 
-						return (
-							<Day
-								key={elem.date}
-								date={elem.date}
-								order={elem.order}
-								keyOfDayOfWeek={elem.keyOfDayOfWeek}
-								selectMonth={month}
-								selectYear={year}
-								weatherIcon={weather.icon}
-								temperature={weather.temperature}
-								schedules={getScheduleOnTheDate(elem.date)}
-							/>
-						);
-					})}
-				</tr>
-			);
-		});
-	}, [days, getScheduleOnTheDate, month, year, getWeatherData]);
+		const temperature = `${minTemperature} ~ ${maxTemperature}℃`;
+
+		return {
+			icon: getWeatherMark(weatherData.weatherCode, '!w-[25px] !h-[25px] mx-2'),
+			temperature,
+		};
+	};
+
+	const dayComponent = () =>
+		days.map((el) => (
+			<tr
+				key={`${`${el.week}-${el.days}`}`}
+				className="border-b-2 border-black h-[calc(100%/5)]"
+			>
+				{el.days.map((elem) => {
+					const weather = getWeatherData(elem.date);
+
+					return (
+						<Day
+							key={elem.date}
+							date={elem.date}
+							order={elem.order}
+							keyOfDayOfWeek={elem.keyOfDayOfWeek}
+							selectMonth={month}
+							selectYear={year}
+							weatherIcon={weather.icon}
+							temperature={weather.temperature}
+							schedules={getScheduleOnTheDate(elem.date)}
+						/>
+					);
+				})}
+			</tr>
+		));
 
 	return (
 		<table
@@ -116,7 +107,7 @@ export const CalendarBody = ({
 			className="h-[calc(100vh-72px)] w-full border-solid border-4 border-black table-fixed"
 		>
 			{DayOfWeek()}
-			<tbody>{dayComponent}</tbody>
+			<tbody>{dayComponent()}</tbody>
 		</table>
 	);
 };
