@@ -1,5 +1,5 @@
 'use client';
-import { memo, useCallback, type ChangeEvent } from 'react';
+import { type ChangeEvent } from 'react';
 
 type Props = {
 	id?: string;
@@ -12,13 +12,10 @@ type Props = {
 	onBlur?: () => void;
 };
 
-export const Select = memo(function Select(props: Props) {
-	const clickEvent = useCallback(
-		(text: Props['value']) => {
-			props.onEventCallBack(text);
-		},
-		[props],
-	);
+export const Select = (props: Props) => {
+	const clickEvent = (text: Props['value']) => {
+		props.onEventCallBack(text);
+	};
 
 	const suffixAs = props.suffixAs ?? 'span';
 
@@ -52,4 +49,4 @@ export const Select = memo(function Select(props: Props) {
 				))}
 		</>
 	);
-});
+};

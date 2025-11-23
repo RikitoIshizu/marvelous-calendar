@@ -1,5 +1,4 @@
 'use client';
-import React from 'react';
 
 type TextareaProps = {
 	id?: string;
@@ -11,7 +10,7 @@ type TextareaProps = {
 	onBlur?: () => void;
 };
 
-export function Textarea(props: TextareaProps): React.ReactElement {
+export const Textarea = (props: TextareaProps) => {
 	const { id, name, value, placeholder, className, onChange, onBlur } = props;
 
 	return (
@@ -25,4 +24,4 @@ export function Textarea(props: TextareaProps): React.ReactElement {
 			onBlur={() => onBlur?.()}
 		/>
 	);
-}
+};

@@ -1,5 +1,4 @@
 'use client';
-import React from 'react';
 
 type Props = {
 	id?: string;
@@ -11,7 +10,7 @@ type Props = {
 	className?: string;
 };
 
-export function Input(props: Props): React.ReactElement {
+export const Input = (props: Props) => {
 	const { id, name, text, placeholder, onChangeText, onBlur, className } =
 		props;
 
@@ -28,4 +27,4 @@ export function Input(props: Props): React.ReactElement {
 			onBlur={() => onBlur?.()}
 		/>
 	);
-}
+};

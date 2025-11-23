@@ -1,5 +1,4 @@
 'use client';
-import { memo, NamedExoticComponent, useCallback } from 'react';
 
 export type Props = {
 	name: string;
@@ -9,15 +8,10 @@ export type Props = {
 	selectedId: string;
 };
 
-export const Radio: NamedExoticComponent<Props> = memo(function Radio(
-	props: Props,
-) {
-	const clickEvent = useCallback(
-		(id: Props['id']) => {
-			props.onEventCallBack(id);
-		},
-		[props],
-	);
+export const Radio = (props: Props) => {
+	const clickEvent = (id: Props['id']) => {
+		props.onEventCallBack(id);
+	};
 
 	return (
 		<>
@@ -34,4 +28,4 @@ export const Radio: NamedExoticComponent<Props> = memo(function Radio(
 			</label>
 		</>
 	);
-});
+};
