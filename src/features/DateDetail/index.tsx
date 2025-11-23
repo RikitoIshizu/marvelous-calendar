@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { ScheduleRegister } from 'features/ScheduleRegister';
 import { useAsyncLoading } from 'hooks/useAsyncLoading';
 import Link from 'next/link';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Schedule } from 'types/types';
 import { dayTextCommon, specialDays } from 'utils/calendar';
 import { deleteSchedule, getScheduleDetail } from '../../apis/supabase';
@@ -16,25 +16,46 @@ export const DateDetail = ({
 	registeredSchedules: Schedule[];
 	date: string;
 }) => {
+	// 登録されているスケジュール
 	const [schedules, setSchedules] = useState<Schedule[]>(registeredSchedules);
+	// 登録・編集のモーダルが開いているかどうか
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+	// モーダルのモード(作成か・編集か)
 	const [modalMode, setModalMode] = useState<'register' | 'edit'>('register');
-	const [isNewScheduleLoading, setIsNewScheduleLoading] =
-		useState<boolean>(false);
+	// 編集しようとしているスケジュールの詳細
 	const [selectedSchedule, setSelectedScheduleId] = useState<Schedule | {}>({});
 
-	const specialDay = useMemo(() => {
+	// ページタイトル
+	const getTitleText = (): string => {
+		const today = dayjs();
+		const selectedDay = dayjs(date);
+		const todayText = dayTextCommon('YYYYMMDD');
+		const selectedDayWithFormat = dayTextCommon('YYYYMMDD', date);
+
+		if (todayText === selectedDayWithFormat) return '今日の予定';
+		if (today.add(1, 'day').format('YYYYMMDD') === selectedDayWithFormat)
+			return '明日の予定';
+		if (today.add(-1, 'day').format('YYYYMMDD') === selectedDayWithFormat)
+			return '昨日の予定';
+		if (selectedDay.isBefore(dayjs()))
+			return `${selectedDay.format('YYYY年M月D日')}に追加された予定`;
+		return `${selectedDay.format('YYYY年M月D日')}の予定`;
+	};
+
+	// カレンダーに表示する特別な日
+	const specialDay = (): string => {
 		const md = dayTextCommon('MMDD', date);
-
 		return specialDays[md] ? specialDays[md] : '';
-	}, [date]);
+	};
 
+	// 登録されているスケジュールを読み込む
 	const loadSchedules = useCallback(async () => {
 		const schedules = await getScheduleDetail(date);
 		setSchedules(schedules);
 	}, [date]);
 
-	const updSchedule = useAsyncLoading(
+	// スケジュールをアップデートする
+	const updateSchedule = useAsyncLoading(
 		useCallback(
 			async (_: boolean) => {
 				setIsModalOpen(false);
@@ -44,7 +65,7 @@ export const DateDetail = ({
 		),
 	);
 
-	// 編集
+	// 作成・編集モーダルを開く
 	const openModal = useCallback(
 		(id: Schedule['id']) => {
 			setModalMode('edit');
@@ -58,56 +79,35 @@ export const DateDetail = ({
 		[schedules],
 	);
 
-	// 登録
+	// スケジュールを登録する
 	const openRegisterScheduleModal = useCallback(() => {
 		setIsModalOpen(true);
 		setModalMode('register');
 	}, []);
 
+	//
 	const confirmShouldDeleteSchedule = useAsyncLoading(
 		useCallback(
 			async (id: Schedule['id']) => {
-				setIsNewScheduleLoading(true);
 				const response = await deleteSchedule(id);
 
 				if (!response) {
 					await loadSchedules();
-					setIsNewScheduleLoading(false);
 				}
 			},
 			[loadSchedules],
 		),
 	);
 
-	const titleText = useMemo((): string => {
-		const today = dayjs();
-		const selectedDay = dayjs(date);
-		const todayText = dayTextCommon('YYYYMMDD');
-		const selectedDayWithFormat = dayTextCommon('YYYYMMDD', date);
-
-		if (todayText === selectedDayWithFormat) return '今日の予定';
-		if (today.add(1, 'day').format('YYYYMMDD') === selectedDayWithFormat)
-			return '明日の予定';
-		if (today.add(-1, 'day').format('YYYYMMDD') === selectedDayWithFormat)
-			return '昨日の予定';
-
-		if (selectedDay.isBefore(dayjs()))
-			return `${selectedDay.format('YYYY年M月D日')}に追加された予定`;
-
-		return `${selectedDay.format('YYYY年M月D日')}の予定`;
-	}, [date]);
-
 	return (
 		<main>
 			<section className="my-2 relative">
-				{typeof date === 'string' && !!date && (
-					<h1 className="text-4xl font-bold text-center">{titleText}</h1>
-				)}
+				<h1 className="text-4xl font-bold text-center">{getTitleText()}</h1>
 				<div className="w-[1000px] mx-auto">
-					{specialDay && (
+					{specialDay() && (
 						<>
 							<h2 className="text-3xl font-bold">今日は何の日？</h2>
-							<div className="mt-1">{specialDay}</div>
+							<div className="mt-1">{specialDay()}</div>
 						</>
 					)}
 					<ScheduleComponent
@@ -127,15 +127,12 @@ export const DateDetail = ({
 					isModalOpen={isModalOpen}
 					type={modalMode}
 					shouldHideDateArea={true}
-					onOpenModal={updSchedule}
+					onOpenModal={updateSchedule}
 					onCloseModal={() => setIsModalOpen(false)}
 					schedule={selectedSchedule as Schedule}
 					date={date}
 				/>
 			</section>
-			{isNewScheduleLoading && (
-				<div className="fixed bg-white w-full h-full">読み込み中</div>
-			)}
 		</main>
 	);
 };

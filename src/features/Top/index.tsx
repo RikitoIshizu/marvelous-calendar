@@ -1,5 +1,4 @@
 'use client';
-import LoadingIndicator from 'components/LoadingIndicator';
 import { useLocation } from 'context/LocationContext';
 import dayjs from 'dayjs';
 import { ScheduleRegister } from 'features/ScheduleRegister';
@@ -8,7 +7,7 @@ import { CalendarHead } from 'features/Top/Components/CalendarHead';
 import { useAsyncLoading } from 'hooks/useAsyncLoading';
 import { useCalendar } from 'hooks/useCalendar';
 import { useWeather } from 'hooks/useWeather';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	FetchCurrentWeather,
 	FetchMonthlyWeather,
@@ -58,84 +57,71 @@ export const Top = ({
 
 	// 年と月を変える
 	const onChangeYearAndMonth = useAsyncLoading(
-		useCallback(
-			async (year: string, month: string) => {
-				const differenceOfMonth = dayjs(`${year}-${month}`).diff(
-					dayjs(),
-					'month',
-				);
+		async (year: string, month: string) => {
+			const differenceOfMonth = dayjs(`${year}-${month}`).diff(
+				dayjs(),
+				'month',
+			);
 
-				await Promise.all([
-					changeYearAndMonth(year, month),
-					Number(year) >= LIMIT_YEAR && differenceOfMonth <= 0
-						? getWeatherData(differenceOfMonth)
-						: null,
-				]);
-			},
-			[changeYearAndMonth, getWeatherData],
-		),
+			await Promise.all([
+				changeYearAndMonth(year, month),
+				Number(year) >= LIMIT_YEAR && differenceOfMonth <= 0
+					? getWeatherData(differenceOfMonth)
+					: null,
+			]);
+		},
 	);
 
 	// 月を変える
-	const onChangeMonth = useAsyncLoading(
-		useCallback(
-			async (c: number) => {
-				await Promise.all([
-					changeMonth(c),
-					Number(year) >= LIMIT_YEAR && c <= 0 ? getWeatherData(c) : null,
-				]);
-			},
-			[year, changeMonth, getWeatherData],
-		),
-	);
+	const onChangeMonth = useAsyncLoading(async (c: number) => {
+		await Promise.all([
+			changeMonth(c),
+			Number(year) >= LIMIT_YEAR && c <= 0 ? getWeatherData(c) : null,
+		]);
+	});
 
 	//
-	const resetSchedule = useAsyncLoading(
-		useCallback(async () => {
-			await onGetSchedules(Number(year), Number(month));
-			setIsModalOpen(false);
-		}, [year, month, onGetSchedules]),
-	);
+	const resetSchedule = useAsyncLoading(async () => {
+		await onGetSchedules(Number(year), Number(month));
+		setIsModalOpen(false);
+	});
 
 	return (
-		<>
-			<LoadingIndicator />
-			<main className="w-full relative">
-				<CalendarHead
-					count={count}
-					year={year}
-					month={month}
-					isNowMonth={isNowMonth}
-					whether={currentWeather}
-					changeMonth={onChangeMonth}
-					onChangeYearAndMonth={onChangeYearAndMonth}
-					setIsModalOpen={setIsModalOpen}
-				/>
-				<CalendarBody
-					days={days}
-					month={month}
-					year={year}
-					monthlyWeatherData={monthlyWeather}
-					getScheduleOnTheDate={getScheduleOnTheDate}
-				/>
-				<ScheduleRegister
-					type="register"
-					shouldHideDateArea={false}
-					schedule={{
-						year: Number(year),
-						month: Number(month),
-						day: Number(day),
-						start_hour: '00',
-						start_minute: '00',
-						end_hour: '00',
-						end_minute: '00',
-					}}
-					onOpenModal={resetSchedule}
-					onCloseModal={() => setIsModalOpen(false)}
-					isModalOpen={isModalOpen}
-					date={dayTextCommon('YYYYMMDD')}
-				/>
-			</main>
-		</>
+		<main className="w-full relative">
+			<CalendarHead
+				count={count}
+				year={year}
+				month={month}
+				isNowMonth={isNowMonth}
+				whether={currentWeather}
+				changeMonth={onChangeMonth}
+				onChangeYearAndMonth={onChangeYearAndMonth}
+				setIsModalOpen={setIsModalOpen}
+			/>
+			<CalendarBody
+				days={days}
+				month={month}
+				year={year}
+				monthlyWeatherData={monthlyWeather}
+				getScheduleOnTheDate={getScheduleOnTheDate}
+			/>
+			<ScheduleRegister
+				type="register"
+				shouldHideDateArea={false}
+				schedule={{
+					year: Number(year),
+					month: Number(month),
+					day: Number(day),
+					start_hour: '00',
+					start_minute: '00',
+					end_hour: '00',
+					end_minute: '00',
+				}}
+				onOpenModal={resetSchedule}
+				onCloseModal={() => setIsModalOpen(false)}
+				isModalOpen={isModalOpen}
+				date={dayTextCommon('YYYYMMDD')}
+			/>
+		</main>
 	);
 };

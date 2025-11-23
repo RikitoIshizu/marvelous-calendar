@@ -1,7 +1,7 @@
 'use client';
 import { Button } from 'components/Button';
 import dayjs from 'dayjs';
-import { useMemo } from 'react';
+import { useCallback } from 'react';
 import { Schedule as TypeSchedule } from 'types/types';
 import { scheduleTextColor } from 'utils/calendar';
 
@@ -18,13 +18,17 @@ export const Schedule = ({
 	onOpenModal: (_id: TypeSchedule['id']) => void;
 	onDeleteSchedule: (_id: TypeSchedule['id']) => Promise<void>;
 }) => {
-	const shouldShowScheduleRegisterBtn = useMemo(() => {
-		return dayjs(date).isAfter(dayjs());
-	}, [date]);
+	// スケジュール登録ボタンを表示するかどうか
+	const shouldShowScheduleRegisterBtn = dayjs(date).isAfter(dayjs());
 
-	const confirmShouldDeleteSchedule = (id: number) => {
-		window.confirm('本当に削除してもよろしいですか？') && onDeleteSchedule(id);
-	};
+	// スケジュールを削除していいかどうか確認する
+	const confirmShouldDeleteSchedule = useCallback(
+		(id: number): void => {
+			window.confirm('本当に削除してもよろしいですか？') &&
+				onDeleteSchedule(id);
+		},
+		[onDeleteSchedule],
+	);
 
 	return (
 		<section className="mt-4">

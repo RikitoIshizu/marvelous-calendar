@@ -1,8 +1,8 @@
 'use client';
 import dayjs from 'dayjs';
 import Link from 'next/link';
-import { JSX, memo, NamedExoticComponent, useCallback } from 'react';
-import { HolidayAndSpecialDayException, type Schedule } from 'types/types';
+import { JSX, memo, NamedExoticComponent, useMemo } from 'react';
+import { HolidayAndSpecialDayException, ScheduleSummary } from 'types/types';
 import {
 	dayTextCommon,
 	holiday,
@@ -17,7 +17,7 @@ type Props = {
 	keyOfDayOfWeek: number;
 	selectYear: string;
 	selectMonth: string;
-	schedules?: Pick<Schedule, 'id' | 'title' | 'scheduleTypes'>[];
+	schedules?: ScheduleSummary[];
 	weatherIcon?: JSX.Element | null;
 	temperature?: string;
 };
@@ -98,89 +98,80 @@ const holidayAndSpecialDayTextClass = (
 export const Day: NamedExoticComponent<Props> = memo(function Day(
 	props: Props,
 ) {
-	const dayClass = useCallback(
-		(
-			keyOfDayOfWeek: Props['keyOfDayOfWeek'],
-			date: Props['date'],
-			order: Props['order'],
-		): string => {
-			let commonClass: string = 'flex items-center align-text-top text-xl ml-1';
-			const nowMonth = dayjs(
-				`${props.selectYear}-${props.selectMonth}`,
-			).month();
-			const checkMonth = dayjs(date).month();
+	const dayClass = (
+		keyOfDayOfWeek: Props['keyOfDayOfWeek'],
+		date: Props['date'],
+		order: Props['order'],
+	): string => {
+		let commonClass: string = 'flex items-center align-text-top text-xl ml-1';
+		const nowMonth = dayjs(`${props.selectYear}-${props.selectMonth}`).month();
+		const checkMonth = dayjs(date).month();
 
-			const today = dayTextCommon('YYYYMMDD');
-			const checkDay = dayTextCommon('YYYYMMDD', date);
+		const today = dayTextCommon('YYYYMMDD');
+		const checkDay = dayTextCommon('YYYYMMDD', date);
 
-			if (checkDay === today) {
-				commonClass +=
-					' justify-center w-[35px] rounded-full bg-[red] text-center leading-9 text-white';
-			} else if (nowMonth !== checkMonth) {
-				if (checkDay === today) {
-					commonClass += 'text-lime-400';
-				} else {
-					commonClass += ' text-gray-300';
-				}
-			} else if (keyOfDayOfWeek === 0) {
-				commonClass += ' text-sky-600';
-			} else if (keyOfDayOfWeek === 6) {
-				commonClass += ' text-amber-600';
-			}
+		if (checkDay === today) {
+			commonClass +=
+				' justify-center w-[35px] rounded-full bg-[red] text-center leading-9 text-white';
+		} else if (nowMonth !== checkMonth) {
+			commonClass += ' text-gray-300';
+		} else if (keyOfDayOfWeek === 0) {
+			commonClass += ' text-sky-600';
+		} else if (keyOfDayOfWeek === 6) {
+			commonClass += ' text-amber-600';
+		}
 
-			const checkDate = dayTextCommon('MMDD', date);
+		const checkDate = dayTextCommon('MMDD', date);
 
-			if (specialDays[`${checkDate}`]) commonClass += ' text-cyan-500';
-			if (holiday[`${checkDate}`]) commonClass += ' text-green-600';
+		if (specialDays[`${checkDate}`]) commonClass += ' text-cyan-500';
+		if (holiday[`${checkDate}`]) commonClass += ' text-green-600';
 
-			const month = dayjs(date).month() + 1;
+		const month = dayjs(date).month() + 1;
 
-			const isHolidayAndSpecialDayException =
-				holidayAndSpecialDayException.filter(
-					(el: HolidayAndSpecialDayException) => {
-						return (
-							el.week === order &&
-							keyOfDayOfWeek === el.dayOfWeek &&
-							el.month === month
-						);
-					},
-				);
+		const isHolidayAndSpecialDayException =
+			holidayAndSpecialDayException.filter(
+				(el: HolidayAndSpecialDayException) => {
+					return (
+						el.week === order &&
+						keyOfDayOfWeek === el.dayOfWeek &&
+						el.month === month
+					);
+				},
+			);
 
-			isHolidayAndSpecialDayException.length &&
-				(commonClass += ' text-green-600');
+		isHolidayAndSpecialDayException.length &&
+			(commonClass += ' text-green-600');
 
-			const yesterday: string = dayjs(date).add(-1, 'day').format('YYYYMMDD');
-			const yesterdayOnlyYearAndMonth: string = dayjs(date)
-				.add(-1, 'day')
-				.format('MMDD');
-			const dOfW = dayjs(yesterday).day();
+		const yesterday: string = dayjs(date).add(-1, 'day').format('YYYYMMDD');
+		const yesterdayOnlyYearAndMonth: string = dayjs(date)
+			.add(-1, 'day')
+			.format('MMDD');
+		const dOfW = dayjs(yesterday).day();
 
-			holiday[`${yesterdayOnlyYearAndMonth}`] &&
-				dOfW === 0 &&
-				(commonClass += ' text-green-600');
+		holiday[`${yesterdayOnlyYearAndMonth}`] &&
+			dOfW === 0 &&
+			(commonClass += ' text-green-600');
 
-			return commonClass;
-		},
-		[props.selectYear, props.selectMonth],
+		return commonClass;
+	};
+
+	const dayText = (date: string) => {
+		const nowMonth = dayjs(`${props.selectYear}-${props.selectMonth}`).month();
+		const checkMonth = dayjs(date).month();
+
+		return nowMonth !== checkMonth
+			? dayTextCommon('M/D', date)
+			: dayjs(date).date().toString();
+	};
+
+	const holidayText = useMemo(
+		() =>
+			holidayAndSpecialDayText(props.keyOfDayOfWeek, props.date, props.order),
+		[props.keyOfDayOfWeek, props.date, props.order],
 	);
 
-	const dayText = useCallback(
-		(date: string) => {
-			const nowMonth = dayjs(
-				`${props.selectYear}-${props.selectMonth}`,
-			).month();
-			const checkMonth = dayjs(date).month();
-
-			return nowMonth !== checkMonth
-				? dayTextCommon('M/D', date)
-				: dayjs(date).date().toString();
-		},
-		[props.selectYear, props.selectMonth],
-	);
-
-	const classes = useCallback((): string => {
-		let commonClasses =
-			'h-[calc((100vh-64px-75px)/7)] align-text-top cursor-pointer';
+	const classes = useMemo(() => {
+		let commonClasses = 'align-text-top cursor-pointer';
 		if (props.keyOfDayOfWeek !== 6) commonClasses += ' border-r-2 border-black';
 
 		const today = dayjs();
@@ -192,25 +183,31 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 		if (tod === the) commonClasses += ' bg-yellow-200';
 		else if (theDay.isBefore(today)) commonClasses += ' bg-neutral-400';
 		return commonClasses;
-	}, [props]);
+	}, [props.keyOfDayOfWeek, props.date]);
+
+	const scheduleTimeText = (
+		scheduleTimes: Omit<
+			NonNullable<Props['schedules']>[number],
+			'id' | 'title'
+		>,
+	) => {
+		const { start_hour, start_minute, end_hour, end_minute } = scheduleTimes;
+		return `${start_hour}:${start_minute}~${end_hour}:${end_minute}`;
+	};
 
 	return (
-		<td className={classes()}>
-			<div className="items-center">
-				<Link href={`/date/${dayTextCommon('YYYYMMDD', props.date)}`}>
-					<div className="flex items-center justify-items-start">
-						<div
-							className={dayClass(
-								props.keyOfDayOfWeek,
-								props.date,
-								props.order,
-							)}
-						>
-							{dayText(props.date)}
-						</div>
-						{props.weatherIcon && props.weatherIcon}
-						{props.temperature && <span>{props.temperature}</span>}
+		<td className={classes}>
+			<Link href={`/date/${dayTextCommon('YYYYMMDD', props.date)}`}>
+				<div className="flex items-center justify-items-start">
+					<div
+						className={dayClass(props.keyOfDayOfWeek, props.date, props.order)}
+					>
+						{dayText(props.date)}
 					</div>
+					{props.weatherIcon && props.weatherIcon}
+					{props.temperature && <span>{props.temperature}</span>}
+				</div>
+				{holidayText && (
 					<div
 						className={holidayAndSpecialDayTextClass(
 							props.keyOfDayOfWeek,
@@ -218,35 +215,28 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 							props.order,
 						)}
 					>
-						{holidayAndSpecialDayText(
-							props.keyOfDayOfWeek,
-							props.date,
-							props.order,
+						{holidayText}
+					</div>
+				)}
+				{(holidayText || props.schedules) && (
+					<div className="h-[calc(((100vh-72px-75px-28px)/5))] overflow-y-scroll">
+						{props.schedules && (
+							<ul>
+								{props.schedules.map((el) => (
+									<li
+										key={el.id}
+										className={scheduleTextColor(el.scheduleTypes!)}
+									>
+										<span className="text-xs">{scheduleTimeText(el)}</span>
+										<br />
+										{el.title}
+									</li>
+								))}
+							</ul>
 						)}
 					</div>
-					{(holidayAndSpecialDayText(
-						props.keyOfDayOfWeek,
-						props.date,
-						props.order,
-					) ||
-						props.schedules) && (
-						<div className="h-[calc(((100vh-64px-75px)/7)-32px)] overflow-y-scroll">
-							{props.schedules && (
-								<ul>
-									{props.schedules.map((el) => (
-										<li
-											key={el.id}
-											className={scheduleTextColor(el.scheduleTypes!)}
-										>
-											{el.title}
-										</li>
-									))}
-								</ul>
-							)}
-						</div>
-					)}
-				</Link>
-			</div>
+				)}
+			</Link>
 		</td>
 	);
 });

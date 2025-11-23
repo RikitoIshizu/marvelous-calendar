@@ -71,37 +71,15 @@ export const getScheduleDetail = async (date: string) => {
 };
 
 export const registerScheduleDetail = async (
-	registerParams: ScheduleRegisterInput,
+	registerParams: Omit<ScheduleRegisterInput, 'id'>,
 ): Promise<null> => {
-	const {
-		year,
-		month,
-		day,
-		scheduleTypes,
-		title,
-		description,
-		start_hour,
-		start_minute,
-		end_hour,
-		end_minute,
-	} = registerParams;
-
 	try {
-		const { error, status } = await supabase.from('schedule').insert({
-			year,
-			month,
-			day,
-			scheduleTypes,
-			title,
-			description,
-			start_hour,
-			start_minute,
-			end_hour,
-			end_minute,
-		});
+		const { error, status } = await supabase
+			.from('schedule')
+			.insert(registerParams);
 
 		if (error && status !== 406) {
-			throw new Error(`エラーが発生しました。${String(error)}`);
+			throw new Error(`エラーが発生しました。${error.message}`);
 		}
 
 		return null;

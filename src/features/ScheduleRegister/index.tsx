@@ -25,7 +25,7 @@ const customStyles = {
 	},
 };
 
-type Schedule = Parameters<typeof useRegisterSchedule>['0'];
+type Schedule = Parameters<typeof useRegisterSchedule>[number];
 
 type Props = {
 	isModalOpen: boolean;
@@ -49,10 +49,10 @@ export const ScheduleRegister = ({
 	// scheduleの初期化
 	const schedule = useMemo(
 		() => ({
-			start_hour: inputSchedule.start_hour,
-			start_minute: inputSchedule.start_minute,
-			end_hour: inputSchedule.end_hour,
-			end_minute: inputSchedule.end_minute,
+			start_hour: inputSchedule.start_hour || '00',
+			start_minute: inputSchedule.start_minute || '00',
+			end_hour: inputSchedule.end_hour || '00',
+			end_minute: inputSchedule.end_minute || '00',
 			year: Number(dayTextCommon('YYYY', date)),
 			month: Number(dayTextCommon('MM', date)),
 			day: Number(dayTextCommon('DD', date)),
@@ -103,35 +103,62 @@ export const ScheduleRegister = ({
 		setDescriptionError,
 	} = useRegisterSchedule(schedule);
 
-	const onSubmitAction = useAsyncLoading(
+	const onRegisterSchedule = useCallback(async () => {
+		const onSuccess = () => {
+			alert('スケジュールが登録されました。');
+			onOpenModal(true);
+		};
+
+		try {
+			await registerSchedule(onSuccess);
+		} catch {
+			alert('スケジュールの作成に失敗しました。');
+		}
+	}, [registerSchedule, onOpenModal]);
+
+	const onEditSchedule = useCallback(async () => {
+		const onSuccess = () => {
+			alert('スケジュールの変更が完了しました。');
+			onOpenModal(true);
+		};
+
+		try {
+			await editSchedule(onSuccess);
+		} catch {
+			alert('スケジュールの変更に失敗しました。');
+		}
+	}, [editSchedule, onOpenModal]);
+
+	// 登録と変更
+	const submitAction = useAsyncLoading(
 		useCallback(
 			async (e: FormEvent<HTMLFormElement>) => {
 				e.preventDefault();
 
-				const onSuccess = () => {
-					alert('スケジュールが登録されました。');
-					onOpenModal(true);
-				};
-
-				type === 'register'
-					? await registerSchedule(onSuccess)
-					: await editSchedule(onSuccess);
+				if (type === 'register') {
+					await onRegisterSchedule();
+				} else {
+					await onEditSchedule();
+				}
 			},
-			[type, registerSchedule, editSchedule, onOpenModal],
+			[type, onRegisterSchedule, onEditSchedule],
 		),
 	);
 
-	const validateTitle = () => {
+	// タイトルが入力されているか
+	const validateTitle = (): void => {
 		setTitleError(!title ? 'タイトルを入力してください。' : '');
 	};
 
-	const validateDescription = () => {
+	// 説明文が入力されているか
+	const validateDescription = (): void => {
 		setDescriptionError(
 			!description ? 'スケジュールの詳細を入力してください。' : '',
 		);
 	};
 
-	const validateTime = useCallback(() => {
+	// 時間が適切に入力されているか
+	const validateTime = useCallback((): boolean => {
 		setTimeError('');
 		// はじまりと終わりの時間が同じかどうか
 		const isSameStartAndEnd =
@@ -181,7 +208,7 @@ export const ScheduleRegister = ({
 				<CloseIcon className="!w-6 aspect-square" />
 			</button>
 			<div className="text-center text-3xl font-bold mb-4">予定を登録</div>
-			<form onSubmit={(e: FormEvent<HTMLFormElement>) => onSubmitAction(e)}>
+			<form onSubmit={submitAction}>
 				<dl className="grid grid-cols-[auto_1fr] gap-3 items-start">
 					{!shouldHideDateArea && type === 'register' && (
 						<InputDate

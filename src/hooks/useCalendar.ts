@@ -8,12 +8,11 @@ import {
 	DayString,
 	MonthString,
 	Schedule,
+	ScheduleSummary,
 	WeeklyDay,
 } from 'types/types';
 import { amountOfDay, dayTextCommon } from 'utils/calendar';
 import { DAYS_IN_WEEK, SATURDAY, SUNDAY } from 'utils/constants';
-
-type ScheduleSummary = Pick<Schedule, 'id' | 'title' | 'scheduleTypes'>;
 
 // その月のカレンダーを生成する
 const makeCalendar = (ym: string): Calendar[] => {
@@ -198,8 +197,24 @@ export const useCalendar = (initSchedules: Schedule[]) => {
 					);
 				})
 				.map((schedule) => {
-					const { id, title, scheduleTypes } = schedule;
-					return { id, title, scheduleTypes };
+					const {
+						id,
+						title,
+						scheduleTypes,
+						start_hour,
+						start_minute,
+						end_hour,
+						end_minute,
+					} = schedule;
+					return {
+						id,
+						title,
+						scheduleTypes,
+						start_hour,
+						start_minute,
+						end_hour,
+						end_minute,
+					};
 				});
 		},
 		[schedules],

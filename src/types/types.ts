@@ -99,6 +99,17 @@ export type Schedule = Omit<Tables<'schedule'>, OmitParamNames> & {
 	end_minute: Minute;
 };
 
+export type ScheduleSummary = Pick<
+	Schedule,
+	| 'id'
+	| 'title'
+	| 'scheduleTypes'
+	| 'start_hour'
+	| 'start_minute'
+	| 'end_hour'
+	| 'end_minute'
+>;
+
 export type ScheduleRegisterInput = Omit<
 	TablesInsert<'schedule'>,
 	OmitParamNames

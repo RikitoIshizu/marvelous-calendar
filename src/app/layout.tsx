@@ -4,6 +4,7 @@ import 'styles/globals.css';
 import 'tailwindcss/tailwind.css';
 
 import { LoadingProvider } from 'context/LoadingContext';
+import LoadingIndicator from 'components/LoadingIndicator';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
@@ -18,7 +19,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 			</head>
 			<body>
 				<LocationProvider>
-					<LoadingProvider>{children}</LoadingProvider>
+					<LoadingProvider>
+						<LoadingIndicator />
+						{children}
+					</LoadingProvider>
 				</LocationProvider>
 			</body>
 		</html>

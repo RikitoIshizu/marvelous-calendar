@@ -113,7 +113,7 @@ export const CalendarBody = ({
 	return (
 		<table
 			id="calender-main-area"
-			className="h-[calc(100vh-64px)] top-[64px] w-full border-solid border-4 border-black table-fixed"
+			className="h-[calc(100vh-72px)] w-full border-solid border-4 border-black table-fixed"
 		>
 			{DayOfWeek()}
 			<tbody>{dayComponent}</tbody>
