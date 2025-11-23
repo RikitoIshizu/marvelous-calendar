@@ -21,6 +21,6 @@ export const getCoordinate = async (): Promise<
 			longitude: coordinate.location.longitude,
 		};
 	} catch (error) {
-		throw new Error(`予期せぬエラーが発生しました。${JSON.stringify(error)}`);
+		throw new Error(`予期せぬエラーが発生しました。${String(error)}`);
 	}
 };

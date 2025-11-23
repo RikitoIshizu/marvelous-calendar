@@ -31,7 +31,7 @@ export const getSchedule = async (
 						.overrideTypes<Schedule[], { merge: false }>();
 
 		if (error && status !== 406) {
-			throw new Error(`エラーが発生しました。${String(error)}`);
+			throw new Error(`エラーが発生しました。${error.message}`);
 		}
 
 		if (data === null) {
@@ -57,7 +57,7 @@ export const getScheduleDetail = async (date: string) => {
 			.overrideTypes<Schedule[], { merge: false }>();
 
 		if (error && status !== 406) {
-			throw new Error(`エラーが発生しました。${String(error)}`);
+			throw new Error(`エラーが発生しました。${error.message}`);
 		}
 
 		if (data === null) {
@@ -96,7 +96,7 @@ export const deleteSchedule = async (id: Schedule['id']) => {
 			.eq('id', id);
 
 		if (error && status !== 406) {
-			throw new Error(`エラーが発生しました。${String(error)}`);
+			throw new Error(`エラーが発生しました。${error.message}`);
 		}
 
 		return null;
@@ -132,7 +132,7 @@ export const updateSchedule = async (params: ScheduleUpdateInput) => {
 			.eq('id', id);
 
 		if (error) {
-			throw new Error(`エラーが発生しました。${String(error)}`);
+			throw new Error(`エラーが発生しました。${error.message}`);
 		}
 
 		return null;

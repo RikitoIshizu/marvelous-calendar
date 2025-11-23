@@ -115,16 +115,16 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 	// 時間関係
 	const [startHour, setStartHour] = useState<
 		ScheduleRegisterInput['start_hour']
-	>(schedule.start_hour);
+	>(schedule.start_hour || '00');
 	const [startMinute, setStartMinute] = useState<
 		ScheduleRegisterInput['start_minute']
-	>(schedule.start_minute);
+	>(schedule.start_minute || '00');
 	const [endHour, setEndHour] = useState<ScheduleRegisterInput['end_hour']>(
-		schedule.end_hour,
+		schedule.end_hour || '01',
 	);
 	const [endMinute, setEndMinute] = useState<
 		ScheduleRegisterInput['end_minute']
-	>(schedule.end_minute);
+	>(schedule.end_minute || '00');
 	const [description, setDescription] = useState<
 		NonNullable<ScheduleRegisterInput['description']>
 	>(schedule.description ?? '');
@@ -151,7 +151,11 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 	const [timeError, setTimeError] = useState<string>('');
 
 	const changeYear = useCallback(
-		(selectedYear: string, selectedMonth: string, selectedDay: string) => {
+		(
+			selectedYear: string,
+			selectedMonth: string,
+			selectedDay: string,
+		): void => {
 			setYear(selectedYear);
 
 			const selectedDate = `${selectedYear}-${String(selectedMonth).padStart(
@@ -203,7 +207,11 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 
 	// 月を変更
 	const changeMonth = useCallback(
-		(selectedYear: string, selectedMonth: string, selectedDay: string) => {
+		(
+			selectedYear: string,
+			selectedMonth: string,
+			selectedDay: string,
+		): void => {
 			setMonth(selectedMonth);
 
 			const selectedYearAndMonth = `${selectedYear}-${String(
@@ -243,11 +251,11 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 	);
 
 	// エラーメッセージをリセットする
-	const clearErrorMessages = useCallback(() => {
+	const clearErrorMessages = (): void => {
 		setTitleError('');
 		setDescriptionError('');
 		setTimeError('');
-	}, []);
+	};
 
 	const registerSchedule = useCallback(
 		async (onSuccess: () => void) => {
@@ -280,7 +288,6 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 			endHour,
 			endMinute,
 			scheduleType,
-			clearErrorMessages,
 		],
 	);
 
@@ -311,7 +318,6 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 			endMinute,
 			scheduleType,
 			schedule.id,
-			clearErrorMessages,
 		],
 	);
 

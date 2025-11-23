@@ -46,13 +46,12 @@ export const ScheduleRegister = ({
 	schedule: inputSchedule,
 	date,
 }: Props) => {
-	// scheduleの初期化
 	const schedule = useMemo(
 		() => ({
-			start_hour: inputSchedule.start_hour || '00',
-			start_minute: inputSchedule.start_minute || '00',
-			end_hour: inputSchedule.end_hour || '00',
-			end_minute: inputSchedule.end_minute || '00',
+			start_hour: inputSchedule.start_hour,
+			start_minute: inputSchedule.start_minute,
+			end_hour: inputSchedule.end_hour,
+			end_minute: inputSchedule.end_minute,
 			year: Number(dayTextCommon('YYYY', date)),
 			month: Number(dayTextCommon('MM', date)),
 			day: Number(dayTextCommon('DD', date)),
