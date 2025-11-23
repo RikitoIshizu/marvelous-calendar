@@ -1,7 +1,7 @@
 'use client';
 import dayjs from 'dayjs';
 import Link from 'next/link';
-import { JSX, memo, NamedExoticComponent, useMemo } from 'react';
+import { JSX } from 'react';
 import { HolidayAndSpecialDayException, ScheduleSummary } from 'types/types';
 import {
 	dayTextCommon,
@@ -95,9 +95,7 @@ const holidayAndSpecialDayTextClass = (
 	return '';
 };
 
-export const Day: NamedExoticComponent<Props> = memo(function Day(
-	props: Props,
-) {
+export const Day = (props: Props) => {
 	const dayClass = (
 		keyOfDayOfWeek: Props['keyOfDayOfWeek'],
 		date: Props['date'],
@@ -164,13 +162,15 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 			: dayjs(date).date().toString();
 	};
 
-	const holidayText = useMemo(
-		() =>
-			holidayAndSpecialDayText(props.keyOfDayOfWeek, props.date, props.order),
-		[props.keyOfDayOfWeek, props.date, props.order],
+	// 祝日もしくは特別な日を表示するテキスト
+	const holidayText = holidayAndSpecialDayText(
+		props.keyOfDayOfWeek,
+		props.date,
+		props.order,
 	);
 
-	const classes = useMemo(() => {
+	// css
+	const classes = () => {
 		let commonClasses = 'align-text-top cursor-pointer';
 		if (props.keyOfDayOfWeek !== 6) commonClasses += ' border-r-2 border-black';
 
@@ -183,7 +183,7 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 		if (tod === the) commonClasses += ' bg-yellow-200';
 		else if (theDay.isBefore(today)) commonClasses += ' bg-neutral-400';
 		return commonClasses;
-	}, [props.keyOfDayOfWeek, props.date]);
+	};
 
 	const scheduleTimeText = (
 		scheduleTimes: Omit<
@@ -196,7 +196,7 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 	};
 
 	return (
-		<td className={classes}>
+		<td className={classes()}>
 			<Link href={`/date/${dayTextCommon('YYYYMMDD', props.date)}`}>
 				<div className="flex items-center justify-items-start">
 					<div
@@ -239,4 +239,4 @@ export const Day: NamedExoticComponent<Props> = memo(function Day(
 			</Link>
 		</td>
 	);
-});
+};
