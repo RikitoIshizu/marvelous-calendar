@@ -86,5 +86,9 @@
 			"eslint --fix",
 			"prettier --write"
 		]
+	},
+	"resolutions": {
+		"strip-ansi-cjs": "npm:strip-ansi@6.0.1",
+		"string-width-cjs": "npm:string-width@4.2.3"
 	}
 }
