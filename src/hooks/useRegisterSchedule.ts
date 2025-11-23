@@ -125,9 +125,13 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 	const [endMinute, setEndMinute] = useState<
 		ScheduleRegisterInput['end_minute']
 	>(schedule.end_minute || '00');
+
+	// 説明文
 	const [description, setDescription] = useState<
 		NonNullable<ScheduleRegisterInput['description']>
 	>(schedule.description ?? '');
+
+	// スケジュールのタイプ
 	const [scheduleType, setScheduleType] = useState<
 		ScheduleRegisterInput['scheduleTypes']
 	>(schedule.scheduleTypes || 1);
@@ -257,6 +261,17 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 		setTimeError('');
 	};
 
+	// 入力系の値をリセットする
+	const resetInputItem = (): void => {
+		setTitle('');
+		setStartHour('00');
+		setStartMinute('00');
+		setEndHour('01');
+		setEndMinute('00');
+		setDescription('');
+		setScheduleType(1);
+	};
+
 	const registerSchedule = useCallback(
 		async (onSuccess: () => void) => {
 			const response = await registerScheduleDetail({
@@ -275,6 +290,7 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 			if (!response) {
 				onSuccess();
 				clearErrorMessages();
+				resetInputItem;
 			}
 		},
 		[
@@ -307,6 +323,7 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 			if (!response) {
 				onSuccess();
 				clearErrorMessages();
+				resetInputItem();
 			}
 		},
 		[
