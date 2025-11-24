@@ -1,7 +1,7 @@
 'use client';
 import { registerScheduleDetail, updateSchedule } from 'apis/supabase';
 import dayjs from 'dayjs';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { DayString, MonthString, ScheduleRegisterInput } from 'types/types';
 import { amountOfDay, dayTextCommon } from 'utils/calendar';
 import { MONTHS_IN_YEAR, YEARS_TO_SHOW } from 'utils/constants';
@@ -154,105 +154,98 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 	const [descriptionError, setDescriptionError] = useState<string>('');
 	const [timeError, setTimeError] = useState<string>('');
 
-	const changeYear = useCallback(
-		(
-			selectedYear: string,
-			selectedMonth: string,
-			selectedDay: string,
-		): void => {
-			setYear(selectedYear);
+	const changeYear = (
+		selectedYear: string,
+		selectedMonth: string,
+		selectedDay: string,
+	): void => {
+		setYear(selectedYear);
 
-			const selectedDate = `${selectedYear}-${String(selectedMonth).padStart(
-				2,
-				'0',
-			)}-${String(selectedDay).padStart(2, '0')}`;
-			const today = dayTextCommon('YYYY-MM-DD');
-			const thisYear = Number(dayTextCommon('YYYY'));
-			const todayMonth = dayjs().month() + 1;
-			const todayDay = dayjs().date();
+		const selectedDate = `${selectedYear}-${String(selectedMonth).padStart(
+			2,
+			'0',
+		)}-${String(selectedDay).padStart(2, '0')}`;
+		const today = dayTextCommon('YYYY-MM-DD');
+		const thisYear = Number(dayTextCommon('YYYY'));
+		const todayMonth = dayjs().month() + 1;
+		const todayDay = dayjs().date();
 
-			// 選択した年が今年または選択した日付が過去の場合
-			const isCurrentYearOrPast =
-				dayjs(selectedDate).isBefore(today) ||
-				thisYear === Number(selectedYear);
+		// 選択した年が今年または選択した日付が過去の場合
+		const isCurrentYearOrPast =
+			dayjs(selectedDate).isBefore(today) || thisYear === Number(selectedYear);
 
-			let monthList: MonthString[];
-			let dayList: DayString[];
+		let monthList: MonthString[];
+		let dayList: DayString[];
 
-			if (isCurrentYearOrPast) {
-				// 今月以降の月リストを生成
-				monthList = generateMonthList(todayMonth);
+		if (isCurrentYearOrPast) {
+			// 今月以降の月リストを生成
+			monthList = generateMonthList(todayMonth);
 
-				// 明日以降の日リストを生成
-				const currentYearMonth = dayTextCommon('YYYY-MM');
-				dayList = generateDayListAfter(currentYearMonth, todayDay);
+			// 明日以降の日リストを生成
+			const currentYearMonth = dayTextCommon('YYYY-MM');
+			dayList = generateDayListAfter(currentYearMonth, todayDay);
 
-				// 選択している月が過去なら今月にセット
-				if (Number(selectedMonth) < todayMonth) {
-					setMonth(String(todayMonth).padStart(2, '0'));
-				}
-
-				// 選択している日が過去なら明日にセット
-				if (Number(selectedDay) <= todayDay) {
-					setDay(String(todayDay + 1).padStart(2, '0'));
-				}
-			} else {
-				// 未来の年の場合：全ての月と日を選択可能
-				monthList = generateAllMonthList();
-				const firstMonthOfYear = `${selectedYear}-01`;
-				dayList = generateAllDayList(firstMonthOfYear);
+			// 選択している月が過去なら今月にセット
+			if (Number(selectedMonth) < todayMonth) {
+				setMonth(String(todayMonth).padStart(2, '0'));
 			}
 
-			setMonthList(monthList);
-			setDayList(dayList);
-		},
-		[],
-	);
+			// 選択している日が過去なら明日にセット
+			if (Number(selectedDay) <= todayDay) {
+				setDay(String(todayDay + 1).padStart(2, '0'));
+			}
+		} else {
+			// 未来の年の場合：全ての月と日を選択可能
+			monthList = generateAllMonthList();
+			const firstMonthOfYear = `${selectedYear}-01`;
+			dayList = generateAllDayList(firstMonthOfYear);
+		}
+
+		setMonthList(monthList);
+		setDayList(dayList);
+	};
 
 	// 月を変更
-	const changeMonth = useCallback(
-		(
-			selectedYear: string,
-			selectedMonth: string,
-			selectedDay: string,
-		): void => {
-			setMonth(selectedMonth);
+	const changeMonth = (
+		selectedYear: string,
+		selectedMonth: string,
+		selectedDay: string,
+	): void => {
+		setMonth(selectedMonth);
 
-			const selectedYearAndMonth = `${selectedYear}-${String(
-				selectedMonth,
-			).padStart(2, '0')}`;
-			const currentMonth = dayTextCommon('YYYY-MM');
-			const totalDaysInMonth = amountOfDay(selectedYearAndMonth);
+		const selectedYearAndMonth = `${selectedYear}-${String(
+			selectedMonth,
+		).padStart(2, '0')}`;
+		const currentMonth = dayTextCommon('YYYY-MM');
+		const totalDaysInMonth = amountOfDay(selectedYearAndMonth);
 
-			let dayList: DayString[];
+		let dayList: DayString[];
 
-			if (selectedYearAndMonth === currentMonth) {
-				// 今月の場合：今日より後の日のみ選択可能
-				dayList = generateFutureDayList(selectedYearAndMonth);
+		if (selectedYearAndMonth === currentMonth) {
+			// 今月の場合：今日より後の日のみ選択可能
+			dayList = generateFutureDayList(selectedYearAndMonth);
 
-				const selectedDayFormatted = String(Number(selectedDay)).padStart(
-					2,
-					'0',
-				) as DayString;
+			const selectedDayFormatted = String(Number(selectedDay)).padStart(
+				2,
+				'0',
+			) as DayString;
 
-				// 選択している日が選択可能な日に含まれていない場合、リストの最初の日にセット
-				if (!dayList.includes(selectedDayFormatted) && dayList.length > 0) {
-					setDay(dayList[0]);
-				}
-			} else {
-				// 未来の月の場合：全ての日が選択可能
-				dayList = generateAllDayList(selectedYearAndMonth);
-
-				// 選択している日がその月の日数を超えている場合、月末日にセット
-				if (Number(selectedDay) > totalDaysInMonth) {
-					setDay(String(totalDaysInMonth).padStart(2, '0'));
-				}
+			// 選択している日が選択可能な日に含まれていない場合、リストの最初の日にセット
+			if (!dayList.includes(selectedDayFormatted) && dayList.length > 0) {
+				setDay(dayList[0]);
 			}
+		} else {
+			// 未来の月の場合：全ての日が選択可能
+			dayList = generateAllDayList(selectedYearAndMonth);
 
-			setDayList(dayList);
-		},
-		[],
-	);
+			// 選択している日がその月の日数を超えている場合、月末日にセット
+			if (Number(selectedDay) > totalDaysInMonth) {
+				setDay(String(totalDaysInMonth).padStart(2, '0'));
+			}
+		}
+
+		setDayList(dayList);
+	};
 
 	// エラーメッセージをリセットする
 	const clearErrorMessages = (): void => {
@@ -272,71 +265,45 @@ export const useRegisterSchedule = (schedule: ScheduleRegisterInput) => {
 		setScheduleType(1);
 	};
 
-	const registerSchedule = useCallback(
-		async (onSuccess: () => void) => {
-			const response = await registerScheduleDetail({
-				year: Number(year),
-				month: Number(month),
-				day: Number(day),
-				title,
-				description,
-				scheduleTypes: scheduleType,
-				start_hour: startHour,
-				start_minute: startMinute,
-				end_hour: endHour,
-				end_minute: endMinute,
-			});
-
-			if (!response) {
-				onSuccess();
-				clearErrorMessages();
-				resetInputItem;
-			}
-		},
-		[
-			day,
-			description,
-			month,
-			year,
+	const registerSchedule = async (onSuccess: () => void) => {
+		const response = await registerScheduleDetail({
+			year: Number(year),
+			month: Number(month),
+			day: Number(day),
 			title,
-			startHour,
-			startMinute,
-			endHour,
-			endMinute,
-			scheduleType,
-		],
-	);
-
-	const editSchedule = useCallback(
-		async (onSuccess: () => void) => {
-			const response = await updateSchedule({
-				id: Number(schedule?.id),
-				title,
-				description,
-				scheduleTypes: scheduleType,
-				start_hour: startHour,
-				start_minute: startMinute,
-				end_hour: endHour,
-				end_minute: endMinute,
-			});
-
-			if (!response) {
-				onSuccess();
-				clearErrorMessages();
-				resetInputItem();
-			}
-		},
-		[
 			description,
+			scheduleTypes: scheduleType,
+			start_hour: startHour,
+			start_minute: startMinute,
+			end_hour: endHour,
+			end_minute: endMinute,
+		});
+
+		if (!response) {
+			onSuccess();
+			clearErrorMessages();
+			resetInputItem;
+		}
+	};
+
+	const editSchedule = async (onSuccess: () => void) => {
+		const response = await updateSchedule({
+			id: Number(schedule?.id),
 			title,
-			startHour,
-			startMinute,
-			endHour,
-			endMinute,
-			scheduleType,
-			schedule.id,
-		],
-	);
+			description,
+			scheduleTypes: scheduleType,
+			start_hour: startHour,
+			start_minute: startMinute,
+			end_hour: endHour,
+			end_minute: endMinute,
+		});
+
+		if (!response) {
+			onSuccess();
+			clearErrorMessages();
+			resetInputItem();
+		}
+	};
 
 	return {
 		year,

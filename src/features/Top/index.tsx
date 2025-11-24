@@ -19,12 +19,12 @@ import { LIMIT_YEAR } from 'utils/constants';
 
 export const Top = ({
 	registeredSchedules,
-	defaultCurrentWeather,
+	currentWeather,
 	defaultMonthlyWeather,
 	coordinate,
 }: {
 	registeredSchedules: Schedule[];
-	defaultCurrentWeather: FetchCurrentWeather;
+	currentWeather: FetchCurrentWeather;
 	defaultMonthlyWeather: FetchMonthlyWeather;
 	coordinate: GetCoordinate;
 }) => {
@@ -37,8 +37,7 @@ export const Top = ({
 		setLocation(coordinate.latitude, coordinate.longitude);
 	}, [coordinate, latitude, longitude, setLocation]);
 
-	const { currentWeather, monthlyWeather, getWeatherData } = useWeather({
-		defaultCurrentWeather,
+	const { monthlyWeather, getWeatherData } = useWeather({
 		defaultMonthlyWeather,
 	});
 
@@ -93,7 +92,7 @@ export const Top = ({
 				year={year}
 				month={month}
 				isNowMonth={isNowMonth}
-				whether={currentWeather}
+				weather={currentWeather}
 				changeMonth={onChangeMonth}
 				onChangeYearAndMonth={onChangeYearAndMonth}
 				setIsModalOpen={setIsModalOpen}

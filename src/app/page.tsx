@@ -39,7 +39,7 @@ export default async function Index() {
 		<Suspense>
 			<Top
 				registeredSchedules={currentMonthSchedules}
-				defaultCurrentWeather={currentWeather}
+				currentWeather={currentWeather}
 				defaultMonthlyWeather={monthlyWeather}
 				coordinate={coordinate}
 			/>

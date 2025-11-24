@@ -3,42 +3,40 @@ import { UseWeather } from 'hooks/useWeather';
 import { getWeatherMark } from 'libs/getWeatherMark';
 import { Day } from './Day';
 
-const DayOfWeek = () => {
-	return (
-		<thead className="border-b-2 border-black">
-			<tr>
-				<td className="text-center p-2 font-bold text-xl border-r-2 border-black text-sky-600">
-					日<br />
-					Sunday
-				</td>
-				<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
-					月<br />
-					Monday
-				</td>
-				<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
-					火<br />
-					Tuesday
-				</td>
-				<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
-					水<br />
-					Wednesday
-				</td>
-				<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
-					木<br />
-					Thursday
-				</td>
-				<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
-					金<br />
-					Friday
-				</td>
-				<td className="text-center p-2 font-bold text-xl text-amber-600">
-					土<br />
-					Saturday
-				</td>
-			</tr>
-		</thead>
-	);
-};
+const DayOfWeek = () => (
+	<thead className="border-b-2 border-black">
+		<tr>
+			<td className="text-center p-2 font-bold text-xl border-r-2 border-black text-sky-600">
+				日<br />
+				Sunday
+			</td>
+			<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
+				月<br />
+				Monday
+			</td>
+			<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
+				火<br />
+				Tuesday
+			</td>
+			<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
+				水<br />
+				Wednesday
+			</td>
+			<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
+				木<br />
+				Thursday
+			</td>
+			<td className="text-center p-2 font-bold text-xl border-r-2 border-black">
+				金<br />
+				Friday
+			</td>
+			<td className="text-center p-2 font-bold text-xl text-amber-600">
+				土<br />
+				Saturday
+			</td>
+		</tr>
+	</thead>
+);
 
 export const CalendarBody = ({
 	days,

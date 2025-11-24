@@ -6,7 +6,7 @@ import { InputDate } from 'features/ScheduleRegister/Components/InputDate';
 import { ScheduleTime } from 'features/ScheduleRegister/Components/InputTime';
 import { useAsyncLoading } from 'hooks/useAsyncLoading';
 import { useRegisterSchedule } from 'hooks/useRegisterSchedule';
-import { FormEvent, useCallback, useMemo } from 'react';
+import { FormEvent, memo, useCallback, useMemo } from 'react';
 import ReactModal from 'react-modal';
 import { dayTextCommon } from 'utils/calendar';
 import { InputDescription } from './Components/InputDescription';
@@ -36,6 +36,19 @@ type Props = {
 	schedule: Schedule;
 	date: string;
 };
+
+// モーダルの閉じるボタン
+const CloseButton = memo(function CloseButton({
+	onCloseModal,
+}: {
+	onCloseModal: Props['onCloseModal'];
+}) {
+	return (
+		<button className="absolute top-0 left-[10px]" onClick={onCloseModal}>
+			<CloseIcon className="!w-6 aspect-square" />
+		</button>
+	);
+});
 
 export const ScheduleRegister = ({
 	isModalOpen,
@@ -157,7 +170,7 @@ export const ScheduleRegister = ({
 	};
 
 	// 時間が適切に入力されているか
-	const validateTime = useCallback((): boolean => {
+	const validateTime = (): boolean => {
 		setTimeError('');
 		// はじまりと終わりの時間が同じかどうか
 		const isSameStartAndEnd =
@@ -181,20 +194,9 @@ export const ScheduleRegister = ({
 		}
 
 		return false;
-	}, [
-		startHour,
-		startMinute,
-		endHour,
-		endMinute,
-		day,
-		month,
-		year,
-		setTimeError,
-	]);
+	};
 
-	const isSubmitDisabled = useMemo(() => {
-		return !title || !description || validateTime();
-	}, [title, description, validateTime]);
+	const isSubmitDisabled = !title || !description || validateTime();
 
 	return (
 		<ReactModal
@@ -203,9 +205,7 @@ export const ScheduleRegister = ({
 			style={customStyles}
 			contentLabel="Example Modal"
 		>
-			<button className="absolute top-0 left-[10px]" onClick={onCloseModal}>
-				<CloseIcon className="!w-6 aspect-square" />
-			</button>
+			<CloseButton onCloseModal={onCloseModal} />
 			<div className="text-center text-3xl font-bold mb-4">予定を登録</div>
 			<form onSubmit={submitAction}>
 				<dl className="grid grid-cols-[auto_1fr] gap-3 items-start">

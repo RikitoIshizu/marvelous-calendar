@@ -132,49 +132,35 @@ export const useCalendar = (initSchedules: Schedule[]) => {
 	const [day, setDay] = useState<DayString>(dayTextCommon<DayString>('DD'));
 	const [schedules, setSchedules] = useState<Schedule[]>(initSchedules);
 
-	const onGetSchedules = useCallback(async (y: number, m: number) => {
+	const onGetSchedules = async (y: number, m: number) => {
 		const schedule = await getSchedule(y, m);
 		setSchedules(schedule);
-	}, []);
-
-	const setNowYearAndMonth = useCallback(
-		async (val: number) => {
-			const targetDate = dayjs().add(val, 'month');
-			const y = targetDate.format('YYYY');
-			const m = targetDate.format('MM') as MonthString;
-
-			setYear(y);
-			setMonth(m);
-
-			await onGetSchedules(Number(y), Number(m));
-		},
-		[onGetSchedules],
-	);
+	};
 
 	// 月を変える
-	const changeMonth = useAsyncLoading(
-		useCallback(
-			async (c: number) => {
-				setCount(c);
-				setDays(getCalendarDays(c));
-				await setNowYearAndMonth(c);
-			},
-			[setNowYearAndMonth],
-		),
-	);
+	const changeMonth = useAsyncLoading(async (c: number) => {
+		setCount(c);
+		setDays(getCalendarDays(c));
+
+		const targetDate = dayjs().add(c, 'month');
+		const y = targetDate.format('YYYY');
+		const m = targetDate.format('MM') as MonthString;
+
+		setYear(y);
+		setMonth(m);
+
+		await onGetSchedules(Number(y), Number(m));
+	});
 
 	// 年と月を変える
-	const changeYearAndMonth = useCallback(
-		async (year: string, month: string) => {
-			const now = dayTextCommon('YYYY-MM');
-			const nowYAndM = dayjs(now);
-			const sltYAndM = dayjs(`${year}-${month}`);
-			const c = sltYAndM.diff(nowYAndM, 'month');
+	const changeYearAndMonth = async (year: string, month: string) => {
+		const now = dayTextCommon('YYYY-MM');
+		const nowYAndM = dayjs(now);
+		const sltYAndM = dayjs(`${year}-${month}`);
+		const c = sltYAndM.diff(nowYAndM, 'month');
 
-			await changeMonth(c);
-		},
-		[changeMonth],
-	);
+		await changeMonth(c);
+	};
 
 	// 今見ているカレンダーが実際の現在の年月かどうか
 	const isNowMonth = useMemo(() => count === 0, [count]);

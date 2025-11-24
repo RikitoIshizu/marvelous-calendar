@@ -3,16 +3,57 @@ import RightArrowIcon from 'assets/svgs/arrowRight.svg';
 import { Button } from 'components/Button';
 import { Select } from 'components/Select';
 import type { UseCalendar } from 'hooks/useCalendar';
-import type { UseWeather } from 'hooks/useWeather';
 import { getWeatherMark } from 'libs/getWeatherMark';
+import { memo, useMemo } from 'react';
+import { FetchCurrentWeather } from 'types/types';
 import { yearAndMonthAndDateList } from 'utils/calendar';
+
+const WeatherPart = memo(function WeatherPart({
+	weather,
+}: {
+	weather: FetchCurrentWeather;
+}) {
+	// 現在の気温
+	const temperature = useMemo<string | null>(
+		() =>
+			weather?.temperature != null
+				? Number(weather.temperature).toFixed(1) + '℃'
+				: null,
+		[weather],
+	);
+
+	// 現在の湿度
+	const humidity = useMemo<string | null>(
+		() => weather?.relativeHumidity + '%' || null,
+		[weather],
+	);
+
+	// 現在の降水確率
+	const precipitation = useMemo<string>(() => {
+		const precipitation = Math.round(Number(weather?.precipitation) * 100);
+		return precipitation + '%';
+	}, [weather]);
+
+	return (
+		<div className="flex items-center w-1/3">
+			{getWeatherMark(weather.weatherCode, '!w-[40px] !h-[40px] mr-4')}
+			<div>
+				<div className="flex items-center">
+					<div className="mr-4">気温 {temperature}</div>
+					<div>湿度 {humidity}</div>
+				</div>
+				<div>降水確率: {precipitation}</div>
+			</div>
+		</div>
+	);
+});
 
 export const CalendarHead = ({
 	count,
 	year,
 	month,
 	isNowMonth,
-	whether,
+	weather,
 	changeMonth,
 	onChangeYearAndMonth,
 	setIsModalOpen,
@@ -21,23 +62,11 @@ export const CalendarHead = ({
 	year: UseCalendar['year'];
 	month: UseCalendar['month'];
 	isNowMonth: UseCalendar['isNowMonth'];
-	whether: UseWeather['currentWeather'];
+	weather: FetchCurrentWeather;
 	changeMonth: UseCalendar['changeMonth'];
 	onChangeYearAndMonth: (_year: string, _month: string) => Promise<void>;
 	setIsModalOpen: (_value: boolean) => void;
 }) => {
-	const temperature: string | null =
-		whether?.temperature != null
-			? Number(whether.temperature).toFixed(1) + '℃'
-			: null;
-
-	const humidity: string | null = whether?.relativeHumidity + '%' || null;
-
-	const precipitation = (): string => {
-		const precipitation = Math.round(Number(whether?.precipitation) * 100);
-		return precipitation + '%';
-	};
-
 	return (
 		<div
 			id="calender-head"
@@ -52,20 +81,7 @@ export const CalendarHead = ({
 				<LeftArrowIcon className="!w-[40px] !h-[40px]" />
 			</button>
 			<div className="flex items-center justify-center w-[90%]">
-				<div className="flex items-center w-1/3">
-					{whether && (
-						<>
-							{getWeatherMark(whether.weatherCode, '!w-[40px] !h-[40px] mr-4')}
-							<div>
-								<div className="flex items-center">
-									<div className="mr-4">気温 {temperature}</div>
-									<div>湿度 {humidity}</div>
-								</div>
-								<div>降水確率: {precipitation()}</div>
-							</div>
-						</>
-					)}
-				</div>
+				<WeatherPart weather={weather} />
 				<div className="flex items-center w-1/3">
 					<Select
 						name="year"

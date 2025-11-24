@@ -1,7 +1,7 @@
 'use client';
 import { Textarea } from 'components/Textarea';
 import { useRegisterSchedule } from 'hooks/useRegisterSchedule';
-import { ReactElement, useId } from 'react';
+import { useId } from 'react';
 
 type UseRegisterSchedule = ReturnType<typeof useRegisterSchedule>;
 
@@ -12,7 +12,7 @@ type Props = {
 	onBlur?: () => void;
 };
 
-export function InputDescription(props: Props): ReactElement {
+export const InputDescription = (props: Props) => {
 	const { description, descriptionError, onchangeDescription, onBlur } = props;
 	const id = useId();
 
@@ -38,4 +38,4 @@ export function InputDescription(props: Props): ReactElement {
 			</dd>
 		</>
 	);
-}
+};

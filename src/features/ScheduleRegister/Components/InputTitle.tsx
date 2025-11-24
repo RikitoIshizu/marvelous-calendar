@@ -1,7 +1,7 @@
 'use client';
 import { Input } from 'components/Input';
 import { useRegisterSchedule } from 'hooks/useRegisterSchedule';
-import { ReactElement, useId } from 'react';
+import { useId } from 'react';
 
 type UseRegisterSchedule = ReturnType<typeof useRegisterSchedule>;
 
@@ -12,7 +12,7 @@ type Props = {
 	onBlur: () => void;
 };
 
-export function InputTitle(props: Props): ReactElement {
+export const InputTitle = (props: Props) => {
 	const { title, titleError, onChangeTitle, onBlur } = props;
 	const id = useId();
 
@@ -37,4 +37,4 @@ export function InputTitle(props: Props): ReactElement {
 			</dd>
 		</>
 	);
-}
+};
