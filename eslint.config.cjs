@@ -24,6 +24,7 @@ module.exports = [
 				window: 'readonly',
 				alert: 'readonly', // TODO: alertを使ってるところは後で別の処理にする
 				HTMLFormElement: 'readonly',
+				fetch: 'readonly',
 			},
 		},
 		plugins: {

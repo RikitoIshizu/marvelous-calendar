@@ -1,10 +1,10 @@
+import ClearSkyIcon from '@/assets/svgs/weather/clearSky.svg';
+import CloudyIcon from '@/assets/svgs/weather/cloudy.svg';
+import RainyIcon from '@/assets/svgs/weather/rainy.svg';
+import SnowyIcon from '@/assets/svgs/weather/snowy.svg';
+import SunnyIcon from '@/assets/svgs/weather/sunny.svg';
+import ThunderIcon from '@/assets/svgs/weather/thunder.svg';
 import { FetchCurrentWeather } from '@/types/types';
-import ClearSkyIcon from 'assets/svgs/weather/clearSky.svg';
-import CloudyIcon from 'assets/svgs/weather/cloudy.svg';
-import RainyIcon from 'assets/svgs/weather/rainy.svg';
-import SnowyIcon from 'assets/svgs/weather/snowy.svg';
-import SunnyIcon from 'assets/svgs/weather/sunny.svg';
-import ThunderIcon from 'assets/svgs/weather/thunder.svg';
 
 export const getWeatherMark = (
 	weatherCode: FetchCurrentWeather['weatherCode'],

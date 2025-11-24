@@ -1,4 +1,4 @@
-import { adjustFetchWeatherData } from 'libs/weather';
+import { adjustFetchWeatherData } from '@/libs/weather';
 import { fetchWeatherApi } from 'openmeteo';
 
 const apiUrl = 'https://api.open-meteo.com/v1/forecast';

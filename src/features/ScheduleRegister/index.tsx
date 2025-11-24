@@ -1,4 +1,5 @@
 'use client';
+import CloseIcon from '@/assets/svgs/cross.svg';
 import { Button } from '@/components/Button';
 import { InputDate } from '@/features/ScheduleRegister/Components/InputDate';
 import { InputDescription } from '@/features/ScheduleRegister/Components/InputDescription';
@@ -8,7 +9,6 @@ import { InputTitle } from '@/features/ScheduleRegister/Components/InputTitle';
 import { useAsyncLoading } from '@/hooks/useAsyncLoading';
 import { useRegisterSchedule } from '@/hooks/useRegisterSchedule';
 import { dayTextCommon } from '@/utils/calendar';
-import CloseIcon from 'assets/svgs/cross.svg';
 import dayjs from 'dayjs';
 import { FormEvent, memo, useCallback, useMemo } from 'react';
 import ReactModal from 'react-modal';

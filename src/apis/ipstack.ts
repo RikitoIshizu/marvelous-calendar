@@ -1,5 +1,4 @@
-import fetch from 'node-fetch';
-import { FindIp } from 'types/types';
+import { FindIp } from '@/types/types';
 
 const findIpApiKey = process.env.FIND_IP_API_KEY;
 

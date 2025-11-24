@@ -3,8 +3,7 @@ import { LoadingProvider } from '@/context/LoadingContext';
 import { LocationProvider } from '@/context/LocationContext';
 import { ReactNode } from 'react';
 
-import 'styles/globals.css';
-import 'tailwindcss/tailwind.css';
+import '@/styles/globals.css';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
