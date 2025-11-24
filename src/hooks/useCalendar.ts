@@ -1,7 +1,6 @@
 'use client';
 import { getSchedule } from 'apis/supabase';
 import dayjs from 'dayjs';
-import { useAsyncLoading } from 'hooks/useAsyncLoading';
 import { useCallback, useMemo, useState } from 'react';
 import {
 	Calendar,
@@ -138,7 +137,7 @@ export const useCalendar = (initSchedules: Schedule[]) => {
 	};
 
 	// 月を変える
-	const changeMonth = useAsyncLoading(async (c: number) => {
+	const changeMonth = async (c: number) => {
 		setCount(c);
 		setDays(getCalendarDays(c));
 
@@ -150,7 +149,7 @@ export const useCalendar = (initSchedules: Schedule[]) => {
 		setMonth(m);
 
 		await onGetSchedules(Number(y), Number(m));
-	});
+	};
 
 	// 年と月を変える
 	const changeYearAndMonth = async (year: string, month: string) => {
