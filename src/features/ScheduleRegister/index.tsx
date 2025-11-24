@@ -170,7 +170,21 @@ export const ScheduleRegister = ({
 	};
 
 	// 時間が適切に入力されているか
-	const validateTime = (): boolean => {
+	const checkTimeError = (): boolean => {
+		const isSameStartAndEnd =
+			startHour === endHour && startMinute === endMinute;
+
+		if (isSameStartAndEnd) return true;
+
+		const registerDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+		const startDateAndTime = `${registerDate} ${startHour}:${startMinute}`;
+		const endDateAndTime = `${registerDate} ${endHour}:${endMinute}`;
+
+		return dayjs(startDateAndTime).isAfter(dayjs(endDateAndTime));
+	};
+
+	// onBlur時にエラーメッセージをセットする
+	const validateTime = (): void => {
 		setTimeError('');
 		// はじまりと終わりの時間が同じかどうか
 		const isSameStartAndEnd =
@@ -178,7 +192,7 @@ export const ScheduleRegister = ({
 
 		if (isSameStartAndEnd) {
 			setTimeError('はじめと終わりの時間が同じです。');
-			return true;
+			return;
 		}
 
 		// はじまりの時間が終わりを超えていないかどうか
@@ -190,13 +204,10 @@ export const ScheduleRegister = ({
 			setTimeError(
 				'スケジュールのはじまりの時間が終わりの時間を超えています。',
 			);
-			return true;
 		}
-
-		return false;
 	};
 
-	const isSubmitDisabled = !title || !description || validateTime();
+	const isSubmitDisabled = !title || !description || checkTimeError();
 
 	return (
 		<ReactModal
