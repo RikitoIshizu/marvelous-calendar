@@ -1,4 +1,4 @@
-import { useLoading } from 'context/LoadingContext';
+import { useLoading } from '@/context/LoadingContext';
 
 export const useAsyncLoading = <T, Args extends any[]>(
 	func: (..._: Args) => Promise<T>,

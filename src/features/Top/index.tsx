@@ -1,21 +1,21 @@
 'use client';
-import { useLocation } from 'context/LocationContext';
-import dayjs from 'dayjs';
-import { ScheduleRegister } from 'features/ScheduleRegister';
-import { CalendarBody } from 'features/Top/Components/CalendarBody';
-import { CalendarHead } from 'features/Top/Components/CalendarHead';
-import { useAsyncLoading } from 'hooks/useAsyncLoading';
-import { useCalendar } from 'hooks/useCalendar';
-import { useWeather } from 'hooks/useWeather';
-import { useEffect, useState } from 'react';
+import { useLocation } from '@/context/LocationContext';
+import { ScheduleRegister } from '@/features/ScheduleRegister';
+import { CalendarBody } from '@/features/Top/Components/CalendarBody';
+import { CalendarHead } from '@/features/Top/Components/CalendarHead';
+import { useAsyncLoading } from '@/hooks/useAsyncLoading';
+import { useCalendar } from '@/hooks/useCalendar';
+import { useWeather } from '@/hooks/useWeather';
 import {
 	FetchCurrentWeather,
 	FetchMonthlyWeather,
 	GetCoordinate,
 	Schedule,
-} from 'types/types';
-import { dayTextCommon } from 'utils/calendar';
-import { LIMIT_YEAR } from 'utils/constants';
+} from '@/types/types';
+import { dayTextCommon } from '@/utils/calendar';
+import { LIMIT_YEAR } from '@/utils/constants';
+import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 
 export const Top = ({
 	registeredSchedules,

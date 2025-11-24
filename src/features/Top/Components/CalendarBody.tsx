@@ -1,6 +1,6 @@
-import type { UseCalendar } from 'hooks/useCalendar';
-import { UseWeather } from 'hooks/useWeather';
-import { getWeatherMark } from 'libs/getWeatherMark';
+import type { UseCalendar } from '@/hooks/useCalendar';
+import { UseWeather } from '@/hooks/useWeather';
+import { getWeatherMark } from '@/libs/getWeatherMark';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { Day } from './Day';
 

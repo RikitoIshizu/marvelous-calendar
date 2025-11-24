@@ -1,8 +1,8 @@
 'use client';
-import { Select } from 'components/Select';
-import { useRegisterSchedule } from 'hooks/useRegisterSchedule';
+import { Select } from '@/components/Select';
+import { useRegisterSchedule } from '@/hooks/useRegisterSchedule';
+import { HOURS, MINUTES } from '@/utils/time';
 import { ReactElement } from 'react';
-import { HOURS, MINUTES } from 'utils/time';
 
 type UseRegisterSchedule = ReturnType<typeof useRegisterSchedule>;
 

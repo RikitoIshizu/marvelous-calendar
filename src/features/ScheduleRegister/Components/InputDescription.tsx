@@ -1,6 +1,6 @@
 'use client';
-import { Textarea } from 'components/Textarea';
-import { useRegisterSchedule } from 'hooks/useRegisterSchedule';
+import { Textarea } from '@/components/Textarea';
+import { useRegisterSchedule } from '@/hooks/useRegisterSchedule';
 import { useId } from 'react';
 
 type UseRegisterSchedule = ReturnType<typeof useRegisterSchedule>;

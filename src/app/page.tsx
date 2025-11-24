@@ -1,12 +1,12 @@
-import { getCoordinate } from 'apis/ipstack';
-import { getSchedule } from 'apis/supabase';
-import { fetchCurrentWeather, fetchMonthlyWeather } from 'apis/weather';
+import { getCoordinate } from '@/apis/ipstack';
+import { getSchedule } from '@/apis/supabase';
+import { fetchCurrentWeather, fetchMonthlyWeather } from '@/apis/weather';
+import { Top } from '@/features/Top';
+import { getStartAndEndDate } from '@/libs/weather';
+import { dayTextCommon } from '@/utils/calendar';
+import { YEARS_TO_SHOW } from '@/utils/constants';
 import dayjs from 'dayjs';
-import { Top } from 'features/Top';
-import { getStartAndEndDate } from 'libs/weather';
 import { Suspense } from 'react';
-import { dayTextCommon } from 'utils/calendar';
-import { YEARS_TO_SHOW } from 'utils/constants';
 
 export default async function Index() {
 	const year = Number(dayTextCommon('YYYY'));

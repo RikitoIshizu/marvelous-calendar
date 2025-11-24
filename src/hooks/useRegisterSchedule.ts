@@ -1,10 +1,10 @@
 'use client';
-import { registerScheduleDetail, updateSchedule } from 'apis/supabase';
+import { registerScheduleDetail, updateSchedule } from '@/apis/supabase';
+import { DayString, MonthString, ScheduleRegisterInput } from '@/types/types';
+import { amountOfDay, dayTextCommon } from '@/utils/calendar';
+import { MONTHS_IN_YEAR, YEARS_TO_SHOW } from '@/utils/constants';
 import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
-import { DayString, MonthString, ScheduleRegisterInput } from 'types/types';
-import { amountOfDay, dayTextCommon } from 'utils/calendar';
-import { MONTHS_IN_YEAR, YEARS_TO_SHOW } from 'utils/constants';
 
 // 年リストを生成
 const generateYearList = (startYear: string): string[] => {

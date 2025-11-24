@@ -1,15 +1,15 @@
 'use client';
-import dayjs from 'dayjs';
-import Link from 'next/link';
-import { JSX } from 'react';
-import { HolidayAndSpecialDayException, ScheduleSummary } from 'types/types';
+import { HolidayAndSpecialDayException, ScheduleSummary } from '@/types/types';
 import {
 	dayTextCommon,
 	holiday,
 	holidayAndSpecialDayException,
 	scheduleTextColor,
 	specialDays,
-} from 'utils/calendar';
+} from '@/utils/calendar';
+import dayjs from 'dayjs';
+import Link from 'next/link';
+import { JSX } from 'react';
 
 type Props = {
 	date: string;

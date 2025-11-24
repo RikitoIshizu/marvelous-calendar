@@ -1,12 +1,12 @@
+import { Button } from '@/components/Button';
+import { Select } from '@/components/Select';
+import type { UseCalendar } from '@/hooks/useCalendar';
+import { getWeatherMark } from '@/libs/getWeatherMark';
+import { FetchCurrentWeather } from '@/types/types';
+import { yearAndMonthAndDateList } from '@/utils/calendar';
 import LeftArrowIcon from 'assets/svgs/arrowLeft.svg';
 import RightArrowIcon from 'assets/svgs/arrowRight.svg';
-import { Button } from 'components/Button';
-import { Select } from 'components/Select';
-import type { UseCalendar } from 'hooks/useCalendar';
-import { getWeatherMark } from 'libs/getWeatherMark';
 import { memo, useMemo } from 'react';
-import { FetchCurrentWeather } from 'types/types';
-import { yearAndMonthAndDateList } from 'utils/calendar';
 
 const WeatherPart = memo(function WeatherPart({
 	weather,

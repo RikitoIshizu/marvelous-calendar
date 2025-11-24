@@ -1,10 +1,13 @@
-import { fetchHistoryMonthlyWeather, fetchMonthlyWeather } from 'apis/weather';
-import { useLocation } from 'context/LocationContext';
+import {
+	fetchHistoryMonthlyWeather,
+	fetchMonthlyWeather,
+} from '@/apis/weather';
+import { useLocation } from '@/context/LocationContext';
+import { getStartAndEndDate } from '@/libs/weather';
+import { FetchMonthlyWeather } from '@/types/types';
+import { FORECAST_DAYS_LIMIT } from '@/utils/constants';
 import dayjs from 'dayjs';
-import { getStartAndEndDate } from 'libs/weather';
 import { useState } from 'react';
-import { FetchMonthlyWeather } from 'types/types';
-import { FORECAST_DAYS_LIMIT } from 'utils/constants';
 
 type UseWeatherProps = {
 	defaultMonthlyWeather?: FetchMonthlyWeather;

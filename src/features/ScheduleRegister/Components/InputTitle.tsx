@@ -1,6 +1,6 @@
 'use client';
-import { Input } from 'components/Input';
-import { useRegisterSchedule } from 'hooks/useRegisterSchedule';
+import { Input } from '@/components/Input';
+import { useRegisterSchedule } from '@/hooks/useRegisterSchedule';
 import { useId } from 'react';
 
 type UseRegisterSchedule = ReturnType<typeof useRegisterSchedule>;

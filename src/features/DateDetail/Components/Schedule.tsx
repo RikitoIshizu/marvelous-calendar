@@ -1,9 +1,9 @@
 'use client';
-import { Button } from 'components/Button';
+import { Button } from '@/components/Button';
+import { Schedule as TypeSchedule } from '@/types/types';
+import { scheduleTextColor } from '@/utils/calendar';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
-import { Schedule as TypeSchedule } from 'types/types';
-import { scheduleTextColor } from 'utils/calendar';
 
 export const Schedule = ({
 	schedules,

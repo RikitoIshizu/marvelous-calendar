@@ -1,6 +1,6 @@
 'use client';
-import { Radio } from 'components/Radio';
-import { useRegisterSchedule } from 'hooks/useRegisterSchedule';
+import { Radio } from '@/components/Radio';
+import { useRegisterSchedule } from '@/hooks/useRegisterSchedule';
 import { ReactElement } from 'react';
 
 type UseRegisterSchedule = ReturnType<typeof useRegisterSchedule>;

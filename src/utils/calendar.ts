@@ -1,5 +1,5 @@
+import { HolidayAndSpecialDayException, type Schedule } from '@/types/types';
 import dayjs from 'dayjs';
-import { HolidayAndSpecialDayException, type Schedule } from 'types/types';
 
 type Calendar = {
 	keyOfDayOfWeek: number;

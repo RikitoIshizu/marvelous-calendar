@@ -1,5 +1,5 @@
 'use client';
-import { useLoading } from 'context/LoadingContext';
+import { useLoading } from '@/context/LoadingContext';
 import React from 'react';
 import { ClipLoader } from 'react-spinners';
 

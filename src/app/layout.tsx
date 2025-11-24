@@ -1,10 +1,10 @@
-import { LocationProvider } from 'context/LocationContext';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import { LoadingProvider } from '@/context/LoadingContext';
+import { LocationProvider } from '@/context/LocationContext';
 import { ReactNode } from 'react';
+
 import 'styles/globals.css';
 import 'tailwindcss/tailwind.css';
-
-import { LoadingProvider } from 'context/LoadingContext';
-import LoadingIndicator from 'components/LoadingIndicator';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
 	return (

@@ -1,7 +1,7 @@
+import { MonthlyWeatherData } from '@/types/types';
+import { SATURDAY, SUNDAY } from '@/utils/constants';
 import dayjs from 'dayjs';
 import { fetchWeatherApi } from 'openmeteo';
-import { MonthlyWeatherData } from 'types/types';
-import { SATURDAY, SUNDAY } from 'utils/constants';
 
 export const getStartAndEndDate = (startDate: string, endDate: string) => {
 	let start_date = startDate;

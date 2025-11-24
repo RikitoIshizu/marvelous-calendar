@@ -1,13 +1,13 @@
 'use client';
+import { deleteSchedule, getScheduleDetail } from '@/apis/supabase';
+import { Schedule as ScheduleComponent } from '@/features/DateDetail/Components/Schedule';
+import { ScheduleRegister } from '@/features/ScheduleRegister';
+import { useAsyncLoading } from '@/hooks/useAsyncLoading';
+import { Schedule } from '@/types/types';
+import { dayTextCommon, specialDays } from '@/utils/calendar';
 import dayjs from 'dayjs';
-import { ScheduleRegister } from 'features/ScheduleRegister';
-import { useAsyncLoading } from 'hooks/useAsyncLoading';
 import Link from 'next/link';
 import { memo, useCallback, useMemo, useState } from 'react';
-import { Schedule } from 'types/types';
-import { dayTextCommon, specialDays } from 'utils/calendar';
-import { deleteSchedule, getScheduleDetail } from '../../apis/supabase';
-import { Schedule as ScheduleComponent } from './Components/Schedule';
 
 const PageTitle = memo(function PageTitle({ date }: { date: string }) {
 	// ページタイトル

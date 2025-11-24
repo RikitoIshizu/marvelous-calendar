@@ -1,6 +1,6 @@
-import { getCoordinate } from 'apis/ipstack';
-import { fetchCurrentWeather, fetchMonthlyWeather } from 'apis/weather';
-import { Hour, Minute } from 'utils/time';
+import { getCoordinate } from '@/apis/ipstack';
+import { fetchCurrentWeather, fetchMonthlyWeather } from '@/apis/weather';
+import { Hour, Minute } from '@/utils/time';
 import { Tables, TablesInsert, TablesUpdate } from './supabase-generated-types';
 
 export type CurrentWeather = {

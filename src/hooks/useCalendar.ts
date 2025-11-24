@@ -1,7 +1,5 @@
 'use client';
-import { getSchedule } from 'apis/supabase';
-import dayjs from 'dayjs';
-import { useCallback, useMemo, useState } from 'react';
+import { getSchedule } from '@/apis/supabase';
 import {
 	Calendar,
 	DayString,
@@ -9,9 +7,11 @@ import {
 	Schedule,
 	ScheduleSummary,
 	WeeklyDay,
-} from 'types/types';
-import { amountOfDay, dayTextCommon } from 'utils/calendar';
-import { DAYS_IN_WEEK, SATURDAY, SUNDAY } from 'utils/constants';
+} from '@/types/types';
+import { amountOfDay, dayTextCommon } from '@/utils/calendar';
+import { DAYS_IN_WEEK, SATURDAY, SUNDAY } from '@/utils/constants';
+import dayjs from 'dayjs';
+import { useCallback, useMemo, useState } from 'react';
 
 // その月のカレンダーを生成する
 const makeCalendar = (ym: string): Calendar[] => {
