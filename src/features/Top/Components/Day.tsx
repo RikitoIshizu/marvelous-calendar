@@ -20,6 +20,8 @@ type Props = {
 	schedules?: ScheduleSummary[];
 	weatherIcon?: JSX.Element | null;
 	temperature?: string;
+	tbodyHeight: number;
+	weeks: number;
 };
 
 const holidayAndSpecialDayText = (
@@ -66,7 +68,7 @@ const holidayAndSpecialDayTextClass = (
 	const checkDate = dayTextCommon('MMDD', date);
 
 	if (specialDays[`${checkDate}`])
-		return 'p-1 text-cyan-500 whitespace-nowrap truncate';
+		return 'p-1 text-cyan-500 whitespace-nowrap truncate text-xs';
 
 	const isHolidayAndSpecialDayException = holidayAndSpecialDayException.filter(
 		(el: HolidayAndSpecialDayException) => {
@@ -89,7 +91,7 @@ const holidayAndSpecialDayTextClass = (
 		isHolidayAndSpecialDayException.length ||
 		(holiday[`${yesterdayOnlyYearAndMonth}`] && dOfW === 0)
 	) {
-		return 'ml-1 p-1 text-green-600';
+		return 'p-1 text-green-600 text-xs';
 	}
 
 	return '';
@@ -101,7 +103,7 @@ export const Day = (props: Props) => {
 		date: Props['date'],
 		order: Props['order'],
 	): string => {
-		let commonClass: string = 'flex items-center align-text-top text-xl ml-1';
+		let commonClass: string = 'flex items-center align-text-top text-xs ml-1';
 		const nowMonth = dayjs(`${props.selectYear}-${props.selectMonth}`).month();
 		const checkMonth = dayjs(date).month();
 
@@ -185,6 +187,18 @@ export const Day = (props: Props) => {
 		return commonClasses;
 	};
 
+	// tdの高さを計算
+	const tdHeight =
+		props.tbodyHeight > 0 ? (props.tbodyHeight - 100) / props.weeks : 0;
+
+	const innerTdHeight = () => {
+		if (!tdHeight) return 0;
+
+		const specialDaysTextHeight = holidayText ? 24 : 0;
+
+		return tdHeight - 28 - specialDaysTextHeight;
+	};
+
 	const scheduleTimeText = (
 		scheduleTimes: Omit<
 			NonNullable<Props['schedules']>[number],
@@ -198,44 +212,56 @@ export const Day = (props: Props) => {
 	return (
 		<td className={classes()}>
 			<Link href={`/date/${dayTextCommon('YYYYMMDD', props.date)}`}>
-				<div className="flex items-center justify-items-start">
-					<div
-						className={dayClass(props.keyOfDayOfWeek, props.date, props.order)}
-					>
-						{dayText(props.date)}
+				<div style={{ height: tdHeight > 0 ? `${tdHeight}px` : 'auto' }}>
+					<div className="flex items-center justify-items-start">
+						<div
+							className={dayClass(
+								props.keyOfDayOfWeek,
+								props.date,
+								props.order,
+							)}
+						>
+							{dayText(props.date)}
+						</div>
+						{props.weatherIcon && props.weatherIcon}
+						{props.temperature && <span>{props.temperature}</span>}
 					</div>
-					{props.weatherIcon && props.weatherIcon}
-					{props.temperature && <span>{props.temperature}</span>}
+					{holidayText && (
+						<div
+							className={holidayAndSpecialDayTextClass(
+								props.keyOfDayOfWeek,
+								props.date,
+								props.order,
+							)}
+						>
+							{holidayText}
+						</div>
+					)}
+
+					{(holidayText || props.schedules) && (
+						<div
+							style={{
+								height: innerTdHeight() ? `${innerTdHeight()}px` : 'auto',
+							}}
+							className=" overflow-hidden"
+						>
+							{props.schedules && (
+								<ul>
+									{props.schedules.map((el) => (
+										<li
+											key={el.id}
+											className={scheduleTextColor(el.scheduleTypes!)}
+										>
+											<span className="text-xs">{scheduleTimeText(el)}</span>
+											<br />
+											{el.title}
+										</li>
+									))}
+								</ul>
+							)}
+						</div>
+					)}
 				</div>
-				{holidayText && (
-					<div
-						className={holidayAndSpecialDayTextClass(
-							props.keyOfDayOfWeek,
-							props.date,
-							props.order,
-						)}
-					>
-						{holidayText}
-					</div>
-				)}
-				{(holidayText || props.schedules) && (
-					<div className="h-[calc(((100vh-72px-75px-28px)/5))] overflow-y-scroll">
-						{props.schedules && (
-							<ul>
-								{props.schedules.map((el) => (
-									<li
-										key={el.id}
-										className={scheduleTextColor(el.scheduleTypes!)}
-									>
-										<span className="text-xs">{scheduleTimeText(el)}</span>
-										<br />
-										{el.title}
-									</li>
-								))}
-							</ul>
-						)}
-					</div>
-				)}
 			</Link>
 		</td>
 	);
