@@ -10,6 +10,7 @@ import {
 	FetchCurrentWeather,
 	FetchMonthlyWeather,
 	GetCoordinate,
+	MonthString,
 	Schedule,
 } from '@/types/types';
 import { dayTextCommon } from '@/utils/calendar';
@@ -22,11 +23,15 @@ export const Top = ({
 	currentWeather,
 	defaultMonthlyWeather,
 	coordinate,
+	currentYear,
+	currentMonth,
 }: {
 	registeredSchedules: Schedule[];
 	currentWeather: FetchCurrentWeather;
 	defaultMonthlyWeather: FetchMonthlyWeather;
 	coordinate: GetCoordinate;
+	currentYear?: string;
+	currentMonth?: MonthString;
 }) => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -52,7 +57,7 @@ export const Top = ({
 		changeYearAndMonth,
 		getScheduleOnTheDate,
 		onGetSchedules,
-	} = useCalendar(registeredSchedules);
+	} = useCalendar(registeredSchedules, currentYear, currentMonth);
 
 	// 年と月を変える
 	const onChangeYearAndMonth = useAsyncLoading(

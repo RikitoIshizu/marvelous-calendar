@@ -209,3 +209,8 @@ export type FindIp = {
 		user_type: string;
 	};
 };
+
+export type SearchParams = {
+	year?: string;
+	month?: string;
+};

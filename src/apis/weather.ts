@@ -3,6 +3,7 @@ import { fetchWeatherApi } from 'openmeteo';
 
 const apiUrl = 'https://api.open-meteo.com/v1/forecast';
 
+// 現在の天気の情報を取得する
 export const fetchCurrentWeather = async (request: {
 	latitude?: number;
 	longitude?: number;
@@ -40,6 +41,7 @@ export const fetchCurrentWeather = async (request: {
 	}
 };
 
+// 月間の天気データを取得する
 export const fetchMonthlyWeather = async (request: {
 	latitude?: number;
 	longitude?: number;
@@ -65,6 +67,7 @@ export const fetchMonthlyWeather = async (request: {
 	}
 };
 
+// 過去の月間の天気データを取得する
 export const fetchHistoryMonthlyWeather = async (request: {
 	latitude?: number;
 	longitude?: number;

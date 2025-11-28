@@ -6,11 +6,13 @@ import {
 	MonthString,
 	Schedule,
 	ScheduleSummary,
+	SearchParams,
 	WeeklyDay,
 } from '@/types/types';
 import { amountOfDay, dayTextCommon } from '@/utils/calendar';
 import { DAYS_IN_WEEK, SATURDAY, SUNDAY } from '@/utils/constants';
 import dayjs from 'dayjs';
+import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 
 // その月のカレンダーを生成する
@@ -119,14 +121,38 @@ const getCalendarDays = (val: number): WeeklyDay[] => {
 	return groupByWeek(fullCalendar);
 };
 
+const getDefaultNumber = (
+	currentYear: number,
+	currentMonth?: MonthString,
+): number => {
+	if (!currentMonth) return 0;
+
+	const dateTo = dayjs(`${currentYear}-${currentMonth.padStart(2, '0')}-01`);
+	const dateFrom = dayjs();
+
+	return dateTo.diff(dateFrom, 'month');
+};
+
 export type UseCalendar = ReturnType<typeof useCalendar>;
 
-export const useCalendar = (initSchedules: Schedule[]) => {
-	const [count, setCount] = useState<number>(0);
-	const [days, setDays] = useState<WeeklyDay[]>(getCalendarDays(0)); //初期値を設定する
-	const [year, setYear] = useState<string>(dayTextCommon('YYYY'));
+export const useCalendar = (
+	initSchedules: Schedule[],
+	currentYear: SearchParams['year'],
+	currentMonth?: MonthString,
+) => {
+	const router = useRouter();
+
+	const [count, setCount] = useState<number>(
+		getDefaultNumber(Number(currentYear), currentMonth),
+	);
+	const [days, setDays] = useState<WeeklyDay[]>(
+		getCalendarDays(getDefaultNumber(Number(currentYear), currentMonth)),
+	);
+	const [year, setYear] = useState<string>(
+		currentYear || dayTextCommon('YYYY'),
+	);
 	const [month, setMonth] = useState<MonthString>(
-		dayTextCommon<MonthString>('MM'),
+		currentMonth || dayTextCommon<MonthString>('MM'),
 	);
 	const [day, setDay] = useState<DayString>(dayTextCommon<DayString>('DD'));
 	const [schedules, setSchedules] = useState<Schedule[]>(initSchedules);
@@ -149,6 +175,7 @@ export const useCalendar = (initSchedules: Schedule[]) => {
 		setMonth(m);
 
 		await onGetSchedules(Number(y), Number(m));
+		router.replace(`/?year=${y}&month=${m}`);
 	};
 
 	// 年と月を変える
