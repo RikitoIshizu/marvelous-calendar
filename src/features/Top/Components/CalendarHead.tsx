@@ -48,6 +48,40 @@ const WeatherPart = memo(function WeatherPart({
 	);
 });
 
+const ButtonArea = memo(function ButtonArea({
+	isNowMonth,
+	changeMonth,
+	setIsModalOpen,
+}: {
+	isNowMonth: UseCalendar['isNowMonth'];
+	changeMonth: UseCalendar['changeMonth'];
+	setIsModalOpen: (_value: boolean) => void;
+}) {
+	return (
+		<div className="flex w-1/3">
+			<Button
+				text="予定を登録"
+				buttonColor="bg-[blue]"
+				textColor="text-[#fff]"
+				onEventCallBack={() => {
+					setIsModalOpen(true);
+				}}
+			/>
+			{!isNowMonth && (
+				<Button
+					text="月をリセット"
+					buttonColor="bg-[red]"
+					textColor="text-[#fff]"
+					otherClasses="ml-4"
+					onEventCallBack={() => {
+						changeMonth(0);
+					}}
+				/>
+			)}
+		</div>
+	);
+});
+
 export const CalendarHead = ({
 	count,
 	year,
@@ -102,27 +136,11 @@ export const CalendarHead = ({
 					/>
 					<span className="ml-1">月</span>
 				</div>
-				<div className="flex w-1/3">
-					<Button
-						text="予定を登録"
-						buttonColor="bg-[blue]"
-						textColor="text-[#fff]"
-						onEventCallBack={() => {
-							setIsModalOpen(true);
-						}}
-					/>
-					{!isNowMonth && (
-						<Button
-							text="月をリセット"
-							buttonColor="bg-[red]"
-							textColor="text-[#fff]"
-							otherClasses="ml-4"
-							onEventCallBack={() => {
-								changeMonth(0);
-							}}
-						/>
-					)}
-				</div>
+				<ButtonArea
+					isNowMonth={isNowMonth}
+					changeMonth={changeMonth}
+					setIsModalOpen={setIsModalOpen}
+				/>
 			</div>
 			<button
 				className="w-[5%] ml-auto"

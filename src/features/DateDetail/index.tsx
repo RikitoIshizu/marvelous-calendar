@@ -9,8 +9,8 @@ import dayjs from 'dayjs';
 import Link from 'next/link';
 import { memo, useCallback, useMemo, useState } from 'react';
 
+// ページタイトル
 const PageTitle = memo(function PageTitle({ date }: { date: string }) {
-	// ページタイトル
 	const getTitleText = useMemo((): string => {
 		const today = dayjs();
 		const selectedDay = dayjs(date);
@@ -30,6 +30,7 @@ const PageTitle = memo(function PageTitle({ date }: { date: string }) {
 	return <h1 className="text-4xl font-bold text-center">{getTitleText}</h1>;
 });
 
+// 特別な日パート
 const SpecialDayPart = memo(function SpecialDayPart({
 	date,
 }: {
@@ -51,6 +52,24 @@ const SpecialDayPart = memo(function SpecialDayPart({
 	);
 });
 
+// トップページへのリンク
+const TopPageLink = memo(function TopPageLink({ date }: { date: string }) {
+	const topPagePath = useMemo(() => {
+		const month = dayTextCommon('MM', date);
+		const year = dayTextCommon('YYYY', date);
+
+		return `/?year=${year}&month=${month}`;
+	}, [date]);
+
+	return (
+		<div className="mt-6 text-center">
+			<Link href={topPagePath} className="w-[100px] h-[50px] text-blue-700">
+				戻る
+			</Link>
+		</div>
+	);
+});
+
 export const DateDetail = ({
 	registeredSchedules,
 	date,
@@ -66,13 +85,6 @@ export const DateDetail = ({
 	const [modalMode, setModalMode] = useState<'register' | 'edit'>('register');
 	// 編集しようとしているスケジュールの詳細
 	const [selectedSchedule, setSelectedScheduleId] = useState<Schedule | {}>({});
-
-	const topPagePath = useMemo(() => {
-		const month = dayTextCommon('MM', date);
-		const year = dayTextCommon('YYYY', date);
-
-		return `/?year=${year}&month=${month}`;
-	}, [date]);
 
 	// 登録されているスケジュールを読み込む
 	const loadSchedules = useCallback(async () => {
@@ -135,14 +147,7 @@ export const DateDetail = ({
 						onOpenModal={openModal}
 						onDeleteSchedule={confirmShouldDeleteSchedule}
 					/>
-					<div className="mt-6 text-center">
-						<Link
-							href={topPagePath}
-							className="w-[100px] h-[50px] text-blue-700"
-						>
-							戻る
-						</Link>
-					</div>
+					<TopPageLink date={date} />
 				</div>
 				<ScheduleRegister
 					isModalOpen={isModalOpen}
