@@ -67,6 +67,13 @@ export const DateDetail = ({
 	// 編集しようとしているスケジュールの詳細
 	const [selectedSchedule, setSelectedScheduleId] = useState<Schedule | {}>({});
 
+	const topPagePath = useMemo(() => {
+		const month = dayTextCommon('MM', date);
+		const year = dayTextCommon('YYYY', date);
+
+		return `/?year=${year}&month=${month}`;
+	}, [date]);
+
 	// 登録されているスケジュールを読み込む
 	const loadSchedules = useCallback(async () => {
 		const schedules = await getScheduleDetail(date);
@@ -129,7 +136,10 @@ export const DateDetail = ({
 						onDeleteSchedule={confirmShouldDeleteSchedule}
 					/>
 					<div className="mt-6 text-center">
-						<Link href="/" className="w-[100px] h-[50px] text-blue-700">
+						<Link
+							href={topPagePath}
+							className="w-[100px] h-[50px] text-blue-700"
+						>
 							戻る
 						</Link>
 					</div>
