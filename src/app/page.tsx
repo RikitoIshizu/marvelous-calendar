@@ -16,7 +16,7 @@ import { Suspense } from 'react';
 export default async function Index({
 	searchParams,
 }: {
-	searchParams: SearchParams;
+	searchParams: Promise<SearchParams>;
 }) {
 	const { year, month } = await searchParams;
 
@@ -87,11 +87,16 @@ export default async function Index({
 			return `${setYear}-${setMonth}-01`;
 		};
 
+		const { start_date, end_date } = getStartAndEndDate(
+			dayjs(setDate()).startOf('month').format('YYYY-MM-DD'),
+			dayjs(setDate()).endOf('month').format('YYYY-MM-DD'),
+		);
+
 		const weatherData = await fetchHistoryMonthlyWeather({
 			latitude: coordinate.latitude,
 			longitude: coordinate.longitude,
-			start_date: dayjs(setDate()).startOf('month').format('YYYY-MM-DD'),
-			end_date: dayjs(setDate()).endOf('month').format('YYYY-MM-DD'),
+			start_date,
+			end_date,
 		});
 
 		monthlyWeather = weatherData;
