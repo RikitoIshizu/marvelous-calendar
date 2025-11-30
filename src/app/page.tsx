@@ -7,7 +7,7 @@ import {
 } from '@/apis/weather';
 import { Top } from '@/features/Top';
 import { getStartAndEndDate } from '@/libs/weather';
-import { MonthlyWeatherData, MonthString, SearchParams } from '@/types/types';
+import { MonthlyWeatherData, MonthString } from '@/types/types';
 import { dayTextCommon } from '@/utils/calendar';
 import { FORECAST_DAYS_LIMIT } from '@/utils/constants';
 import dayjs from 'dayjs';
@@ -16,7 +16,7 @@ import { Suspense } from 'react';
 export default async function Index({
 	searchParams,
 }: {
-	searchParams: SearchParams;
+	searchParams: { [key: string]: string };
 }) {
 	const { year, month } = await searchParams;
 
