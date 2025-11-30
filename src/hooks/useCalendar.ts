@@ -121,33 +121,18 @@ const getCalendarDays = (val: number): WeeklyDay[] => {
 	return groupByWeek(fullCalendar);
 };
 
-const getDefaultNumber = (
-	currentYear: number,
-	currentMonth?: MonthString,
-): number => {
-	if (!currentMonth) return 0;
-
-	const dateTo = dayjs(`${currentYear}-${currentMonth.padStart(2, '0')}-01`);
-	const dateFrom = dayjs();
-
-	return dateTo.diff(dateFrom, 'month');
-};
-
 export type UseCalendar = ReturnType<typeof useCalendar>;
 
 export const useCalendar = (
 	initSchedules: Schedule[],
+	diffMonth: number,
 	currentYear: SearchParams['year'],
 	currentMonth?: MonthString,
 ) => {
 	const router = useRouter();
 
-	const [count, setCount] = useState<number>(
-		getDefaultNumber(Number(currentYear), currentMonth),
-	);
-	const [days, setDays] = useState<WeeklyDay[]>(
-		getCalendarDays(getDefaultNumber(Number(currentYear), currentMonth)),
-	);
+	const [count, setCount] = useState<number>(diffMonth);
+	const [days, setDays] = useState<WeeklyDay[]>(getCalendarDays(diffMonth));
 	const [year, setYear] = useState<string>(
 		currentYear || dayTextCommon('YYYY'),
 	);

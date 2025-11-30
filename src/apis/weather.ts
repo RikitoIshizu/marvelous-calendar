@@ -1,13 +1,20 @@
 import { adjustFetchWeatherData } from '@/libs/weather';
+import {
+	FetchCurrentWeatherRequest,
+	FetchCurrentWeatherResponse,
+	FetchHistoryMonthlyWeather,
+	FetchMonthlyWeatherRequest,
+	FetchSpecifiedWeatherRequest,
+	MonthlyWeatherData,
+} from '@/types/types';
 import { fetchWeatherApi } from 'openmeteo';
 
 const apiUrl = 'https://api.open-meteo.com/v1/forecast';
 
 // 現在の天気の情報を取得する
-export const fetchCurrentWeather = async (request: {
-	latitude?: number;
-	longitude?: number;
-}) => {
+export const fetchCurrentWeather = async (
+	request: FetchCurrentWeatherRequest,
+): Promise<FetchCurrentWeatherResponse> => {
 	try {
 		const params = {
 			...request,
@@ -42,12 +49,31 @@ export const fetchCurrentWeather = async (request: {
 };
 
 // 月間の天気データを取得する
-export const fetchMonthlyWeather = async (request: {
-	latitude?: number;
-	longitude?: number;
-	start_date: string;
-	end_date: string;
-}) => {
+export const fetchMonthlyWeather = async (
+	request: FetchMonthlyWeatherRequest,
+): Promise<MonthlyWeatherData> => {
+	const params = {
+		...request,
+		daily: [
+			'weather_code',
+			'temperature_2m_max',
+			'temperature_2m_min',
+			'apparent_temperature_max',
+			'apparent_temperature_min',
+		],
+	};
+
+	try {
+		const responses = await fetchWeatherApi(apiUrl, params);
+		return adjustFetchWeatherData(responses);
+	} catch (error) {
+		throw new Error(`予期せぬエラーが発生しました。${String(error)}`);
+	}
+};
+
+export const fetchSpecifiedWeather = async (
+	request: FetchSpecifiedWeatherRequest,
+) => {
 	const params = {
 		...request,
 		daily: [
@@ -68,12 +94,9 @@ export const fetchMonthlyWeather = async (request: {
 };
 
 // 過去の月間の天気データを取得する
-export const fetchHistoryMonthlyWeather = async (request: {
-	latitude?: number;
-	longitude?: number;
-	start_date: string;
-	end_date: string;
-}) => {
+export const fetchHistoryMonthlyWeather = async (
+	request: FetchHistoryMonthlyWeather,
+): Promise<MonthlyWeatherData> => {
 	const params = {
 		...request,
 		daily: [

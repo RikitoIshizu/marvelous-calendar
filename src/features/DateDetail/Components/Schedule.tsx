@@ -30,7 +30,7 @@ export const Schedule = ({
 	};
 
 	return (
-		<section className="mt-4">
+		<section className="mt-4 w-1/2">
 			<div className="flex">
 				<h2 className="text-3xl font-bold mr-4">スケジュール</h2>
 				{shouldShowScheduleRegisterBtn && (

@@ -4,10 +4,11 @@ import RainyIcon from '@/assets/svgs/weather/rainy.svg';
 import SnowyIcon from '@/assets/svgs/weather/snowy.svg';
 import SunnyIcon from '@/assets/svgs/weather/sunny.svg';
 import ThunderIcon from '@/assets/svgs/weather/thunder.svg';
-import { FetchCurrentWeather } from '@/types/types';
+import { FetchCurrentWeatherResponse } from '@/types/types';
+import { useMemo } from 'react';
 
 export const getWeatherMark = (
-	weatherCode: FetchCurrentWeather['weatherCode'],
+	weatherCode: FetchCurrentWeatherResponse['weatherCode'],
 	weatherIconStyles: string | undefined = '!w-[40px] !h-[40px]',
 ) => {
 	if (weatherCode === 0) return <ClearSkyIcon className={weatherIconStyles} />; // 快晴
@@ -28,4 +29,14 @@ export const getWeatherMark = (
 		// 雷
 		return <ThunderIcon className={weatherIconStyles} />;
 	return null;
+};
+
+export const useWeatherMark = (
+	weatherCode: FetchCurrentWeatherResponse['weatherCode'],
+	weatherIconStyles: string | undefined = '!w-[40px] !h-[40px]',
+) => {
+	return useMemo(
+		() => getWeatherMark(weatherCode, weatherIconStyles),
+		[weatherCode, weatherIconStyles],
+	);
 };

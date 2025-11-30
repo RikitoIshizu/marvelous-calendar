@@ -3,31 +3,41 @@ import { deleteSchedule, getScheduleDetail } from '@/apis/supabase';
 import { Schedule as ScheduleComponent } from '@/features/DateDetail/Components/Schedule';
 import { ScheduleRegister } from '@/features/ScheduleRegister';
 import { useAsyncLoading } from '@/hooks/useAsyncLoading';
-import { Schedule } from '@/types/types';
+import { useWeatherMark } from '@/libs/getWeatherMark';
+import { MonthlyWeatherData, Quote, Schedule } from '@/types/types';
 import { dayTextCommon, specialDays } from '@/utils/calendar';
 import dayjs from 'dayjs';
+import 'dayjs/locale/ja';
 import Link from 'next/link';
 import { memo, useCallback, useMemo, useState } from 'react';
+import { Quotes } from './Components/Quotes';
 
 // ページタイトル
-const PageTitle = memo(function PageTitle({ date }: { date: string }) {
-	const getTitleText = useMemo((): string => {
-		const today = dayjs();
-		const selectedDay = dayjs(date);
-		const todayText = dayTextCommon('YYYYMMDD');
-		const selectedDayWithFormat = dayTextCommon('YYYYMMDD', date);
+const WeatherPart = memo(function PageTitle({
+	weather,
+}: {
+	weather: MonthlyWeatherData[string];
+}) {
+	const maxTemperature = useMemo(
+		() => weather.temperatureMax.toFixed(1),
+		[weather.temperatureMax],
+	);
 
-		if (todayText === selectedDayWithFormat) return '今日の予定';
-		if (today.add(1, 'day').format('YYYYMMDD') === selectedDayWithFormat)
-			return '明日の予定';
-		if (today.add(-1, 'day').format('YYYYMMDD') === selectedDayWithFormat)
-			return '昨日の予定';
-		if (selectedDay.isBefore(dayjs()))
-			return `${selectedDay.format('YYYY年M月D日')}に追加された予定`;
-		return `${selectedDay.format('YYYY年M月D日')}の予定`;
-	}, [date]);
+	const minTemperature = useMemo(
+		() => weather.temperatureMin.toFixed(1),
+		[weather.temperatureMin],
+	);
 
-	return <h1 className="text-4xl font-bold text-center">{getTitleText}</h1>;
+	const weatherIcon = useWeatherMark(weather.weatherCode);
+
+	return (
+		<>
+			{weatherIcon}
+			<div className="text-xl">
+				最高気温: {maxTemperature}℃ / 最低気温: {minTemperature}℃
+			</div>
+		</>
+	);
 });
 
 // 特別な日パート
@@ -73,9 +83,13 @@ const TopPageLink = memo(function TopPageLink({ date }: { date: string }) {
 export const DateDetail = ({
 	registeredSchedules,
 	date,
+	quotes,
+	weather,
 }: {
 	registeredSchedules: Schedule[];
 	date: string;
+	quotes: Quote[];
+	weather?: MonthlyWeatherData[string];
 }) => {
 	// 登録されているスケジュール
 	const [schedules, setSchedules] = useState<Schedule[]>(registeredSchedules);
@@ -134,19 +148,32 @@ export const DateDetail = ({
 		),
 	);
 
+	// ページのタイトル
+	const getTitleText = useMemo(
+		(): string => `${dayjs(date).locale('ja').format('YYYY年M月D日(ddd)')}`,
+		[date],
+	);
+
 	return (
 		<main>
 			<section className="my-2 relative">
-				<PageTitle date={date} />
+				<div className="mt-4 ml-4 gap-4 flex items-center">
+					<h1 className="text-4xl font-bold ">{getTitleText}</h1>
+					{weather && <WeatherPart weather={weather} />}
+				</div>
 				<div className="w-[1000px] mx-auto">
 					<SpecialDayPart date={date} />
-					<ScheduleComponent
-						schedules={schedules}
-						date={date}
-						onOpenRegisterScheduleModal={openRegisterScheduleModal}
-						onOpenModal={openModal}
-						onDeleteSchedule={confirmShouldDeleteSchedule}
-					/>
+					<div className="flex justify-center gap-4">
+						<ScheduleComponent
+							schedules={schedules}
+							date={date}
+							onOpenRegisterScheduleModal={openRegisterScheduleModal}
+							onOpenModal={openModal}
+							onDeleteSchedule={confirmShouldDeleteSchedule}
+						/>
+						<Quotes quotes={quotes} />
+					</div>
+
 					<TopPageLink date={date} />
 				</div>
 				<ScheduleRegister

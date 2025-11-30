@@ -18,3 +18,6 @@ export const FORECAST_DAYS_LIMIT = 14;
 
 // 天気予報APIで取得可能な過去の年
 export const LIMIT_YEAR = 2016;
+
+// 天気予報APIで取得可能な過去の年月日
+export const LIMIT_DATE_STRING = `2016-01-01`;

@@ -1,5 +1,4 @@
 import { getCoordinate } from '@/apis/ipstack';
-import { fetchCurrentWeather, fetchMonthlyWeather } from '@/apis/weather';
 import { Hour, Minute } from '@/utils/time';
 import { Tables, TablesInsert, TablesUpdate } from './supabase-generated-types';
 
@@ -125,14 +124,6 @@ export type ScheduleUpdateInput = Omit<
 	'created_at' | 'user_id' | 'day' | 'month' | 'year'
 >;
 
-export type FetchCurrentWeather = Awaited<
-	ReturnType<typeof fetchCurrentWeather>
->;
-
-export type FetchMonthlyWeather = Awaited<
-	ReturnType<typeof fetchMonthlyWeather>
->;
-
 export type GetCoordinate = Awaited<ReturnType<typeof getCoordinate>>;
 
 export type FindIp = {
@@ -213,4 +204,51 @@ export type FindIp = {
 export type SearchParams = {
 	year?: string;
 	month?: string;
+};
+
+export type Quote = {
+	meigen: string;
+	auther: string;
+};
+
+export type FetchCurrentWeatherRequest = {
+	latitude: number;
+	longitude: number;
+};
+
+export type FetchCurrentWeatherResponse = {
+	temperature: number;
+	relativeHumidity: number;
+	precipitation: number;
+	rain: number;
+	weatherCode: number;
+};
+
+export type FetchMonthlyWeatherRequest = {
+	latitude: number;
+	longitude: number;
+	start_date: string;
+	end_date: string;
+};
+
+export type FetchSpecifiedWeatherRequest = {
+	latitude: number;
+	longitude: number;
+	start_date: string;
+	end_date: string;
+};
+
+export type FetchHistoryMonthlyWeather = {
+	latitude: number;
+	longitude: number;
+	start_date: string;
+	end_date: string;
+};
+
+export type FetchMonthlyWeather = {
+	temperature: number;
+	relativeHumidity: number;
+	precipitation: number;
+	rain: number;
+	weatherCode: number;
 };

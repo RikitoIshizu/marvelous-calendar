@@ -4,13 +4,13 @@ import {
 } from '@/apis/weather';
 import { useLocation } from '@/context/LocationContext';
 import { getStartAndEndDate } from '@/libs/weather';
-import { FetchMonthlyWeather } from '@/types/types';
+import { MonthlyWeatherData } from '@/types/types';
 import { FORECAST_DAYS_LIMIT } from '@/utils/constants';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 
 type UseWeatherProps = {
-	defaultMonthlyWeather?: FetchMonthlyWeather;
+	defaultMonthlyWeather?: MonthlyWeatherData;
 };
 
 export type UseWeather = ReturnType<typeof useWeather>;
@@ -19,7 +19,7 @@ export const useWeather = ({ defaultMonthlyWeather }: UseWeatherProps) => {
 	const { latitude, longitude } = useLocation();
 
 	const [monthlyWeather, setMonthlyWeather] =
-		useState<FetchMonthlyWeather | null>(defaultMonthlyWeather ?? null);
+		useState<MonthlyWeatherData | null>(defaultMonthlyWeather ?? null);
 
 	const getMonthlyWeatherData = async ({
 		start_date,

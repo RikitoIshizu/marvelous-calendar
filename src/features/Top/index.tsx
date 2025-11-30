@@ -7,9 +7,9 @@ import { useAsyncLoading } from '@/hooks/useAsyncLoading';
 import { useCalendar } from '@/hooks/useCalendar';
 import { useWeather } from '@/hooks/useWeather';
 import {
-	FetchCurrentWeather,
-	FetchMonthlyWeather,
+	FetchCurrentWeatherResponse,
 	GetCoordinate,
+	MonthlyWeatherData,
 	MonthString,
 	Schedule,
 } from '@/types/types';
@@ -25,13 +25,15 @@ export const Top = ({
 	coordinate,
 	currentYear,
 	currentMonth,
+	diffMonth,
 }: {
 	registeredSchedules: Schedule[];
-	currentWeather: FetchCurrentWeather;
-	defaultMonthlyWeather: FetchMonthlyWeather;
+	currentWeather: FetchCurrentWeatherResponse;
+	defaultMonthlyWeather: MonthlyWeatherData;
 	coordinate: GetCoordinate;
 	currentYear?: string;
 	currentMonth?: MonthString;
+	diffMonth: number;
 }) => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -57,7 +59,7 @@ export const Top = ({
 		changeYearAndMonth,
 		getScheduleOnTheDate,
 		onGetSchedules,
-	} = useCalendar(registeredSchedules, currentYear, currentMonth);
+	} = useCalendar(registeredSchedules, diffMonth, currentYear, currentMonth);
 
 	// 年と月を変える
 	const onChangeYearAndMonth = useAsyncLoading(
