@@ -61,44 +61,6 @@ const holidayAndSpecialDayText = (
 	return '';
 };
 
-// 祝日もしくは特別な日テキストのcssクラス
-const holidayAndSpecialDayTextClass = (
-	dayOfWeek: Props['keyOfDayOfWeek'],
-	date: Props['date'],
-	order: Props['order'],
-): string => {
-	const checkDate = dayTextCommon('MMDD', date);
-
-	if (specialDays[`${checkDate}`])
-		return 'p-1 text-cyan-500 whitespace-nowrap truncate text-xs';
-
-	const isHolidayAndSpecialDayException = holidayAndSpecialDayException.filter(
-		(el: HolidayAndSpecialDayException) => {
-			return (
-				el.week === order &&
-				dayOfWeek === el.dayOfWeek &&
-				el.month === dayjs(date).month() + 1
-			);
-		},
-	);
-
-	const yesterday: string = dayjs(date).add(-1, 'day').format('YYYYMMDD');
-	const yesterdayOnlyYearAndMonth: string = dayjs(date)
-		.add(-1, 'day')
-		.format('MMDD');
-	const dOfW = dayjs(yesterday).day();
-
-	if (
-		holiday[`${checkDate}`] ||
-		isHolidayAndSpecialDayException.length ||
-		(holiday[`${yesterdayOnlyYearAndMonth}`] && dOfW === 0)
-	) {
-		return 'p-1 text-green-600 text-xs';
-	}
-
-	return '';
-};
-
 // 予定時間テキスト
 const scheduleTimeText = (
 	scheduleTimes: Omit<ScheduleSummary, 'id' | 'title' | 'scheduleTypes'>,
@@ -201,19 +163,8 @@ const DatePart = memo(function DatePart({
 });
 
 // 祝日もしくは特別な日テキスト部分
-const HolidayText = memo(function HolidayText({
-	keyOfDayOfWeek,
-	date,
-	order,
-	text,
-}: Pick<Props, 'keyOfDayOfWeek' | 'date' | 'order'> & { text: string }) {
-	if (!text) return null;
-
-	return (
-		<div className={holidayAndSpecialDayTextClass(keyOfDayOfWeek, date, order)}>
-			{text}
-		</div>
-	);
+const HolidayText = memo(function HolidayText({ text }: { text: string }) {
+	return <div className="p-1 whitespace-nowrap truncate text-xs">{text}</div>;
 });
 
 // 予定リスト部分
@@ -299,12 +250,7 @@ export const Day = memo(function Day(props: Props) {
 						weatherIcon={props.weatherIcon}
 						temperature={props.temperature}
 					/>
-					<HolidayText
-						keyOfDayOfWeek={props.keyOfDayOfWeek}
-						date={props.date}
-						order={props.order}
-						text={holidayText}
-					/>
+					<HolidayText text={holidayText} />
 					<ScheduleList
 						schedules={props.schedules}
 						innerTdHeight={innerTdHeight}

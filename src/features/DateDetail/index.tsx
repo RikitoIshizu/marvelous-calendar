@@ -12,8 +12,8 @@ import Link from 'next/link';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { Quotes } from './Components/Quotes';
 
-// ページタイトル
-const WeatherPart = memo(function PageTitle({
+// 天気の部分
+const WeatherPart = memo(function WeatherPart({
 	weather,
 }: {
 	weather: MonthlyWeatherData[string];
@@ -37,6 +37,28 @@ const WeatherPart = memo(function PageTitle({
 				最高気温: {maxTemperature}℃ / 最低気温: {minTemperature}℃
 			</div>
 		</>
+	);
+});
+
+// ヘッダーの部分
+const HeaderPart = memo(function HeaderPart({
+	date,
+	weather,
+}: {
+	date: string;
+	weather?: MonthlyWeatherData[string];
+}) {
+	// ページのタイトル
+	const getTitleText = useMemo(
+		(): string => `${dayjs(date).locale('ja').format('YYYY年M月D日(ddd)')}`,
+		[date],
+	);
+
+	return (
+		<div className="mt-4 mb-6 gap-4 flex items-center justify-center">
+			<h1 className="text-4xl font-bold ">{getTitleText}</h1>
+			{!!weather && WeatherPart({ weather })}
+		</div>
 	);
 });
 
@@ -140,27 +162,16 @@ export const DateDetail = ({
 			async (id: Schedule['id']) => {
 				const response = await deleteSchedule(id);
 
-				if (!response) {
-					await loadSchedules();
-				}
+				if (!response) await loadSchedules();
 			},
 			[loadSchedules],
 		),
 	);
 
-	// ページのタイトル
-	const getTitleText = useMemo(
-		(): string => `${dayjs(date).locale('ja').format('YYYY年M月D日(ddd)')}`,
-		[date],
-	);
-
 	return (
 		<main>
 			<section className="my-2 relative">
-				<div className="mt-4 ml-4 gap-4 flex items-center">
-					<h1 className="text-4xl font-bold ">{getTitleText}</h1>
-					{weather && <WeatherPart weather={weather} />}
-				</div>
+				<HeaderPart date={date} weather={weather} />
 				<div className="w-[1000px] mx-auto">
 					<SpecialDayPart date={date} />
 					<div className="flex justify-center gap-4">
